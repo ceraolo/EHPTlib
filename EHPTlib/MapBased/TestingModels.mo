@@ -4,26 +4,34 @@ package TestingModels
 
   model TestIceT
     IceT iceT(wIceStart = 90) annotation (
-      Placement(transformation(extent = {{-20, -2}, {0, 18}})));
+      Placement(transformation(extent={{-16,-2},{4,18}})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation (
-      Placement(transformation(extent = {{10, 0}, {30, 20}})));
+      Placement(transformation(extent={{14,0},{34,20}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
-      Placement(transformation(extent = {{64, 0}, {44, 20}})));
+      Placement(transformation(extent={{68,0},{48,20}})));
     Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 60, amplitude = 30) annotation (
-      Placement(transformation(extent = {{-50, -38}, {-30, -18}})));
+      Placement(transformation(extent={{-46,-38},{-26,-18}})));
   equation
     connect(iceT.flange_a, inertia.flange_a) annotation (
-      Line(points = {{0, 10}, {10, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
+      Line(points={{4,10},{14,10}},      color = {0, 0, 0}, smooth = Smooth.None));
     connect(inertia.flange_b, loadTorque.flange) annotation (
-      Line(points = {{30, 10}, {44, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
+      Line(points={{34,10},{48,10}},      color = {0, 0, 0}, smooth = Smooth.None));
     connect(iceT.tauRef, trapezoid.y) annotation (
-      Line(points = {{-16, -2}, {-16, -28}, {-29, -28}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-12,-2},{-12,-28},{-25,-28}},        color = {0, 0, 127}, smooth = Smooth.None));
+  //    experiment(StopTime = 50),
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -60}, {80, 40}}), graphics),
-      experiment(StopTime = 50),
+      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -60}, {80, 40}}), graphics={Text(
+            extent={{6,-18},{64,-44}},
+            textColor={238,46,47},
+            textString="Model not working, see info")}),
       __Dymola_experimentSetupOutput,
       Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
-      Documentation(info = "<html>
+      Documentation(info="<html>
+<p><br><b>Model IceT works only when parameter tablesOnFile=true.</b></p>
+<h4>Implementation related to TablesOnFile=false has still to be finalised. </h4>
+<h4>Therefore TestIceT is currently not working</h4>
+<p>Because of this, the experiment annotation has been commented out.</p>
+<p><br>*******************************************************************************************</p>
 <p>This is a simple test of model IceT.</p>
 <p>It shows that the generated torque follows the torque request as long as the maximum allowed is not overcome; otherwise this maximum is generated.</p>
 <p>It shows also the fuel consumption output.</p>
