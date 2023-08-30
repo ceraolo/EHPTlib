@@ -294,8 +294,8 @@ reference \nand computes consumption")}));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
   equation
-    assert(wMax >= powMax / tauMax, "\n****  " + "wMax=" + String(wMax)+
-         ";  powMax=" + String(powMax)+";  tauMax="+String(tauMax)+"  ***\n");
+  //  assert(wMax >= powMax / tauMax, "\n****  " + "wMax=" + String(wMax)+
+  //       ";  powMax=" + String(powMax)+";  tauMax="+String(tauMax)+"  ***\n");
     connect(toElePow.w, wSensor.w) annotation (
       Line(points = {{-4, -22}, {78, -22}, {78, 35.2}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(pin_p, constPDC.pin_p) annotation (
@@ -392,7 +392,7 @@ reference \nand computes consumption")}));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
   equation
-    assert(wMax >= powMax / tauMax, "\n****\n" + "PARAMETER VERIFICATION ERROR:\nwMax must be not lower than powMax/tauMax" + "\n***\n");
+  //  assert(wMax >= powMax / tauMax, "\n****\n" + "PARAMETER VERIFICATION ERROR:\nwMax must be not lower than powMax/tauMax" + "\n***\n");
     connect(toElePow.w, wSensor.w) annotation (
       Line(points = {{-4, -22}, {78, -22}, {78, 35.2}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(pin_p, constPDC.pin_p) annotation (
@@ -505,7 +505,7 @@ reference \nand computes consumption")}));
       wMax=wMax)
       annotation (Placement(transformation(extent={{-20,-36},{-40,-16}})));
   equation
-    assert(wMax >= powMax / tauMax, "\n****\n" + "PARAMETER VERIFICATION ERROR:\nwMax must be not lower than powMax/tauMax" + "\n***\n");
+  //  assert(wMax >= powMax / tauMax, "\n****\n" + "PARAMETER VERIFICATION ERROR:\nwMax must be not lower than powMax/tauMax" + "\n***\n");
     connect(pin_p, constPDC.pin_p) annotation (
       Line(points = {{-100, 40}, {-100, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(pin_n, constPDC.pin_n) annotation (

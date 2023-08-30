@@ -121,11 +121,11 @@ equation
   connect(Ip.p, R0.n) annotation (
     Line(points = {{-6, 10}, {-6, 60}, {10, 60}}, color = {0, 0, 255}));
   connect(currentSensor.i, gain.u) annotation (
-    Line(points = {{70, 50}, {70, -1.46958e-015}, {64, -1.46958e-015}}, color = {0, 0, 127}));
+    Line(points={{70,49},{70,0},{64,0}},                                color = {0, 0, 127}));
   connect(abs1.u, gain.y) annotation (
     Line(points = {{36, 0}, {39.5, 0}, {39.5, 1.34711e-015}, {41, 1.34711e-015}}, color = {0, 0, 127}));
   connect(abs1.y, Ip.i) annotation (
-    Line(points = {{13, 0}, {7, 0}, {7, -1.28588e-015}, {1, -1.28588e-015}}, color = {0, 0, 127}));
+    Line(points={{13,0},{7,0},{7,0},{6,-1.28588e-15}},                       color = {0, 0, 127}));
   connect(currentSensor.n, p) annotation (
     Line(points = {{80, 60}, {80, 60}, {100, 60}}, color = {0, 0, 255}));
   connect(Ip.n, n) annotation (
