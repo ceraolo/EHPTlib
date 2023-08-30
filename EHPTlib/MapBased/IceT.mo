@@ -25,7 +25,6 @@ equation
     Line(points = {{-27, 60}, {-21.5, 60}, {-14, 60}}, color = {0, 0, 127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
-    experiment(StopTime = 200, __Dymola_NumberOfIntervals = 1000, __Dymola_Algorithm = "Lsodar"),
     __Dymola_experimentSetupOutput,
     Documentation(info = "<html>
 <p>This model belongs to the map-based models of power train components.</p>

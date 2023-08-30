@@ -7,7 +7,8 @@ package ECUs
     parameter Real genLoopGain = 0.1 "Control gain between ice speed error and gen torque: Nm/(rad/s)";
     Modelica.Blocks.Interfaces.RealInput tauRef annotation (
       Placement(visible = true, transformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0), iconTransformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0)));
-    Modelica.Blocks.Continuous.FirstOrder powFilt(T = powFiltT) annotation (
+    Modelica.Blocks.Continuous.FirstOrder powFilt(T = powFiltT, initType=Modelica.Blocks.Types.Init.InitialOutput)
+                                                                annotation (
       Placement(visible = true, transformation(origin = {-40, 40}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     SupportModels.ConnectorRelated.Conn conn1 annotation (
       Placement(visible = true, transformation(extent = {{-20, 60}, {20, 100}}, rotation = 0), iconTransformation(extent = {{-20, 78}, {20, 118}}, rotation = 0)));
@@ -17,13 +18,14 @@ package ECUs
       Placement(visible = true, transformation(extent = {{6, -10}, {26, -30}}, rotation = 0)));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMax = genTorqueMax, uMin = -genTorqueMax) annotation (
       Placement(visible = true, transformation(origin = {60, 40}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
-    Modelica.Blocks.Tables.CombiTable1Ds powToW(fileName = "wToTau.txt", tableOnFile = false, table = [0, 0; 1884, 126; 9800, 126; 36600, 366; 52300, 523]) "optimal ice speed as a function of power" annotation (
+    Modelica.Blocks.Tables.CombiTable1Ds powToW(fileName = "wToTau.txt", tableOnFile = false,
+    table = [0, 0; 1884, 126; 9800, 126; 36600, 366; 52300, 523]) "optimal ice speed as a function of power" annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-40, -20})));
     Modelica.Blocks.Math.Gain toNm(k = maxTorqueReq) "converts p.u. torque request into Nm" annotation (
       Placement(visible = true, transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-80, 32})));
     Modelica.Blocks.Nonlinear.Limiter limiter1(uMax = 1e6, uMin = 125) annotation (
       Placement(visible = true, transformation(origin = {-10, -20}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Blocks.Continuous.FirstOrder genTauFilt(T = 1) annotation (
+    Modelica.Blocks.Continuous.FirstOrder genTauFilt(T = 1, initType=Modelica.Blocks.Types.Init.InitialOutput)  annotation (
       Placement(visible = true, transformation(origin = {60, 12}, extent = {{10, -10}, {-10, 10}}, rotation = -90)));
   equation
     connect(powFilt.u, conn1.motPowDelB) annotation (
@@ -58,54 +60,52 @@ package ECUs
       Line(points = {{60, 0}, {60, -20}, {53, -20}}, color = {0, 0, 127}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(extent = {{-100, -60}, {100, 80}}, preserveAspectRatio = false, initialScale = 0.1), graphics={  Text(extent = {{-82, 74}, {-24, 70}}, textString = "Send requested torque to mot"), Text(extent={{
-                -38,16},{2,12}},                                                                                                                                                                                                        textString = "send filtered 
-power to ice"),
-            Text(extent = {{62, 70}, {94, 60}}, textString = "send 
+                -38,16},{2,12}}, textString = "send filtered power\nto ice"),
+                   Text(extent = {{62, 70}, {94, 60}}, textString = "send 
 reference tau
 to gen",
-     horizontalAlignment = TextAlignment.Left), Line(origin = {-4, 42}, points={{0,
-                6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None}),
-                                                Line(origin={18,52},    points = {{0, -6}, {0, 6}, {0, 6}}, arrow = {Arrow.Filled, Arrow.None}),
-                                                Line(origin={56,66},    points={{0,
-                6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None})}),
-      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(lineColor = {0, 0, 255}, extent = {{-100, -102}, {100, -140}}, textString = "%name"), Rectangle(fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Polygon(lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
-              fillPattern =  FillPattern.Solid, points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
-              fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
-              fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
-              fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(extent = {{-100, 84}, {100, 54}}, textString = "PSD-ecu1")}),
+     horizontalAlignment = TextAlignment.Left), Line(origin = {-4, 42}, points={{0, 6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None}),
+            Line(origin={18,52},    points = {{0, -6}, {0, 6}, {0, 6}}, arrow = {Arrow.Filled, Arrow.None}),
+            Line(origin={56,66},    points={{0,6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None})}),
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
+         initialScale = 0.1, grid = {2, 2}), graphics={  Text(lineColor = {0, 0, 255}, extent = {{-100, -102}, {100, -140}}, textString = "%name"), Rectangle(fillColor = {255, 255, 255},
+         fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Polygon(lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
+         fillPattern =  FillPattern.Solid, points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+         fillPattern =  FillPattern.Solid, points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+         fillPattern =  FillPattern.Solid, points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+         fillPattern =  FillPattern.Solid, points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+         fillPattern =  FillPattern.Solid, points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+         fillPattern =  FillPattern.Solid, points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+         fillPattern =  FillPattern.Solid, points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+         fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
+         fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
+         fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
+         fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(extent = {{-100, 84}, {100, 54}}, textString = "PSD-ecu1")}),
       Documentation(info = "<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Power Split Power Train Controller without ON/OFF</span></b></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This controller operates as follows:</span></p>
@@ -136,7 +136,8 @@ to gen",
       "Power filter time constant (s)";
     Modelica.Blocks.Interfaces.RealInput tauReference annotation (
       Placement(visible = true, transformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0), iconTransformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0)));
-    Modelica.Blocks.Continuous.FirstOrder powFilt(T = powFiltT) annotation (
+    Modelica.Blocks.Continuous.FirstOrder powFilt(T = powFiltT, initType=Modelica.Blocks.Types.Init.InitialOutput)
+                                                                annotation (
       Placement(visible = true, transformation(origin = {20, 46}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     SupportModels.ConnectorRelated.Conn conn1 annotation (
       Placement(visible = true, transformation(extent = {{-20, 60}, {20, 100}}, rotation = 0), iconTransformation(extent = {{-20, 78}, {20, 118}}, rotation = 0)));
@@ -150,7 +151,8 @@ to gen",
       Placement(visible = true, transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-86, 30})));
     Modelica.Blocks.Nonlinear.Limiter limiter1(uMax = 1e6, uMin = 125) annotation (
       Placement(visible = true, transformation(origin = {14, -40}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-    Modelica.Blocks.Continuous.FirstOrder genTauFilt(T = 1) annotation (
+    Modelica.Blocks.Continuous.FirstOrder genTauFilt(T = 1, initType=Modelica.Blocks.Types.Init.InitialOutput)
+                                                            annotation (
       Placement(visible = true, transformation(origin = {84, 38}, extent = {{10, -10}, {-10, 10}}, rotation = -90)));
     Modelica.Blocks.Math.Add add annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {18, 8})));
@@ -204,56 +206,54 @@ requested
 torque 
 to mot",
      horizontalAlignment = TextAlignment.Left), Text(extent = {{54, 68}, {82, 58}}, textString = "send 
-reference tau
-to gen",
+reference tau\nto gen",
      horizontalAlignment = TextAlignment.Right), Text(extent={{30,66},{56,
-                54}},                                                                textString = "send 
-ref pow
-to ice",
-     horizontalAlignment = TextAlignment.Right),Line(origin={42,44},    points={{0,
-                -6},{0,6},{0,6}},                                                                           arrow = {Arrow.Filled, Arrow.None}),
-                                                Line(origin={56,42},    points={{0,
-                6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None}),
-                                                Line(origin={88,68},    points={{0,
-                6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None})}),
+                54}}, textString = "send\nref pow\nto ice",
+     horizontalAlignment = TextAlignment.Right),
+     Line(origin={42,44}, points={{0,-6},{0,6},{0,6}},
+     arrow = {Arrow.Filled, Arrow.None}),
+     Line(origin={56,42}, points={{0,6},{0,-6},{0,-6}},
+     arrow = {Arrow.Filled, Arrow.None}),
+     Line(origin={88,68},   points={{0,6},{0,-6},{0,-6}},
+     arrow = {Arrow.Filled, Arrow.None})}),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(lineColor = {0, 0, 255}, extent = {{-100, -102}, {100, -140}}, textString = "%name"), Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}, lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}, lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
-              fillPattern =  FillPattern.Solid), Polygon(points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}, lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
-              fillPattern =  FillPattern.Solid), Rectangle(extent = {{-98, 92}, {98, 62}}, fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, pattern = LinePattern.None), Text(extent = {{-100, 82}, {100, 54}}, lineColor = {0, 0, 0}, textString = "PSD-ecu2")}),
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}, lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}, lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}, lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}, lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
+        fillPattern =  FillPattern.Solid), Polygon(points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}, lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
+        fillPattern =  FillPattern.Solid), Rectangle(extent = {{-98, 92}, {98, 62}}, fillColor = {255, 255, 255},
+        fillPattern =  FillPattern.Solid, pattern = LinePattern.None), Text(extent = {{-100, 82}, {100, 54}}, lineColor = {0, 0, 0}, textString = "PSD-ecu2")}),
       Documentation(info = "<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Power Split Power Train Controller without ON/OFF</span></b></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This controller is derived from MBecu1, in which the basic description can be found.</span></p>
@@ -271,7 +271,8 @@ to ice",
     parameter Real offThreshold = 5000 "average power below which engine is switched off (W)";
     Modelica.Blocks.Interfaces.RealInput tauReference annotation (
       Placement(visible = true, transformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0), iconTransformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0)));
-    Modelica.Blocks.Continuous.FirstOrder powFilt(T = powFiltT) annotation (
+    Modelica.Blocks.Continuous.FirstOrder powFilt(T = powFiltT, initType=Modelica.Blocks.Types.Init.InitialOutput)
+                                                                annotation (
       Placement(visible = true, transformation(origin = {-50, 58}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     SupportModels.ConnectorRelated.Conn conn annotation (
       Placement(visible = true, transformation(extent = {{-20, 78}, {20, 118}}, rotation = 0), iconTransformation(extent = {{-20, 78}, {20, 118}}, rotation = 0)));
@@ -279,7 +280,8 @@ to ice",
       Placement(visible = true, transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {104, 30})));
     Modelica.Blocks.Math.Gain toNm(k = maxTorqueReq) "converts p.u. torque request into Nm" annotation (
       Placement(visible = true, transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-88, 50})));
-    Modelica.Blocks.Continuous.FirstOrder genTauFilt(T = 1) annotation (
+    Modelica.Blocks.Continuous.FirstOrder genTauFilt(T = 1, initType=Modelica.Blocks.Types.Init.InitialOutput)
+                                                            annotation (
       Placement(visible = true, transformation(origin = {104, 76}, extent = {{10, -10}, {-10, 10}}, rotation = -90)));
     Modelica.Blocks.Math.Add add annotation (
       Placement(visible = true, transformation(origin = {-36, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
@@ -375,57 +377,50 @@ to ice",
                 14,50},{42,46}},
             lineColor={0,0,0},
             horizontalAlignment=TextAlignment.Left,
-            textString="send 
-reference
-pow
-to ice"),
-       Ellipse(extent={{-42,98},{50,-44}},       lineColor = {255, 0, 0},
-              lineThickness =                                                             0.5),
-                                                Line(origin={60,76},    points={{0,
-                -6},{0,6},{0,6}},                                                                           arrow = {Arrow.Filled, Arrow.None}),
-                                                Line(origin={0,78},     points={{0,
-                6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None}),
-                                                Line(origin={34,96},    points={{0,
-                6},{0,-6},{0,-6}},                                                                          arrow = {Arrow.Filled, Arrow.None},
+            textString="send\nreference\npow\nto ice"),
+       Ellipse(extent={{-42,98},{50,-44}}, lineColor = {255, 0, 0},  lineThickness = 0.5),
+       Line(origin={60,76},  points={{0, -6},{0,6},{0,6}}, arrow = {Arrow.Filled, Arrow.None}),
+         Line(origin={0,78},   points={{0, 6},{0,-6},{0,-6}}, arrow = {Arrow.Filled, Arrow.None}),
+         Line(origin={34,96},    points={{0, 6},{0,-6},{0,-6}},  arrow = {Arrow.Filled, Arrow.None},
             rotation=90)}),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(lineColor = {0, 0, 255}, extent = {{-102, -102}, {98, -140}}, textString = "%name"), Rectangle(fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Polygon(lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
-              fillPattern =  FillPattern.Solid, points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
-              fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
-              fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
-              fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(extent = {{-100, 84}, {100, 58}}, lineColor = {0, 0, 0}, textString = "PSD-ecu3")}));
+        fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Polygon(lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
+        fillPattern =  FillPattern.Solid, points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
+        fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
+        fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
+        fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(extent = {{-100, 84}, {100, 58}}, lineColor = {0, 0, 0}, textString = "PSD-ecu3")}));
   end Ecu3;
 
   model GMS "Genset Management System (simplified)"
@@ -500,8 +495,9 @@ to ice"),
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
       experimentSetupOutput,
       Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-98, 22}, {98, -16}}, textString = "%name")}),
+        fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}),
+          Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
+        fillPattern = FillPattern.Solid, extent = {{-98, 22}, {98, -16}}, textString = "%name")}),
       Documentation(info = "<html>
 <p>Genset Management System.</p>
 <p>The control logic commands the genset to deliver at the DC port the input power, using the optimal generator speed.</p>
@@ -605,8 +601,9 @@ to ice"),
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 60}})),
       experimentSetupOutput,
       Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-98, 22}, {98, -16}}, textString = "%name")}),
+        fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}),
+          Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
+        fillPattern =  FillPattern.Solid, extent = {{-98, 22}, {98, -16}}, textString = "%name")}),
       Documentation(info = "<html>
 <p>Genset Management System witn ON/OFF.</p>
 <p>The control logic commands the genset to deliver at the DC port the input power, using the optimal generator speed.</p>
@@ -697,43 +694,43 @@ to ice"),
       Placement(visible = true, transformation(origin = {-58, 50}, extent = {{-10, -10}, {10, 10}}, rotation = 0)),
       Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}})),
       Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Polygon(lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
-              fillPattern =  FillPattern.Solid, points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
-              fillPattern =  FillPattern.Solid, points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
-              fillPattern =  FillPattern.Solid, points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
-              fillPattern =  FillPattern.Solid, points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-              fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
-              fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
-              fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
-              fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(origin = {-6.08518, -4.3529}, lineColor = {0, 0, 255}, extent = {{-91.9148, 98.3529}, {100.085, 60.353}}, textString = "%name", fontName = "Helvetica")}),
+        fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Polygon(lineColor = {95, 95, 95}, fillColor = {175, 175, 175},
+        fillPattern =  FillPattern.Solid, points = {{-4, -40}, {74, 16}, {74, -6}, {-4, -62}, {-4, -40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{8, -38}, {28, -48}, {20, -54}, {0, -44}, {8, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{20, -54}, {28, -48}, {32, -56}, {24, -62}, {20, -54}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{24, -62}, {32, -56}, {32, -78}, {24, -84}, {24, -62}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{0, -44}, {20, -54}, {24, -62}, {24, -84}, {22, -84}, {22, -62}, {20, -58}, {0, -48}, {0, -44}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-14, 40}, {-18, 32}, {-10, 38}, {-8, 44}, {-14, 40}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-18, 32}, {-10, 38}, {-10, 14}, {-18, 8}, {-18, 32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-20, 10}, {-20, 32}, {-16, 40}, {4, 30}, {4, 26}, {-16, 36}, {-18, 32}, {-18, 8}, {-20, 10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-8, 46}, {12, 36}, {4, 30}, {-16, 40}, {-8, 46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{28, -22}, {48, -32}, {40, -38}, {20, -28}, {28, -22}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{40, -38}, {48, -32}, {52, -40}, {44, -46}, {40, -38}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{44, -46}, {52, -40}, {52, -62}, {44, -68}, {44, -46}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{20, -28}, {40, -38}, {44, -46}, {44, -68}, {42, -68}, {42, -46}, {40, -42}, {20, -32}, {20, -28}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{48, -8}, {68, -18}, {60, -24}, {40, -14}, {48, -8}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{60, -24}, {68, -18}, {72, -26}, {64, -32}, {60, -24}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{64, -32}, {72, -26}, {72, -48}, {64, -54}, {64, -32}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{40, -14}, {60, -24}, {64, -32}, {64, -54}, {62, -54}, {62, -32}, {60, -28}, {40, -18}, {40, -14}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{68, 6}, {88, -4}, {80, -10}, {60, 0}, {68, 6}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{80, -10}, {88, -4}, {92, -12}, {84, -18}, {80, -10}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{84, -18}, {92, -12}, {92, -34}, {84, -40}, {84, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{60, 0}, {80, -10}, {84, -18}, {84, -40}, {82, -40}, {82, -18}, {80, -14}, {60, -4}, {60, 0}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-34, 26}, {-38, 18}, {-30, 24}, {-28, 30}, {-34, 26}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-38, 18}, {-30, 24}, {-30, 0}, {-38, -6}, {-38, 18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-40, -4}, {-40, 18}, {-36, 26}, {-16, 16}, {-16, 12}, {-36, 22}, {-38, 18}, {-38, -6}, {-40, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-28, 32}, {-8, 22}, {-16, 16}, {-36, 26}, {-28, 32}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-54, 12}, {-58, 4}, {-50, 10}, {-48, 16}, {-54, 12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-58, 4}, {-50, 10}, {-50, -14}, {-58, -20}, {-58, 4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-60, -18}, {-60, 4}, {-56, 12}, {-36, 2}, {-36, -2}, {-56, 8}, {-58, 4}, {-58, -20}, {-60, -18}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-48, 18}, {-28, 8}, {-36, 2}, {-56, 12}, {-48, 18}}), Polygon(lineColor = {128, 128, 128}, fillColor = {128, 128, 128},
+        fillPattern =  FillPattern.Solid, points = {{-74, -4}, {-78, -12}, {-70, -6}, {-68, 0}, {-74, -4}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 127},
+        fillPattern =  FillPattern.Solid, points = {{-78, -12}, {-70, -6}, {-70, -30}, {-78, -36}, {-78, -12}}), Polygon(lineColor = {0, 0, 255}, fillColor = {191, 191, 0},
+        fillPattern =  FillPattern.Solid, points = {{-80, -34}, {-80, -12}, {-76, -4}, {-56, -14}, {-56, -18}, {-76, -8}, {-78, -12}, {-78, -36}, {-80, -34}}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
+        fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
+        fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
+        fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(origin = {-6.08518, -4.3529}, lineColor = {0, 0, 255}, extent = {{-91.9148, 98.3529}, {100.085, 60.353}}, textString = "%name", fontName = "Helvetica")}),
       experimentSetupOutput(derivatives = false),
       Documentation(info = "<html>
 <p>SHEV logic. Contains:</p>

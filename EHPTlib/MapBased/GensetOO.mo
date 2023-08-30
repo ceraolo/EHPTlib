@@ -38,7 +38,7 @@ equation
   connect(revGain.y, gen.tauRef) annotation (
     Line(points = {{11, 20}, {69.4, 20}, {69.4, -6.88889}}, color = {0, 0, 127}));
   connect(gen.pin_p, pin_n) annotation (
-    Line(points = {{68, -11.3333}, {76, -11.3333}, {76, -40}, {98, -40}}, color = {0, 0, 255}));
+    Line(points={{68,-11.3333},{76,-11.3333},{76,-40},{98,-40}},          color = {0, 0, 255}));
   connect(gen.pin_n, pin_p) annotation (
     Line(points = {{68, -2.44444}, {78, -2.44444}, {78, 40}, {98, 40}}, color = {0, 0, 255}));
   connect(IcePow.flange_b, gen.flange_a) annotation (
@@ -65,16 +65,14 @@ equation
     Line(points = {{16, -38}, {2, -38}, {2, -30}, {-20, -30}, {-20, -21}}, color = {0, 0, 127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}})),
-    experiment(StopTime = 20, Interval = 0.01),
-    experimentSetupOutput,
     Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-            fillPattern =                                                                                                                                                                                                FillPattern.Solid), Text(extent = {{-98, 94}, {78, 68}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
-            fillPattern =                                                                                                                                                                                                        FillPattern.Solid, textString = "%name"), Rectangle(fillColor = {192, 192, 192},
-            fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-20, 0}, {26, -14}}), Rectangle(fillColor = {192, 192, 192},
-            fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-44, 30}, {-14, -44}}), Line(points = {{-72, 30}, {-72, 6}}), Polygon(points = {{-72, -2}, {-78, 8}, {-66, 8}, {-72, -2}}), Rectangle(extent = {{-96, 38}, {-50, -48}}), Rectangle(fillColor = {95, 95, 95},
-            fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-96, -6}, {-50, -24}}), Rectangle(fillColor = {135, 135, 135},
-            fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-78, -24}, {-68, -44}}), Polygon(points = {{-72, 34}, {-78, 24}, {-66, 24}, {-72, 34}}), Rectangle(fillColor = {192, 192, 192},
-            fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{6, 30}, {62, -44}}), Line(points = {{94, 60}, {74, 60}, {74, 18}, {62, 18}}, color = {0, 0, 255}), Line(points = {{100, -60}, {74, -60}, {74, -28}, {62, -28}}, color = {0, 0, 255})}),
+            fillPattern = FillPattern.Solid), Text(extent = {{-98, 94}, {78, 68}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
+            fillPattern = FillPattern.Solid, textString = "%name"), Rectangle(fillColor = {192, 192, 192},
+            fillPattern = FillPattern.HorizontalCylinder, extent = {{-20, 0}, {26, -14}}), Rectangle(fillColor = {192, 192, 192},
+            fillPattern = FillPattern.HorizontalCylinder, extent = {{-44, 30}, {-14, -44}}), Line(points = {{-72, 30}, {-72, 6}}), Polygon(points = {{-72, -2}, {-78, 8}, {-66, 8}, {-72, -2}}), Rectangle(extent = {{-96, 38}, {-50, -48}}), Rectangle(fillColor = {95, 95, 95},
+            fillPattern = FillPattern.Solid, extent = {{-96, -6}, {-50, -24}}), Rectangle(fillColor = {135, 135, 135},
+            fillPattern = FillPattern.Solid, extent = {{-78, -24}, {-68, -44}}), Polygon(points = {{-72, 34}, {-78, 24}, {-66, 24}, {-72, 34}}), Rectangle(fillColor = {192, 192, 192},
+            fillPattern = FillPattern.HorizontalCylinder, extent = {{6, 30}, {62, -44}}), Line(points = {{94, 60}, {74, 60}, {74, 18}, {62, 18}}, color = {0, 0, 255}), Line(points = {{100, -60}, {74, -60}, {74, -28}, {62, -28}}, color = {0, 0, 255})}),
     Documentation(info = "<html>
 <p>Generator set containing Internal Combustion Engine, Electric generator (with DC output), and the related control.</p>
 <p>The control logic tends to deliver at the DC port the input power, using the optimal generator speed.</p>

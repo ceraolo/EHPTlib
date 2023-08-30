@@ -75,12 +75,14 @@ package Partial
       Line(points = {{-60.2, 3}, {-80, 3}, {-80, 29}}, color = {0, 0, 127}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
-      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(origin = {-25, 2}, extent = {{-75, 74}, {125, -74}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Text(origin = {4, -6}, lineColor = {0, 0, 255}, extent = {{-110, 84}, {100, 44}}, textString = "%name"), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-64, 38}, {64, -42}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-100, 10}, {-64, -10}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{64, 8}, {100, -12}}), Line(origin = {20, 0}, points = {{-60, 94}, {-60, 76}}, color = {0, 0, 255}), Line(origin = {-20, 0}, points = {{60, 94}, {60, 76}}, color = {0, 0, 255}), Rectangle(fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-58, 14}, {58, -18}}), Text(origin = {-0.07637, 48.3161}, extent = {{-51.9236, -36.3161}, {48.0764, -66.3161}}, textString = "J=%J")}),
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
+      initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(origin = {-25, 2},
+      extent = {{-75, 74}, {125, -74}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
+              fillPattern = FillPattern.Solid), Text(origin = {4, -6}, lineColor = {0, 0, 255}, extent = {{-110, 84}, {100, 44}}, textString = "%name"), Rectangle(fillColor = {192, 192, 192},
+              fillPattern = FillPattern.HorizontalCylinder, extent = {{-64, 38}, {64, -42}}), Rectangle(fillColor = {192, 192, 192},
+              fillPattern = FillPattern.HorizontalCylinder, extent = {{-100, 10}, {-64, -10}}), Rectangle(fillColor = {192, 192, 192},
+              fillPattern = FillPattern.HorizontalCylinder, extent = {{64, 8}, {100, -12}}), Line(origin = {20, 0}, points = {{-60, 94}, {-60, 76}}, color = {0, 0, 255}), Line(origin = {-20, 0}, points = {{60, 94}, {60, 76}}, color = {0, 0, 255}), Rectangle(fillColor = {255, 255, 255},
+              fillPattern = FillPattern.Solid, extent = {{-58, 14}, {58, -18}}), Text(origin = {-0.07637, 48.3161}, extent = {{-51.9236, -36.3161}, {48.0764, -66.3161}}, textString = "J=%J")}),
       Documentation(info = "<html>
 <p>This model receives from the connector the torque request (variable MotTauInt) and trieds to deliver it.</p>
 <p>Howeve,r before delivering the requested torque, the model limits it considering the maximum deliverable torque and power. In addition it computes and considers inner losses as determined by means of a map. </p>
@@ -158,8 +160,6 @@ package Partial
       Line(points = {{-6, 24}, {-6, 42}, {-22, 42}, {-22, 60}, {-14, 60}}, color = {0, 0, 127}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
-      experiment(StopTime = 200, __Dymola_NumberOfIntervals = 1000, __Dymola_Algorithm = "Lsodar"),
-      __Dymola_experimentSetupOutput,
       Documentation(info = "<html>
 <h4>Basic map-based ICE model.</h4>
 <p>It receives as input the reference torque as a fracton of the maximum deliverable torque at a given speed. It can be approximately thought as a signal proportional to the vehicle&apos;s accelerator pedal position.</p>
@@ -168,11 +168,11 @@ package Partial
 <p>The used maxTorque (toLimTau) and specific fuel consumption (toSpecCons) maps are inspired to public data related to the Toyota Prius&apos; engine </p>
 </html>"),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-24, 68}, {76, -24}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{76, 30}, {100, 10}}), Text(origin = {0, 30}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 68}, {-32, -26}}), Rectangle(fillColor = {95, 95, 95},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-90, 22}, {-32, 0}}), Line(points = {{-60, 56}, {-60, 32}}), Polygon(points = {{-60, 66}, {-66, 56}, {-54, 56}, {-60, 66}}), Polygon(points = {{-60, 24}, {-66, 34}, {-54, 34}, {-60, 24}}), Rectangle(fillColor = {135, 135, 135},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-64, 0}, {-54, -20}})}));
+        fillPattern = FillPattern.Solid), Rectangle(fillColor = {192, 192, 192},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 68}, {76, -24}}), Rectangle(fillColor = {192, 192, 192},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 30}, {100, 10}}), Text(origin = {0, 30}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 68}, {-32, -26}}), Rectangle(fillColor = {95, 95, 95},
+        fillPattern = FillPattern.Solid, extent = {{-90, 22}, {-32, 0}}), Line(points = {{-60, 56}, {-60, 32}}), Polygon(points = {{-60, 66}, {-66, 56}, {-54, 56}, {-60, 66}}), Polygon(points = {{-60, 24}, {-66, 34}, {-54, 34}, {-60, 24}}), Rectangle(fillColor = {135, 135, 135},
+        fillPattern = FillPattern.Solid, extent = {{-64, 0}, {-54, -20}})}));
   end PartialIce;
 
   model PartialIceP "Simple map-based ice model with connector and Power request"
@@ -246,10 +246,10 @@ package Partial
 <p><span style=\"font-family: MS Shell Dlg 2;\">- icePowDel (output) delivered power (W)</span></p>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                    FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"), Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"), Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+        fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
+        fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(extent = {{-90, 20}, {-46, -16}}, textString = "follows the power
 reference \nand computes consumption")}));
   end PartialIceP;
@@ -422,23 +422,25 @@ reference \nand computes consumption")}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
     annotation (
-      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false)),
-      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent={{-100,80},
-                {100,-80}},                                                                                                                                                               lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-              fillPattern =    FillPattern.Solid), Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =  FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}),                                                                                                                           Text(origin={-17.6442,
-                32.3174},                                                                                                                                                                                                        lineColor = {0, 0, 255}, extent={{
-                -82.3558,87.6826},{117.644,53.6826}},                                                                                                                                                                                                        textString = "%name",
-              fillPattern =  FillPattern.Solid, fillColor = {255, 255, 255}),                                                                                                                                                                                                        Line(points={{-96,40},
-                {-68,40}},                                                                                                                                                                                                        color = {0, 0, 255}), Line(points={{-90,-40},
-                {-68,-40}},                                                                                                                                                                                                        color = {0, 0, 255}),
-                                                                              Rectangle(fillColor = {192, 192, 192},
+      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},  preserveAspectRatio=false)),
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
+      initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent={{-100,80},
+                {100,-80}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
+              fillPattern =    FillPattern.Solid), Line(points = {{62, -7}, {82, -7}}),
+               Rectangle(fillColor = {192, 192, 192},
+              fillPattern =  FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}),
+               Text(origin={-17.6442,
+                32.3174}, lineColor = {0, 0, 255}, extent={{
+                -82.3558,87.6826},{117.644,53.6826}}, textString = "%name",
+              fillPattern =  FillPattern.Solid, fillColor = {255, 255, 255}), Line(points={{-96,40},
+                {-68,40}},  color = {0, 0, 255}), Line(points={{-90,-40},
+                {-68,-40}}, color = {0, 0, 255}), Rectangle(fillColor = {192, 192, 192},
               fillPattern =  FillPattern.HorizontalCylinder, extent={{-80,56},{
-                86,-48}}),                                                                     Rectangle(fillColor = {255, 255, 255},
+                86,-48}}), Rectangle(fillColor = {255, 255, 255},
               fillPattern =  FillPattern.Solid, extent={{-70,18},{76,-14}}),
                              Text(origin={-1.1871,41.7},
                         extent={{-72.8129,-29.7},{83.1871,-51.7}},
-                                                  textString = "J=%J")}),
+                        textString = "J=%J")}),
       Documentation(info="<html>
 <p>Partial one-flange electric drive.</p>
 <p>The input signal is the requested normalised torque (1 means nominal torque)</p>
@@ -535,19 +537,23 @@ reference \nand computes consumption")}));
     connect(toElePow.tau, torque.tau) annotation (Line(points={{-18,-22},{
             -2,-22},{-2,10},{-36,10},{-36,60},{-18,60}}, color={0,0,127}));
     annotation (
-      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})),
-      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent={{-100,82},
-                {100,-80}},                                                                                                                                                               lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid), Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =  FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}),                                                                                                                           Text(origin={-17.6441,
-                34.313},                                                                                                                                                                                                        lineColor = {0, 0, 255}, extent={{
-                -82.3559,87.6867},{117.644,53.687}},                                                                                                                                                                                                        textString = "%name",
-              fillPattern =  FillPattern.Solid, fillColor = {255, 255, 255}),                                                                                                                                                                                                        Line(points={{-102,42},
-                {-74,42}},                                                                                                                                                                                                        color = {0, 0, 255}), Line(points={{-96,-38},
-                {-74,-38}},                                                                                                                                                                                                        color = {0, 0, 255}),
-                                                                              Rectangle(fillColor = {192, 192, 192},
+      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},  preserveAspectRatio = false,
+        initialScale = 0.1, grid = {2, 2})),
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
+        initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent={{-100,82},
+                {100,-80}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
+              fillPattern =  FillPattern.Solid), Line(points = {{62, -7}, {82, -7}}),
+               Rectangle(fillColor = {192, 192, 192},
+              fillPattern =  FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}),
+               Text(origin={-17.6441,
+                34.313},  lineColor = {0, 0, 255}, extent={{
+                -82.3559,87.6867},{117.644,53.687}}, textString = "%name",
+              fillPattern =  FillPattern.Solid, fillColor = {255, 255, 255}),
+                Line(points={{-102,42},
+                {-74,42}},  color = {0, 0, 255}), Line(points={{-96,-38},
+                {-74,-38}}, color = {0, 0, 255}),Rectangle(fillColor = {192, 192, 192},
               fillPattern =  FillPattern.HorizontalCylinder, extent={{-82,50},{
-                82,-50}}),                                                                     Rectangle(fillColor = {255, 255, 255},
+                82,-50}}), Rectangle(fillColor = {255, 255, 255},
               fillPattern =  FillPattern.Solid, extent={{-76,32},{74,-30}}),
                              Text(origin={-5.05401,59.7},
                              extent={{-70.9459,-29.7},{81.054,-51.7}},
@@ -640,8 +646,6 @@ reference \nand computes consumption")}));
       Line(points = {{46, 12}, {46, 28}, {52, 28}, {52, 33}}, color = {0, 0, 127}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
-      experiment(StopTime = 200, __Dymola_NumberOfIntervals = 1000, __Dymola_Algorithm = "Lsodar"),
-      __Dymola_experimentSetupOutput,
       Documentation(info = "<html>
 <h4>Basic map-based ICE model.</h4>
 <p>It receives as input the reference torque as a fracton of the maximum deliverable torque at a given speed. It can be approximately thought as a signal proportional to the accelerator position oF the vehicle.</p>
@@ -733,8 +737,6 @@ reference \nand computes consumption")}));
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 80}}), graphics={  Text(extent = {{-78, 6}, {-38, -16}}, textString = "follows the power
  reference and
  computes consumption")}),
-      experiment(StopTime = 200, __Dymola_NumberOfIntervals = 1000, __Dymola_Algorithm = "Lsodar"),
-      __Dymola_experimentSetupOutput,
       Documentation(info = "<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</b> </span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This is a &QUOT;connector&QUOT; version of MBice.</span></p>

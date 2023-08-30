@@ -21,8 +21,6 @@ equation
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}}, initialScale = 0.1)),
-    experiment(StopTime = 200, __Dymola_NumberOfIntervals = 1000, __Dymola_Algorithm = "Lsodar"),
-    __Dymola_experimentSetupOutput,
     Documentation(info = "<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</span></b> </p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This is a &QUOT;connector&QUOT; version of MBiceP.</span></p>

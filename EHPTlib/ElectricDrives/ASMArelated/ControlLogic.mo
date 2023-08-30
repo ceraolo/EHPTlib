@@ -72,9 +72,21 @@ equation
   connect(toIstar.y, add1.u1) annotation (
     Line(points = {{9.9, -9}, {22, -9}, {22, -6}, {38, -6}}, color = {0, 0, 127}));
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-120, -80}, {120, 80}}, initialScale = 0.1), graphics={  Text(origin = {0, -4}, lineColor = {0, 0, 127}, extent = {{-48, -12}, {22, -22}}, textString = "This is the first equality \nin 12.14 of FEPE Book"), Text(origin = {0, -16}, lineColor = {0, 0, 127}, extent = {{-48, -12}, {22, -22}}, textString = "The sqrt argument might become negative
+    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-120, -80}, {120, 80}},
+    initialScale = 0.1), graphics={  Text(origin = {0, -4}, lineColor = {0, 0, 127},
+    extent = {{-48, -12}, {22, -22}}, textString=
+    "This is the first equality \nin 12.14 of FEPE Book"),
+    Text(origin = {0, -16}, lineColor = {0, 0, 127}, extent = {{-48, -12}, {22, -22}},
+     textString = "The sqrt argument might become negative
 because of roundoff errors. This justifies abs()")}),
-    Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Line(points = {{-64, -54}, {-64, 72}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-72, 62}, {-64, 74}, {-58, 62}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-78, -46}, {66, -46}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-7, -6}, {1, 6}, {7, -6}}, color = {0, 0, 127}, smooth = Smooth.None, origin = {59, -45}, rotation = 270), Line(points = {{-70, -32}, {0, 36}, {52, 36}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-71, -27}, {-55, -27}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-71, 35}, {-55, 35}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-2, -18}, {-2, -50}, {-2, -40}}, color = {0, 0, 127}, smooth = Smooth.None), Text(extent = {{-102, 144}, {96, 106}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, textString = "%name"), Text(extent = {{58, 72}, {94, 44}}, lineColor = {0, 0, 127}, textString = "W"), Text(extent = {{64, -48}, {96, -74}}, lineColor = {0, 0, 127}, textString = "U")}),
+    Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+     graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 127},
+     fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid),
+     Line(points = {{-64, -54}, {-64, 72}}, color = {0, 0, 127}, smooth=
+     Smooth.None), Line(points = {{-72, 62}, {-64, 74}, {-58, 62}}, color = {0, 0, 127},
+     smooth = Smooth.None), Line(points = {{-78, -46}, {66, -46}}, color = {0, 0, 127},
+     smooth = Smooth.None), Line(points = {{-7, -6}, {1, 6}, {7, -6}}, color = {0, 0, 127},
+     smooth = Smooth.None, origin = {59, -45}, rotation = 270), Line(points = {{-70, -32}, {0, 36}, {52, 36}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-71, -27}, {-55, -27}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-71, 35}, {-55, 35}}, color = {0, 0, 127}, smooth = Smooth.None), Line(points = {{-2, -18}, {-2, -50}, {-2, -40}}, color = {0, 0, 127}, smooth = Smooth.None), Text(extent = {{-102, 144}, {96, 106}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, textString = "%name"), Text(extent = {{58, 72}, {94, 44}}, lineColor = {0, 0, 127}, textString = "W"), Text(extent = {{64, -48}, {96, -74}}, lineColor = {0, 0, 127}, textString = "U")}),
     Documentation(info = "<html>
 <p>This class produces a three-phase voltage system to variable-frequency control of an asynchronous motor.</p>
 <p>The output voltages constitute a three-phase system of quasi-sinusoidal shapes, created according to the following equations:</p>

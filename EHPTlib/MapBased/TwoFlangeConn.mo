@@ -20,7 +20,8 @@ equation
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
-    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(fillColor = {192, 192, 192},
+    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
+    initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(fillColor = {192, 192, 192},
             fillPattern =                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-100, 10}, {-66, -10}}), Rectangle(fillColor = {192, 192, 192},
             fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{66, 8}, {100, -12}}), Rectangle(origin = {-25, 2}, extent = {{-75, 74}, {125, -74}}), Line(origin = {20, -2}, points = {{-60, 94}, {-60, 76}}, color = {0, 0, 255}), Line(origin = {-20, -2}, points = {{60, 94}, {60, 76}}, color = {0, 0, 255})}),
     Documentation(info = "<html>

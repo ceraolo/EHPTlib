@@ -56,11 +56,12 @@ model StartASMA "Compares U/f=cost and mains start-ups"
         rotation=0)));
   SupportModels.Miscellaneous.AronSensor pDown annotation (
     Placement(visible = true, transformation(extent = {{-48, -44}, {-30, -26}}, rotation = 0)));
-  Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5) annotation (
+  Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, w(start=0, fixed=true)) annotation (
     Placement(visible = true, transformation(extent = {{34, 8}, {54, 28}}, rotation = 0)));
-  Modelica.Mechanics.Rotational.Components.Inertia inertia0(J = 0.5) annotation (
+  Modelica.Mechanics.Rotational.Components.Inertia inertia0(J = 0.5, w(start=0, fixed=true)) annotation (
     Placement(visible = true, transformation(extent = {{38, -66}, {58, -46}}, rotation = 0)));
-  ASMArelated.ControlLogic logic(Lstray = 0.2036 / 314.16, Rr = aimc.Rr, Rs = aimc.Rs, uBase = 100 * sqrt(3), pp = 2, wmMax = 314.16 / 2) annotation (
+  ASMArelated.ControlLogic logic(Lstray = 0.2036 / 314.16, Rr = aimc.Rr, Rs = aimc.Rs,
+  uBase = 100 * sqrt(3), pp = 2, wmMax = 314.16 / 2) annotation (
     Placement(visible = true, transformation(extent = {{-32, 0}, {-52, 20}}, rotation = 0)));
   Modelica.Blocks.Sources.Constant const1(k = 220) annotation (
     Placement(visible = true, transformation(origin = {-14, 10}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
