@@ -4,8 +4,8 @@ model TwoFlange "Simple map-based two-flange electric drive model"
   Modelica.Blocks.Interfaces.RealInput tauRef annotation (
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {0, -114}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {0, -92})));
 equation
-  connect(tauRef, limTau.tau) annotation (
-    Line(points = {{0, -114}, {0, -114}, {0, -60}, {0, -58}, {-60, -58}, {-60, -9.6}, {-54.2, -9.6}}, color = {0, 0, 127}));
+  connect(torqueLimiter.u, tauRef) annotation (Line(points={{-18,2},{-24,2},{
+          -24,-70},{0,-70},{0,-114}}, color={0,0,127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}},

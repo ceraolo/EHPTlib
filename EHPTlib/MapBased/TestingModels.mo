@@ -148,7 +148,7 @@ package TestingModels
       Placement(transformation(extent = {{12, 0}, {32, 20}})));
     Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation (
       Placement(transformation(extent = {{-52, 14}, {-32, 34}})));
-    OneFlangeConn oneFlangeConn(powMax = 10000, tauMax = 50, J = 0.5, wMax = 300, mapsFileName = "EVmaps.txt", effMapName = "effTable") annotation (
+    OneFlangeConn oneFlangeConn(powMax = 10000, tauMax = 50, J = 0.5, wMax = 300, mapsFileName = "EVmaps.txt", effTableName = "effTable") annotation (
       Placement(transformation(extent = {{-16, 0}, {4, 20}})));
     SupportModels.ConnectorRelated.ToConnGenTauRef toConnGenTauNorm annotation (
       Placement(transformation(extent = {{-16, -34}, {-4, -22}})));
@@ -168,9 +168,9 @@ package TestingModels
     connect(powMech.flange_a, oneFlangeConn.flange_a) annotation (
       Line(points = {{12, 10}, {4, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(oneFlangeConn.pin_p, powElec.nc) annotation (
-      Line(points = {{-2, 20}, {-24, 20}, {-24, 24}, {-32, 24}}, color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-16,14},{-24,14},{-24,24},{-32,24}},         color = {0, 0, 255}, smooth = Smooth.None));
     connect(oneFlangeConn.pin_n, gen.n) annotation (
-      Line(points = {{-11.8, 20}, {-24, 20}, {-24, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-16,6},{-24,6},{-24,0},{-64,0}},              color = {0, 0, 255}, smooth = Smooth.None));
     connect(toConnGenTauNorm.conn, oneFlangeConn.conn) annotation (
       Line(points = {{-4.2, -28}, {4, -28}, {4, 2.2}}, color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
     connect(powElec.nv, gen.n) annotation (
@@ -201,7 +201,7 @@ package TestingModels
       Placement(transformation(extent = {{12, -10}, {32, 10}})));
     Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation (
       Placement(transformation(extent = {{-48, 32}, {-28, 52}})));
-    TwoFlange twoFlanges(J = 0.5, wMax = 300, tauMax = 60, powMax = 22000, mapsFileName = "EVmaps.txt", effMapName = "effTable") annotation (
+    TwoFlange twoFlanges(J = 0.5, wMax = 300, tauMax = 60, powMax = 22000, mapsFileName = "EVmaps.txt", effTableName = "effTable") annotation (
       Placement(transformation(extent = {{-18, -10}, {2, 10}})));
     Modelica.Mechanics.Rotational.Sources.ConstantTorque tau1(tau_constant = -5.0) annotation (
       Placement(transformation(extent = {{-76, -10}, {-56, 10}})));
