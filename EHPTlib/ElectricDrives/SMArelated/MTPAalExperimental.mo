@@ -79,7 +79,6 @@ equation
           textColor={238,46,47},
           textString="experimental")}),
     Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}}, preserveAspectRatio = false)),
-    experiment(StartTime = 0, StopTime = 8, Tolerance = 0.0001, Interval = 0.0016),
     Documentation(info="<html>
 <p><span style=\"font-size: 12pt;\">This is an experimental version used only for SmaALlSpeeds. 
 Operation of PI controller not well calibrated for all applications, since it lacks antiwindup.</span></p>
