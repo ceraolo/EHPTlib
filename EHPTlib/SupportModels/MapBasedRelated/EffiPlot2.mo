@@ -1,7 +1,5 @@
 within EHPTlib.SupportModels.MapBasedRelated;
 block EffiPlot2 "Utility to plot efficiencies from an effTable"
-  import wbEHPTlib =
-         EHPTlib;
   parameter Modelica.Units.SI.Torque tauMax(start=400)
     "Maximum machine torque(Nm)";
   parameter Modelica.Units.SI.Power powMax(start=22000)

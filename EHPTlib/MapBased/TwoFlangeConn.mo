@@ -1,8 +1,6 @@
 within EHPTlib.MapBased;
 model TwoFlangeConn "Simple map-based two-flange electric drive model"
-  import wbEHPTlib =
-         EHPTlib;
-  extends wbEHPTlib.MapBased.Partial.PartialTwoFlange;
+  extends EHPTlib.MapBased.Partial.PartialTwoFlange;
   SupportModels.ConnectorRelated.Conn conn1 annotation (
     Placement(visible = true, transformation(extent = {{-112, -58}, {-72, -98}}, rotation = 0), iconTransformation(extent = {{-112, -58}, {-72, -98}}, rotation = 0)));
 equation

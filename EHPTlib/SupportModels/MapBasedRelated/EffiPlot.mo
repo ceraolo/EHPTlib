@@ -1,7 +1,5 @@
 within EHPTlib.SupportModels.MapBasedRelated;
 block EffiPlot "Utility to plot efficiencies from an effTable"
-  import wbEHPTlib =
-         EHPTlib;
   parameter Real tauMax(start = 400) "Maximum machine torque(Nm)";
   parameter Real powMax(start = 22000) "Maximum drive power";
   parameter Real wMax(start = 650) "Maximum machine speed(rad/s)";

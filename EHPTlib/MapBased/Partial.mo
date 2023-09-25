@@ -752,5 +752,4 @@ reference \nand computes consumption")}));
               fillPattern =  FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
               fillPattern =  FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}));
   end PartialMBiceP;
-
 end Partial;
