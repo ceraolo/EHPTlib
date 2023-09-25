@@ -5,6 +5,7 @@
   //end Propulsion;
 
   annotation (
+    version = "2.1.0",
     uses(Modelica(version="4.0.0")),
     Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Polygon(points = {{-60, 16}, {78, 16}, {94, 0}, {96, -16}, {-98, -16}, {-90, 0}, {-76, 12}, {-60, 16}}, lineColor = {0, 0, 0}, smooth = Smooth.None, fillColor = {0, 0, 255},
        fillPattern = FillPattern.Solid), Ellipse(extent = {{-70, -4}, {-30, -40}}, lineColor = {95, 95, 95}, fillColor = {95, 95, 95},
