@@ -458,7 +458,7 @@ reference \nand computes consumption")}));
     parameter Modelica.Units.SI.MomentOfInertia J=0.25
       "Rotor's moment of inertia";
     parameter String limitsFileName = "noName" "File where limit matrices are stored" annotation (
-      Dialog(enable = effMapOnFile or limitsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+      Dialog(enable = limitsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file";
     parameter Modelica.Units.SI.Power powMax=22000
       "Maximum mechnical power" annotation (Dialog(enable=not limitsOnFile));
