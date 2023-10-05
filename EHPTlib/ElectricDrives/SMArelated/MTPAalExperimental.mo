@@ -3,12 +3,12 @@ model MTPAalExperimental
   "MTPA logic for an anisotropic PMSM machine with current limitation"
   // Non-Ascii Symbol to cause UTF-8 saving by Dymola: €
   parameter Modelica.Units.SI.Time integTime = 2;
-  parameter Real gain(unit = "Nm/A") = 5000/(1.5*Ipm*pp) "Current loop gain";
+  parameter Real gain(unit = "N.m/A") = 5000/(1.5*Ipm*pp) "Current loop gain";
   parameter Modelica.Units.SI.Current Ipm = 1.5 "Permanent magnet current";
   parameter Integer pp = 1 "Pole pairs";
-  parameter Modelica.Units.SI.Resistance Rs = 0.02 "Stator resistance (Ω)";
-  parameter Modelica.Units.SI.Inductance Ld = 0.4 "Basic direct-axis inductance (H)";
-  parameter Modelica.Units.SI.Inductance Lq = 1.1 "Basic quadrature-axis inductance (H)";
+  parameter Modelica.Units.SI.Resistance Rs = 0.02 "Stator resistance";
+  parameter Modelica.Units.SI.Inductance Ld = 0.4 "Basic direct-axis inductance";
+  parameter Modelica.Units.SI.Inductance Lq = 1.1 "Basic quadrature-axis inductance";
   parameter Modelica.Units.SI.Voltage Umax = 100 "Max rms voltage per phase to the motor";
   parameter Modelica.Units.SI.Current Ilim = 100 "nominal current (rms per phase)";
   Modelica.Blocks.Interfaces.RealInput torqueReq annotation (
