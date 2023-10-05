@@ -81,7 +81,6 @@ equation
   connect(pUp.plug_n, iUp.plug_p) annotation (
     Line(points = {{-20, 23}, {-18, 23}, {-18, 40}, {-14, 40}, {-14, 40}}, color = {0, 0, 255}));
   annotation (
-    experimentSetupOutput,
     Documentation(info = "<html><head></head><body><p><font size=\"5\">This system simulates variable-frequency start-up of an asyncronous motor.</font></p>
       <p><font size=\"5\">Two different sources for the machine are compared.</font></p>
       <p><font size=\"5\">The motor supply is constituted by a three-phase system of quasi-sinusoidal shapes, created according to the following equations:</font></p>
@@ -96,7 +95,6 @@ equation
       </ul><p></p>
       <p><font size=\"5\">When the final speed is reached, the feeding frequency and voltage are kept constant (no flux weaking simulated)</font></p>
       </body></html>"),
-    experimentSetupOutput,
     Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -80}, {100, 60}})),
     Diagram(coordinateSystem(extent = {{-100, -80}, {100, 60}}, preserveAspectRatio = false), graphics={  Rectangle(origin = {-57, 26}, lineColor = {255, 0, 0}, pattern = LinePattern.Dash, extent = {{-15, 10}, {15, -48}}), Text(origin = {-30, -1}, extent = {{-8, 3}, {8, -3}}, textString = "inverter")}),
     experiment(StartTime = 0, StopTime = 12, Tolerance = 0.0001, Interval = 0.0024),
