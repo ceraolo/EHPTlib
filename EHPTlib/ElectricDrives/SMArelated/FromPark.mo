@@ -17,7 +17,8 @@ model FromPark "Semplice PMM con modello funzionale inverter"
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {0, -120}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {0, -120})));
   Modelica.Blocks.Math.Gain gain(k = -p) annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {10, -50})));
-  Modelica.Blocks.Sources.Constant const annotation (
+  Modelica.Blocks.Sources.Constant const(k=0)
+                                         annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {50, -30})));
 equation
   connect(multiplex2_1.y, rotator.u) annotation (
