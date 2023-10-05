@@ -599,7 +599,6 @@ reference tau\nto gen",
       Line(points = {{-3, 46}, {4, 46}, {4, 48}, {12, 48}}, color = {0, 0, 127}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 60}})),
-      experimentSetupOutput,
       Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
         fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}),
           Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
