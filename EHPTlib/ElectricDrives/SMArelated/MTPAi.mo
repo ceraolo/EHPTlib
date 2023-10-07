@@ -100,5 +100,6 @@ equation
                 extent={{-98,28},{98,-28}},
                 lineColor={0,0,127},
                 textString="MTPAi")}),
-    Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})));
+    Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}},
+    preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})));
 end MTPAi;

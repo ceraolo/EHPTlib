@@ -77,7 +77,13 @@ equation
   connect(mTPAa.Iq, Iq) annotation (
     Line(points = {{27, -32}, {27, -32}, {86, -32}, {86, -60}, {110, -60}}, color = {0, 0, 127}));
   annotation (
-    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(extent = {{-100, 142}, {100, 106}}, lineColor = {0, 0, 127}, textString = "%name"), Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-100, 24}, {100, -26}}, lineColor = {0, 0, 127}, textString = "MTPAal")}),
-    Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}}, preserveAspectRatio = false)),
-    experiment(StartTime = 0, StopTime = 8, Tolerance = 0.0001, Interval = 0.0016));
+    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}},
+    preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}),
+    graphics={  Text(extent = {{-100, 142}, {100, 106}}, lineColor = {0, 0, 127},
+    textString = "%name"), Rectangle(extent = {{-100, 100}, {100, -100}},
+    lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern=
+    FillPattern.Solid), Text(extent = {{-100, 24}, {100, -26}},
+    lineColor = {0, 0, 127}, textString = "MTPAal")}),
+    Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}},
+    preserveAspectRatio = false)));
 end MTPAal;

@@ -26,7 +26,6 @@ equation
     Line(points = {{10, -54}, {10, -110}}, color = {0, 0, 127}, smooth = Smooth.None));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
-    experiment(StopTime = 5, Interval = 0.001),
     Documentation(info = "<html>
 <p><br/><b>Test example: Permanent magnet synchronous induction machine fed by a current source</b></p>
 

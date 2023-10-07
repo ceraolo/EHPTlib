@@ -46,7 +46,18 @@ equation
     Line(points = {{60, -34}, {60, -34}, {60, -40}, {-120, -40}}, color = {0, 0, 127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
-    Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-100, 144}, {98, 106}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, textString = "%name"), Line(points = {{-4, 28}, {8, 48}, {28, 48}, {48, 8}, {70, 8}, {82, 28}}, color = {0, 0, 0}), Line(points = {{-6, 4}, {6, 24}, {26, 24}, {46, -16}, {68, -16}, {80, 4}}, color = {0, 0, 0}), Line(points = {{-8, -16}, {4, 4}, {24, 4}, {44, -36}, {66, -36}, {78, -16}}, color = {0, 0, 0}), Rectangle(extent = {{-88, 10}, {-60, -4}}, lineColor = {0, 0, 0}), Polygon(points = {{-60, 18}, {-34, 4}, {-60, -10}, {-60, 18}}, lineColor = {0, 0, 0})}),
+    Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+    graphics={  Rectangle(extent = {{-100, 100}, {100, -100}},
+    lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern=
+    FillPattern.Solid), Text(extent = {{-100, 144}, {98, 106}},
+    lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern=
+    FillPattern.Solid, textString = "%name"),
+    Line(points = {{-4, 28}, {8, 48}, {28, 48}, {48, 8}, {70, 8}, {82, 28}},
+    color = {0, 0, 0}), Line(points = {{-6, 4}, {6, 24}, {26, 24}, {46, -16}, {68, -16}, {80, 4}},
+    color = {0, 0, 0}), Line(points = {{-8, -16}, {4, 4}, {24, 4}, {44, -36}, {66, -36}, {78, -16}},
+    color = {0, 0, 0}), Rectangle(extent = {{-88, 10}, {-60, -4}},
+    lineColor = {0, 0, 0}), Polygon(points = {{-60, 18}, {-34, 4}, {-60, -10}, {-60, 18}},
+    lineColor = {0, 0, 0})}),
     Documentation(info = "<html>
 <p>This class produces a three-phase voltage system to variable-frequency control of an asynchronous motor.</p>
 <p>The output voltages constitute a three-phase system of quasi-sinusoidal shapes, created according to the following equations:</p>

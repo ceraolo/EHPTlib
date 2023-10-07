@@ -116,6 +116,6 @@ if VparkFF < Ulim then
                 extent={{-100,26},{100,-26}},
                 lineColor={0,0,127},
                 textString="MTPAa")}),
-    Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})),
-    experiment(StartTime = 0, StopTime = 8, Tolerance = 0.0001, Interval = 0.0016));
+    Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}},
+    preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})));
 end MTPAa;
