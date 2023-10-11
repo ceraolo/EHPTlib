@@ -36,7 +36,7 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
     Placement(transformation(extent = {{18, -48}, {38, -28}})));
 equation
   connect(revGain.y, gen.tauRef) annotation (
-    Line(points = {{11, 20}, {69.4, 20}, {69.4, -6.88889}}, color = {0, 0, 127}));
+    Line(points={{11,20},{68.2,20},{68.2,-6.88889}},        color = {0, 0, 127}));
   connect(gen.pin_p, pin_n) annotation (
     Line(points={{68,-11.3333},{76,-11.3333},{76,-40},{98,-40}},          color = {0, 0, 255}));
   connect(gen.pin_n, pin_p) annotation (
@@ -48,7 +48,7 @@ equation
   connect(revGain.u, gms.tRef) annotation (
     Line(points = {{-12, 20}, {-38, 20}, {-38, 6}, {-51, 6}}, color = {0, 0, 127}));
   connect(mbIce.flange_a, idealGear.flange_a) annotation (
-    Line(points = {{-16, -10}, {-12, -10}, {-6, -10}, {-6, -9}, {0, -9}}));
+    Line(points={{-16,-12},{-12,-12},{-6,-12},{-6,-9},{0,-9}}));
   connect(mbIce.nTauRef, gms.throttle) annotation (
     Line(points = {{-32, -22}, {-32, -26}, {-51, -26}, {-51, -6}}, color = {0, 0, 127}));
   connect(ON, gms.on) annotation (

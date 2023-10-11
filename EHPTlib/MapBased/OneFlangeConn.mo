@@ -2,7 +2,8 @@ within EHPTlib.MapBased;
 model OneFlangeConn "Simple map-based one-flange electric drive"
   extends Partial.PartialOneFlange;
   SupportModels.ConnectorRelated.Conn conn annotation (
-    Placement(visible = true, transformation(extent = {{-18, -62}, {22, -102}}, rotation = 0), iconTransformation(extent = {{80, -58}, {120, -98}}, rotation = 0)));
+    Placement(visible = true, transformation(extent = {{-18, -62}, {22, -102}}, rotation = 0), iconTransformation(extent={{70,-58},
+            {110,-98}},                                                                                                                             rotation = 0)));
   Modelica.Blocks.Sources.RealExpression mechPow(y = powSensor.power) annotation (
     Placement(transformation(extent = {{38, -56}, {18, -36}})));
 equation
