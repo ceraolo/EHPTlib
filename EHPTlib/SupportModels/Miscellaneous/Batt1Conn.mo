@@ -106,7 +106,7 @@ equation
     Line(points = {{-47, 72}, {-60, 72}, {-60, 10}}, color = {0, 0, 255}));
   assert(SOCMin >= 0, "SOCMin must be greater than, or equal to 0");
   assert(SOCMax <= 1, "SOCMax must be smaller than, or equal to 1");
-  assert(efficiency <= efficiencyMax, "Overall charging/discharging energy efficiency is too big with respect to the actual serial resistance (EfficiencyMax =" + String(efficiencyMax) + ")");
+  assert(efficiency <= efficiencyMax, "Charging/discharging energy efficiency too big with respect to the actual serial resistance (Max allowed =" + String(efficiencyMax) + ")");
   assert(SOCMin < SOCMax, "SOCMax(=" + String(SOCMax) + ") must be greater than SOCMin(=" + String(SOCMin) + ")");
   assert(SOCInit >= SOCMin, "SOCInit(=" + String(SOCInit) + ") must be greater than, or equal to SOCMin(=" + String(SOCMin) + ")");
   assert(SOCInit <= SOCMax, "SOCInit(=" + String(SOCInit) + ") must be smaller than, or equal to SOCMax(=" + String(SOCMax) + ")");
@@ -114,24 +114,24 @@ equation
   iCellStray = iBatteryStray / np;
   uBat = p.v - n.v;
   eBatt = cBattery.v;
-  //Solo per dare maggiore chiarezza all'utente con un nome significativo
+  //This was just to use a clearer name for the user
   ECell = eBatt / ns;
   powDeliv = (p.v - n.v) * n.i;
   assert(abs(p.i / np) < ICellMax, "Battery cell current i=" + String(abs(p.i / np)) + "\n exceeds max admissable ICellMax (=" + String(ICellMax) + "A)");
   SOC = (eBatt - eBattMin) / (eBattMax - eBattMin);
   //*(SOCMax-SOCMin)+SOCMin);
-  assert(SOC <= SOCMax, "Battery is fully charged: State of charge reached maximum limit (=" + String(SOCMax) + ")");
-  assert(SOCMin <= SOC, "Battery is fully discharged: State of charge reached minimum limit (=" + String(SOCMin) + ")");
+  assert(SOC <= SOCMax, "State of charge overcomes maximum allowed  (max=" + String(SOCMax) + ")");
+  assert(SOC >= SOCMin, "State of charge is below minimum allowed (min=" + String(SOCMin) + ")");
   connect(R0.p, currentSensor.p) annotation (
     Line(points = {{30, 60}, {70, 60}}, color = {0, 0, 255}));
   connect(Ip.p, R0.n) annotation (
     Line(points = {{-6, 10}, {-6, 60}, {10, 60}}, color = {0, 0, 255}));
   connect(currentSensor.i, gain.u) annotation (
-    Line(points = {{80, 50}, {80, -1.46958e-015}, {72, -1.46958e-015}}, color = {0, 0, 127}));
+    Line(points={{80,49},{80,0},{72,0}},                                color = {0, 0, 127}));
   connect(abs1.u, gain.y) annotation (
     Line(points = {{36, 0}, {39.5, 0}, {39.5, 1.33227e-015}, {49, 1.33227e-015}}, color = {0, 0, 127}));
   connect(abs1.y, Ip.i) annotation (
-    Line(points = {{13, 0}, {7, 0}, {7, -1.28588e-015}, {1, -1.28588e-015}}, color = {0, 0, 127}));
+    Line(points={{13,0},{7,0},{7,0},{6,-1.28588e-15}},                       color = {0, 0, 127}));
   connect(currentSensor.n, p) annotation (
     Line(points = {{90, 60}, {90, 60}, {100, 60}}, color = {0, 0, 255}));
   connect(Ip.n, n) annotation (

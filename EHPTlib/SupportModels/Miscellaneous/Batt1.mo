@@ -24,7 +24,7 @@ model Batt1 "Battery model based on one R-C block in its electric circuit"
   parameter Modelica.Units.SI.Capacitance C1Cell(min=0) = 60/R1Cell
     "Capacitance in parallel with R1" annotation (Dialog(tab="Cell data",
         group="Electric circuit parameters"));
-  parameter Real efficiency(min = 0, max = 0.9999) = 0.85 "Overall charging/discharging energy efficiency" annotation (
+  parameter Real efficiency(min = 0, max = 0.99) = 0.85 "Charging/discharging energy efficiency" annotation (
     Dialog(group = "Parameters related to losses"));
   parameter Modelica.Units.SI.Current iCellEfficiency(min=0) = 0.5*
     ICellMax "Charging/discharging current the efficiency refers to"
@@ -55,13 +55,13 @@ model Batt1 "Battery model based on one R-C block in its electric circuit"
   Modelica.Electrical.Analog.Basic.Capacitor cDummy(C = C1Battery / 10000) annotation (
     Placement(visible = true, transformation(origin = {88, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   // The following row is substituted by the next one, since this fomula erroneously mixed cell data with battery data:
-  // it would gibe wrong results whenever np>1
+  // it would give wrong results whenever np>1
   // parameter Real efficiencyMax = (EBatteryMin + EBatteryMax - 2 * Rtot * iCellEfficiency) / (EBatteryMin + EBatteryMax + 2 * Rtot * iCellEfficiency);
 protected
   parameter Real efficiencyMax = (ECellMin + ECellMax - 2 * RtotCell * iCellEfficiency) / (ECellMin + ECellMax + 2 * RtotCell * iCellEfficiency);
   parameter Modelica.Units.SI.Capacitance C=QCellNom/(ECellMax - ECellMin)
     "Cell capacitance";
-  // determine fraction of drain current with respect to the total package current
+  // the following k is the fraction of parasitic current Ip of the total package current
   parameter Real k = ((1 - efficiency) * (EBatteryMax + EBatteryMin) - 2 * (1 + efficiency) * Rtot * iCellEfficiency) / ((1 + efficiency) * (EBatteryMax + EBatteryMin) - 2 * (1 - efficiency) * Rtot * iCellEfficiency);
   parameter Modelica.Units.SI.Current IBatteryMax=ICellMax*np
     "Maximum battery current";
@@ -100,22 +100,22 @@ equation
     Line(points = {{88, 10}, {88, 10}, {88, 60}, {80, 60}, {80, 60}}, color = {0, 0, 255}));
   assert(SOCMin >= 0, "SOCMin must be greater than, or equal to 0");
   assert(SOCMax <= 1, "SOCMax must be smaller than, or equal to 1");
-  assert(efficiency <= efficiencyMax, "Overall charging/discharging energy efficiency is too big with respect to the actual serial resistance (EfficiencyMax =" + String(efficiencyMax) + ")");
+  assert(efficiency <= efficiencyMax, "Charging/discharging energy efficiency too big with respect to the actual serial resistance (Max allowed =" + String(efficiencyMax) + ")");
   assert(SOCMin < SOCMax, "SOCMax(=" + String(SOCMax) + ") must be greater than SOCMin(=" + String(SOCMin) + ")");
   assert(SOCInit >= SOCMin, "SOCInit(=" + String(SOCInit) + ") must be greater than, or equal to SOCMin(=" + String(SOCMin) + ")");
   assert(SOCInit <= SOCMax, "SOCInit(=" + String(SOCInit) + ") must be smaller than, or equal to SOCMax(=" + String(SOCMax) + ")");
   iBatteryStray = Ip.i;
   iCellStray = iBatteryStray / np;
   EBattery = cBattery.v;
-  //Solo per dare maggiore chiarezza all'utente con un nome significativo
+  //This was just to use a clearer name for the user
   uBat = p.v - n.v;
   powerLoss = R0.LossPower + R1.LossPower + Ip.v * Ip.i;
   ECell = EBattery / ns;
   assert(abs(p.i / np) < ICellMax, "Battery cell current i=" + String(abs(p.i / np)) + "\n exceeds max admissable ICellMax (=" + String(ICellMax) + "A)");
   SOC = (EBattery - EBatteryMin) / (EBatteryMax - EBatteryMin);
   //*(SOCMax-SOCMin)+SOCMin);
-  assert(SOC <= SOCMax, "Battery is fully charged: State of charge reached maximum limit (=" + String(SOCMax) + ")");
-  assert(SOCMin <= SOC, "Battery is fully discharged: State of charge reached minimum limit (=" + String(SOCMin) + ")");
+  assert(SOC <= SOCMax, "State of charge overcomes maximum allowed (max=" + String(SOCMax) + ")");
+  assert(SOC >= SOCMin, "State of charge is below minimum allowed (min=" + String(SOCMin) + ")");
   connect(R0.p, currentSensor.p) annotation (
     Line(points = {{30, 60}, {60, 60}}, color = {0, 0, 255}));
   connect(Ip.p, R0.n) annotation (
@@ -141,10 +141,10 @@ equation
   connect(R1.p, R0.n) annotation (
     Line(points = {{-27, 74}, {-18, 74}, {-18, 60}, {10, 60}}, color = {0, 0, 255}, smooth = Smooth.None));
   annotation (
-    Documentation(info = "<html>
+    Documentation(info="<html>
 <p>Battery model with non-unity coulombic efficiency. </p>
 <p>The main cell branch contains an e.m.f. that is linearly increasing with SOC, simulated through an equivalent capacitor, the resistance R0 and a parallel R-C couple. </p>
-<p>The full battery is composed by np rows in parallel, each of them containing ns cells in series.</p>
+<p>The full battery is composed by np rows in parallel, each of them containing ns cells in series (or, equivalently, ns parallels of np cells in series)</p>
 </html>",
     revisions = "<html><table border=\"1\" rules=\"groups\">
     <thead>
@@ -158,5 +158,11 @@ equation
     </table>
     </html>"),
     Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {2, 2}), graphics),
-    Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {95, 95, 95}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {78, -100}}), Line(origin = {2, -2}, points = {{-92, 7}, {-56, 7}}, color = {0, 0, 255}), Rectangle(lineColor = {0, 0, 255}, fillColor = {0, 0, 255}, fillPattern = FillPattern.Solid, extent = {{-82, -3}, {-65, -10}}), Line(points = {{-73, 63}, {98, 64}}, color = {0, 0, 255}), Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{38, 69}, {68, 57}}), Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-37.5, 68}, {-6.5, 56}}), Line(points = {{-19.5, 49}, {-19.5, 32}}, color = {0, 0, 255}), Line(points = {{-54.5, 63}, {-54.5, 41}, {-25.5, 41}}, color = {0, 0, 255}), Line(points = {{9.5, 62}, {9.5, 40}, {-19.5, 40}}, color = {0, 0, 255}), Line(points = {{-73, 63}, {-73, 5}}, color = {0, 0, 255}), Line(points = {{-73, -6}, {-73, -60}, {96, -60}}, color = {0, 0, 255}), Line(points = {{26, 63}, {26, -61}}, color = {0, 0, 255}), Line(points = {{-25.5, 49}, {-25.5, 32}}, color = {0, 0, 255}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, points = {{26, 22}, {14, 4}, {26, -14}, {38, 4}, {26, 22}}), Line(points = {{20, 4}, {32, 4}}, color = {0, 0, 255}), Polygon(lineColor = {0, 0, 255}, points = {{22, -20}, {30, -20}, {26, -32}, {22, -20}}), Text(lineColor = {0, 0, 255}, extent = {{-100, 150}, {100, 110}}, textString = "%name"), Text(origin = {-53, -1}, lineColor = {238, 46, 47}, extent = {{-3, 3}, {9, -13}}, textString = "E", fontName = "Times New Roman"), Text(origin = {-25, 83}, lineColor = {238, 46, 47}, extent = {{-3, 3}, {9, -13}}, textString = "R1", fontName = "Times New Roman"), Text(origin = {-23, 29}, lineColor = {238, 46, 47}, extent = {{-3, 3}, {9, -13}}, textString = "C1", fontName = "Times New Roman"), Text(origin = {47, 9}, lineColor = {238, 46, 47}, extent = {{-3, 3}, {9, -13}}, textString = "Ip", fontName = "Times New Roman"), Text(origin = {51, 83}, lineColor = {238, 46, 47}, extent = {{-3, 3}, {9, -13}}, textString = "R0", fontName = "Times New Roman")}));
+    Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {95, 95, 95}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {78, -100}}), Line(origin = {2, -2}, points = {{-92, 7}, {-56, 7}}, color = {0, 0, 255}), Rectangle(lineColor = {0, 0, 255}, fillColor = {0, 0, 255}, fillPattern = FillPattern.Solid, extent = {{-82, -3}, {-65, -10}}), Line(points = {{-73, 63}, {98, 64}}, color = {0, 0, 255}), Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{38, 69}, {68, 57}}), Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-37.5, 68}, {-6.5, 56}}), Line(points = {{-19.5, 49}, {-19.5, 32}}, color = {0, 0, 255}), Line(points = {{-54.5, 63}, {-54.5, 41}, {-25.5, 41}}, color = {0, 0, 255}), Line(points = {{9.5, 62}, {9.5, 40}, {-19.5, 40}}, color = {0, 0, 255}), Line(points = {{-73, 63}, {-73, 5}}, color = {0, 0, 255}), Line(points = {{-73, -6}, {-73, -60}, {96, -60}}, color = {0, 0, 255}), Line(points = {{26, 63}, {26, -61}}, color = {0, 0, 255}), Line(points = {{-25.5, 49}, {-25.5, 32}}, color = {0, 0, 255}), Polygon(lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, points = {{26, 22}, {14, 4}, {26, -14}, {38, 4}, {26, 22}}), Line(points = {{20, 4}, {32, 4}}, color = {0, 0, 255}), Polygon(lineColor = {0, 0, 255}, points = {{22, -20}, {30, -20}, {26, -32}, {22, -20}}), Text(lineColor = {0, 0, 255}, extent = {{-100, 150}, {100, 110}}, textString = "%name"), Text(origin={-54,-1},    lineColor = {238, 46, 47}, extent={{-4,3},{
+              12,-13}},                                                                                                                                                                                                        textString = "E", fontName = "Times New Roman"), Text(origin={-26,83},    lineColor = {238, 46, 47}, extent={{-6,3},{
+              18,-13}},                                                                                                                                                                                                        textString = "R1", fontName = "Times New Roman"), Text(origin={-26,29},    lineColor = {238, 46, 47}, extent={{-6,3},{
+              18,-13}},                                                                                                                                                                                                        textString = "C1", fontName = "Times New Roman"), Text(origin={41.5,
+              10.625},                                                                                                                                                                                                        lineColor = {238, 46, 47}, extent={{-5.5,
+              3.375},{16.5,-14.625}},                                                                                                                                                                                                        textString = "Ip", fontName = "Times New Roman"), Text(origin={47.5,85},  lineColor = {238, 46, 47}, extent={{-5.5,3},
+              {16.5,-13}},                                                                                                                                                                                                        textString = "R0", fontName = "Times New Roman")}));
 end Batt1;
