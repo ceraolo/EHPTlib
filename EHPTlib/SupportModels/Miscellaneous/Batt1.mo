@@ -51,7 +51,7 @@ model Batt1 "Battery model based on one R-C block in its electric circuit"
   Modelica.Electrical.Analog.Basic.Capacitor C1(C = C1Battery) annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 180, origin = {-37, 50})));
   Modelica.Blocks.Interfaces.RealOutput SOC annotation (
-    Placement(visible = true, transformation(origin = {-90, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 180), iconTransformation(origin = {-110, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+    Placement(visible = true, transformation(origin={-90,40},   extent = {{-10, -10}, {10, 10}}, rotation = 180), iconTransformation(origin={-110,40},   extent = {{-10, -10}, {10, 10}}, rotation = 180)));
   Modelica.Electrical.Analog.Basic.Capacitor cDummy(C = C1Battery / 10000) annotation (
     Placement(visible = true, transformation(origin = {88, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   // The following row is substituted by the next one, since this fomula erroneously mixed cell data with battery data:
