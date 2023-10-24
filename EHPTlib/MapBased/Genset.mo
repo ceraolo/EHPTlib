@@ -47,7 +47,7 @@ equation
   connect(gen.pin_p, pin_n) annotation (
     Line(points = {{68, 4.66667}, {70, 4.66667}, {70, 2.66667}, {78, 2.66667}, {78, -60}, {102, -60}}, color = {0, 0, 255}));
   connect(gain.y, gen.tauRef) annotation (
-    Line(points = {{7, 40}, {75.4, 40}, {75.4, 5.5556}, {69.4, 5.5556}, {69.4, 9.11111}}, color = {0, 0, 127}));
+    Line(points={{7,40},{75.4,40},{75.4,5.5556},{68.2,5.5556},{68.2,9.11111}},            color = {0, 0, 127}));
   connect(gen.pin_n, pin_p) annotation (
     Line(points={{68,13.5556},{80,13.5556},{80,60},{100,60}},          color = {0, 0, 255}));
   connect(IcePow.flange_b, gen.flange_a) annotation (
@@ -63,13 +63,13 @@ equation
   connect(mBiceT.nTauRef, myGMS.throttle) annotation (
     Line(points = {{-30, -2}, {-30, -6}, {-49, -6}, {-49, 14}}, color = {0, 0, 127}));
   connect(speedSensor.flange, mBiceT.flange_a) annotation (
-    Line(points = {{-16, -20}, {-6, -20}, {-6, 10}, {-14, 10}}, color = {0, 0, 0}));
+    Line(points={{-16,-20},{-6,-20},{-6,8},{-14,8}},            color = {0, 0, 0}));
   connect(gain.u, myGMS.tRef) annotation (
     Line(points = {{-16, 40}, {-40, 40}, {-40, 26}, {-49, 26}}, color = {0, 0, 127}));
   connect(toGrams.u, mBiceT.fuelCons) annotation (
     Line(points = {{16, -32}, {12, -32}, {8, -32}, {8, -6}, {-18, -6}, {-18, -1}}, color = {0, 0, 127}));
   connect(idealGear.flange_a, mBiceT.flange_a) annotation (
-    Line(points = {{0, 11}, {-4, 11}, {-4, 10}, {-14, 10}}, color = {0, 0, 0}));
+    Line(points={{0,11},{-4,11},{-4,8},{-14,8}},            color = {0, 0, 0}));
   connect(idealGear.flange_b, IcePow.flange_a) annotation (
     Line(points = {{18, 11}, {22, 11}, {22, 7}, {24, 7}}, color = {0, 0, 0}));
   annotation (
@@ -82,7 +82,10 @@ equation
             fillPattern = FillPattern.Solid, extent = {{-96, -6}, {-50, -24}}), Rectangle(fillColor = {135, 135, 135},
             fillPattern = FillPattern.Solid, extent = {{-78, -24}, {-68, -44}}), Polygon(points = {{-72, 34}, {-78, 24}, {-66, 24}, {-72, 34}}), Rectangle(fillColor = {192, 192, 192},
             fillPattern = FillPattern.HorizontalCylinder, extent = {{6, 30}, {62, -44}}), Line(points = {{94, 60}, {74, 60}, {74, 18}, {62, 18}}, color = {0, 0, 255}), Line(points = {{100, -60}, {74, -60}, {74, -28}, {62, -28}}, color = {0, 0, 255})}),
-    Documentation(info = "<html><head></head><body><p>Generator set containing Internal Combustion Engine (ICE), Electric generator (with DC output), and the related control.</p>
-<p>The control logic tends to deliver at the DC port the input power, using the optimal generator speed.</p><p><i>Note on parameters.</i></p><p>The internal ICE data are supplied through maps to be provided through a txt file. The values explicitly set through the <i>Parameters </i>dialog box refer to the internal generator (except wIceStart). Any change on these should be made considering joint changes in the ICE maps.</p>
-</body></html>"));
+    Documentation(info="<html>
+<p>Generator set containing Internal Combustion Engine (ICE), electric generator (with DC output), and the related control.</p>
+<p>The control logic tends to deliver at the DC port the input power, using the optimal generator speed.</p>
+<p><i>Note on parameters.</i></p>
+<p>The internal ICE data are supplied through maps to be provided through a txt file. The values explicitly set through the <i>Parameters </i>dialog box refer to the internal generator (except wIceStart). Any change on these should be made considering joint changes in the ICE maps.</p>
+</html>"));
 end Genset;

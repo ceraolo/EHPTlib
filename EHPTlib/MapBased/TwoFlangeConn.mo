@@ -23,13 +23,12 @@ equation
     initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(fillColor = {192, 192, 192},
             fillPattern =                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{-100, 10}, {-66, -10}}), Rectangle(fillColor = {192, 192, 192},
             fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{66, 8}, {100, -12}}),                                                                 Line(origin = {20, -2}, points = {{-60, 94}, {-60, 76}}, color = {0, 0, 255}), Line(origin = {-20, -2}, points = {{60, 94}, {60, 76}}, color = {0, 0, 255})}),
-    Documentation(info = "<html>
-<p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</b> </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">This is a &QUOT;connector&QUOT; version of MBice.</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">For a general descritiption see the info of MBice.</span></p>
+    Documentation(info="<html>
+<p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</span></b> </p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">This is a &quot;connector&quot; version of TwoFlange; for a general descritiption see the info of TwoFlange.</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Signals connected to the connector:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- icePowRef (input) is the power request (W). Negative values are internally converted to zero</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- iceW (output) is the measured ICE speed (rad/s)</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- icePowDel (output) delivered power (W)</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- motW (output) is the component rotational speed</span></p>
+<p>- motPowDelAB (ouput): power globally delivered to the outside considering both flanges A and B </p>
+<p><br>- motPowDelB (ouput): power globally delivered to the outside trhough flanges B </p>
 </html>"));
 end TwoFlangeConn;

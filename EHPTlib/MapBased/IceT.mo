@@ -26,12 +26,12 @@ equation
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
     __Dymola_experimentSetupOutput,
-    Documentation(info = "<html>
+    Documentation(info="<html>
 <p>This model belongs to the map-based models of power train components.</p>
 <p>It models an Internal Combustion Engine, neglecting any dynamics except that related with its rotor inertia.</p>
 <p>The input signal is the torque request (Nm). </p>
 <p>The generated torque is the minimum between this signal (negative values are transformed to 0) and the maximum deliverable torque at the actual engine speed, defined by means of a table.</p>
-<p>From the generated torque and speed the fuel consumption is computed.</p>
+<p>The fuel consumption is computed from the generated torque and speed. </p>
 <p>Compare ICE input tau and internal Tice.tau.</p>
 </html>"),
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(extent = {{-100, -44}, {-22, -72}}, lineColor = {0, 0, 127}, textString = "Nm")}));

@@ -19,12 +19,12 @@ equation
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}})),
     Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})),
-    Documentation(info = "<html>
-<p>The input signal is interpreted as a <u>normalised</u> torque request (0 means null torque, 1 maximum availabile torque).</p>
+    Documentation(info="<html>
+<p>The input signal (supplied through connector: genTauRef) is interpreted as a <u>normalised</u> torque request (0 means null torque, 1 maximum availabile torque).</p>
 <p>The maximum available torque is internally computed considering a direct torque maximum (tauMax) and a power maximum (powMax) </p>
 <p>The requested torque is applied to a mechancal inertia. The inertia is interfaced by means ot two flanges with the exterior.</p>
 <p>The model then computes the inner losses and absorbs the total power from the DC input.</p>
-<p><br><u>Signals connected to the bus connecto</u>r (the names are chosen from the examples FullVehicles.PSecu1 and PSecu2 where the one-flange machine is called &QUOT;gen&QUOT;):</p>
+<p><br><u>Signals connected to the bus connecto</u>r (the names are chosen from the examples FullVehicles.PSecu1 and PSecu2 where the one-flange machine is called &quot;gen&quot;):</p>
 <p>- genTauRef (input) is the torque request (Nm)</p>
 <p>- genPowDel (output) is the delivered mechanical power (W)</p>
 <p>- genTauLim (output) maximum available torque at the given machine rotational speed (Nm)</p>

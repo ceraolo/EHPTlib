@@ -21,11 +21,12 @@ equation
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}}, initialScale = 0.1)),
-    Documentation(info = "<html>
+    Documentation(info="<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</span></b> </p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">This is a &QUOT;connector&QUOT; version of MBiceP.</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">For a general descritiption see the info of MBiceP.</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Signals connected to the connector:</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">This is a variation of model IceT, having the following differences:</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- it follows a reference power instead of a reference torque</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- it is connected to the outside through an exapandable conecctor.</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Connector signals:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- icePowRef (input) is the power request (W). Negative values are internally converted to zero</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- iceW (output) is the measured ICE speed (rad/s)</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- icePowDel (output) delivered power (W)</span></p>

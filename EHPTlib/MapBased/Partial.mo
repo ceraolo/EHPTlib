@@ -37,11 +37,11 @@ package Partial
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
       Placement(visible = true, transformation(extent = {{-70, 90}, {-50, 110}}, rotation = 0), iconTransformation(extent={{-50,72},
               {-30,92}},                                                                                                                             rotation = 0)));
-    Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
-      Placement(visible = true, transformation(extent={{30,72},{50,92}},       rotation = 0), iconTransformation(extent={{30,72},
-              {50,92}},                                                                                                                          rotation = 0)));
     Modelica.Blocks.Nonlinear.VariableLimiter torqueLimiter annotation (
       Placement(transformation(extent = {{-16, -8}, {4, 12}})));
+    Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
+      Placement(visible = true, transformation(extent={{42,90},{62,110}},      rotation = 0), iconTransformation(extent={{30,72},
+              {50,92}},                                                                                                                          rotation = 0)));
   equation
     connect(flange_a, speedRing.flange) annotation (
       Line(points = {{-100, 50}, {-80, 50}}, color = {0, 0, 0}, smooth = Smooth.None));
@@ -49,9 +49,6 @@ package Partial
       Line(points = {{18, -40}, {-80, -40}, {-80, 29}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(pin_p, constPDC.pin_p) annotation (
       Line(points = {{-60, 100}, {-10, 100}}, color = {0, 0, 255}, smooth = Smooth.None));
-    connect(pin_n, constPDC.pin_n) annotation (
-      Line(points={{40,82},{24,82},{24,100},{9.8,100}},
-                                             color = {0, 0, 255}, smooth = Smooth.None));
     connect(effMap.elePow, constPDC.Pref) annotation (
       Line(points = {{40.6, -36}, {52, -36}, {52, 80}, {0, 80}, {0, 91.8}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(flange_b, outBPow_.flange_b) annotation (
@@ -76,6 +73,8 @@ package Partial
       Line(points = {{18, -32}, {12, -32}, {12, 2}, {5, 2}}, color = {0, 0, 127}));
     connect(limTau.w, speedRing.w) annotation (
       Line(points = {{-60.2, 3}, {-80, 3}, {-80, 29}}, color = {0, 0, 127}));
+    connect(constPDC.pin_n, pin_n) annotation (Line(points={{9.8,100},{18,100},
+            {18,100},{52,100}}, color={0,0,255}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
@@ -87,9 +86,8 @@ package Partial
                 {-60,36}},                                                                                                                           color = {0, 0, 255}), Line(origin = {-20, 0}, points={{60,80},
                 {60,34}},                                                                                                                                                                                                        color = {0, 0, 255}), Rectangle(fillColor = {255, 255, 255},
               fillPattern = FillPattern.Solid, extent = {{-58, 14}, {58, -18}}), Text(origin = {-0.07637, 48.3161}, extent = {{-51.9236, -36.3161}, {48.0764, -66.3161}}, textString = "J=%J")}),
-      Documentation(info = "<html>
-<p>This model receives from the connector the torque request (variable MotTauInt) and trieds to deliver it.</p>
-<p>Howeve,r before delivering the requested torque, the model limits it considering the maximum deliverable torque and power. In addition it computes and considers inner losses as determined by means of a map. </p>
+      Documentation(info="<html>
+<p>Partial model for final models TwoFlange and TwoFlangeConn</p>
 </html>"));
   end PartialTwoFlange;
 
@@ -165,12 +163,9 @@ package Partial
       Line(points = {{-6, 24}, {-6, 42}, {-22, 42}, {-22, 60}, {-14, 60}}, color = {0, 0, 127}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
-      Documentation(info = "<html>
+      Documentation(info="<html>
 <h4>Basic map-based ICE model.</h4>
-<p>It receives as input the reference torque as a fracton of the maximum deliverable torque at a given speed. It can be approximately thought as a signal proportional to the vehicle&apos;s accelerator pedal position.</p>
-<p>The generated torque is the minimum between this signal and the maximum deliverable torque at the actual engine speed (defined by means of a table).</p>
-<p>From the generated torque and speed the fuel consumption is computed.</p>
-<p>The used maxTorque (toLimTau) and specific fuel consumption (toSpecCons) maps are inspired to public data related to the Toyota Prius&apos; engine </p>
+<p>Partial ICE model.</p>
 </html>"),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
         fillPattern = FillPattern.Solid), Rectangle(fillColor = {192, 192, 192},
@@ -245,21 +240,15 @@ package Partial
     connect(feedback.u2, Pice.power) annotation (
       Line(points = {{-80, 60}, {-80, 72}, {68, 72}, {68, 63}}, color = {0, 0, 127}, smooth = Smooth.None));
     annotation (
-      Documentation(info = "<html>
-<p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</b> </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">This is a &QUOT;connector&QUOT; version of MBice.</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">For a general descritiption see the info of MBice.</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Signals connected to the connector:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- icePowRef (input) is the power request (W). Negative values are internally converted to zero</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- iceW (output) is the measured ICE speed (rad/s)</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- icePowDel (output) delivered power (W)</span></p>
+      Documentation(info="<html>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model to be used when input is power request.</span></p>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
         fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
         fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"), Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(extent = {{-90, 20}, {-46, -16}}, textString = "follows the power
+      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false),                                      graphics={  Text(extent = {{-90, 20}, {-46, -16}}, textString = "follows the power
 reference \nand computes consumption")}));
   end PartialIceP;
 
@@ -334,7 +323,7 @@ reference \nand computes consumption")}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
     annotation (
-      Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2})),
+      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false)),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={                                                                                        Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
               fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}), Line(points = {{-98, 40}, {-70, 40}}, color = {0, 0, 255}), Line(points = {{-92, -40}, {-70, -40}}, color = {0, 0, 255}), Text(origin={-17.6473,
                 12.3183},                                                                                                                                                                                                        textColor = {0, 0, 255}, extent={{
@@ -345,9 +334,8 @@ reference \nand computes consumption")}));
                 {66,-14}}),                                                                                                                                                                                                        Text(origin={-5.5886,
                 34.3},                                                                                                                                                                                                      extent={{
                 -64.4114,-24.3},{73.5886,-42.3}},                                                                                                                                                                                                    textString = "J=%J")}),
-      Documentation(info = "<html>
-<p>One-flange electric drive.</p>
-<p>The input signal is the requested normalised torque (1 means nominal torque)</p>
+      Documentation(info="<html>
+<p>Partial model for one-flange components (version 1).</p>
 </html>"));
   end PartialOneFlange;
 
@@ -448,8 +436,8 @@ reference \nand computes consumption")}));
                         extent={{-72.8129,-29.7},{83.1871,-51.7}},
                         textString = "J=%J")}),
       Documentation(info="<html>
-<p>Partial one-flange electric drive.</p>
-<p>The input signal is the requested normalised torque (1 means nominal torque)</p>
+<p>Partial model for one-flange components.</p>
+<p>This version 2 allows defing torque limits from a file, instead of just max torque and power.</p>
 </html>"));
   end PartialOneFlange2;
 
@@ -652,11 +640,8 @@ reference \nand computes consumption")}));
       Line(points = {{46, 12}, {46, 28}, {52, 28}, {52, 33}}, color = {0, 0, 127}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
-      Documentation(info = "<html>
-<h4>Basic map-based ICE model.</h4>
-<p>It receives as input the reference torque as a fracton of the maximum deliverable torque at a given speed. It can be approximately thought as a signal proportional to the accelerator position oF the vehicle.</p>
-<p>The generated torque is the minimum between this signal and the maximum deliverable torque at the actual engine speed (defined by means of a table).</p>
-<p>From the generated torque and speed the fuel consumption is computed.</p>
+      Documentation(info="<html>
+<h4>Partial map-based ICE model.</h4>
 <p>The used maxTorque (toLimTau) and specific fuel consumption (toSpecCons) maps are inspired to public data related to the Toyota Prius&apos; engine </p>
 </html>"),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 68}, {76, -24}}), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 30}, {100, 10}}), Text(origin = {0, 30}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 68}, {-32, -26}}), Rectangle(fillColor = {95, 95, 95}, fillPattern = FillPattern.Solid, extent = {{-90, 22}, {-32, 0}}), Line(points = {{-60, 56}, {-60, 32}}), Polygon(points = {{-60, 66}, {-66, 56}, {-54, 56}, {-60, 66}}), Polygon(points = {{-60, 24}, {-66, 34}, {-54, 34}, {-60, 24}}), Rectangle(fillColor = {135, 135, 135}, fillPattern = FillPattern.Solid, extent = {{-64, 0}, {-54, -20}})}));
@@ -743,10 +728,12 @@ reference \nand computes consumption")}));
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 80}}), graphics={  Text(extent = {{-78, 6}, {-38, -16}}, textString = "follows the power
  reference and
  computes consumption")}),
-      Documentation(info = "<html>
-<p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</b> </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">This is a &QUOT;connector&QUOT; version of MBice.</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">For a general descritiption see the info of MBice.</span></p>
+      Documentation(info="<html>
+<p><b><span style=\"font-family: MS Shell Dlg 2;\">Partial  ICE model - with connector</span></b> </p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">This is a variation of PartialMBice.</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Main differences:</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- it uses power instead of torque as input signal</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- in interfaces with the outside trhough an expandable connector.</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Signals connected to the connector:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- icePowRef (input) is the power request (W). Negative values are internally converted to zero</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- iceW (output) is the measured ICE speed (rad/s)</span></p>
