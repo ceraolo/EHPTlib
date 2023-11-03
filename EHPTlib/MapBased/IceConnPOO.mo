@@ -3,7 +3,7 @@ model IceConnPOO "Simple map-based ice model with connector; follows power reque
   extends Partial.PartialIceP(toGramsPerkWh(fileName = mapsFileName));
   import Modelica.Constants.*;
   // rad/s
-  parameter String mapsFileName = "maps.txt" "Name of the file containing data maps (names: maxIceTau, specificCons, optiSpeed)";
+//  parameter String mapsFileName = "maps.txt" "Name of the file containing data maps (names: maxIceTau, specificCons, optiSpeed)";
   SupportModels.ConnectorRelated.Conn conn annotation (
     Placement(visible = true, transformation(extent = {{-20, -78}, {20, -118}}, rotation = 0), iconTransformation(extent = {{-20, -78}, {20, -118}}, rotation = 0)));
   Modelica.Blocks.Logical.Switch switch1 annotation (
