@@ -8,7 +8,7 @@ package Partial
       "Maximum drive speed";
     parameter Modelica.Units.SI.MomentOfInertia J=0.59 "Moment of Inertia";
     parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
-    parameter String mapsFileName = "noName" "File where matrix is stored" annotation (
+    parameter String mapsFileName = "noName" "File where efficiency table is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String effTableName = "noName" "Name of the on-file maximum torque as a function of speed" annotation (
       Dialog(enable = mapsOnFile));
@@ -98,7 +98,7 @@ package Partial
     parameter Modelica.Units.SI.MomentOfInertia iceJ=0.5
       "ICE moment of inertia";
     parameter Boolean tablesOnFile = false "= true, if tables are got from a file";
-    parameter String mapsFileName = "NoName" "File where matrix is stored" annotation (
+    parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = tablesOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter Real maxIceTau[:, :] = [0, 80; 100, 80; 350, 95; 500, 95] "First column: speed (rad/s); first column: maximum ICE torque (Nm)" annotation (
       Dialog(enable = not tablesOnFile));
@@ -181,11 +181,19 @@ package Partial
 
   model PartialIceP "Simple map-based ice model with connector and Power request"
     import Modelica.Constants.*;
-    parameter Real contrGain = 0.1 "Proportional controller gain (Nm/W)";
+    parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
-    parameter Real iceJ = 0.5 "ICE moment of Inertia (kg.m^2)";
+    parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
     // rad/s
-    Modelica.Mechanics.Rotational.Components.Inertia inertia(w(fixed = true, start = wIceStart, displayUnit = "rpm"), J = iceJ) annotation (
+    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
+    parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
+      Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+    parameter String specConsName = "noName" "name of the on-file specific consumption variable" annotation (
+      Dialog(enable = mapsOnFile));
+    parameter Real specificCons[:, :](each unit = "g/(kW.h)") = [0.0, 100, 200, 300, 400, 500; 10, 630, 580, 550, 580, 630; 20, 430, 420, 400, 400, 450; 30, 320, 325, 330, 340, 350; 40, 285, 285, 288, 290, 300; 50, 270, 265, 265, 270, 275; 60, 255, 248, 250, 255, 258; 70, 245, 237, 238, 243, 246; 80, 245, 230, 233, 237, 240; 90, 235, 230, 228, 233, 235] "ICE specific consumption map. First column torque, first row speed" annotation (
+      Dialog(enable = not mapsOnFile));
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(w(fixed = true, start = wIceStart,
+        displayUnit = "rpm"), J = iceJ) annotation (
       Placement(visible = true, transformation(extent = {{30, 42}, {50, 62}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Sources.Torque iceTau annotation (
       Placement(visible = true, transformation(extent = {{4, 42}, {24, 62}}, rotation = 0)));
@@ -202,9 +210,10 @@ package Partial
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a annotation (
       Placement(transformation(extent = {{90, -10}, {110, 10}}), iconTransformation(extent = {{90, -10}, {110, 10}})));
     Modelica.Blocks.Tables.CombiTable2Ds toGramsPerkWh(
-      fileName="PSDmaps.txt",
-      tableName="iceSpecificCons",
-      tableOnFile=true) annotation (Placement(transformation(
+      table=specificCons,
+      tableOnFile=mapsOnFile,
+      tableName=specConsName,
+      fileName=mapsFileName) annotation (Placement(transformation(
           extent={{-10,10},{10,-10}},
           rotation=-90,
           origin={42,-2})));
@@ -269,7 +278,7 @@ reference \nand computes consumption")}));
     parameter Modelica.Units.SI.MomentOfInertia J=0.25
       "Rotor's moment of inertia";
     parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
-    parameter String mapsFileName = "noName" "File where matrix is stored" annotation (
+    parameter String mapsFileName = "noName" "File where efficiency table matrix is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
       Dialog(enable = mapsOnFile));
