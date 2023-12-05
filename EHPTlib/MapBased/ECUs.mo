@@ -106,20 +106,20 @@ to gen",
          fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
          fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
          fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(extent = {{-100, 84}, {100, 54}}, textString = "PSD-ecu1")}),
-      Documentation(info = "<html>
+      Documentation(info="<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Power Split Power Train Controller without ON/OFF</span></b></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This controller operates as follows:</span></p>
 <ul>
 <li><span style=\"font-family: MS Shell Dlg 2;\">it makes the ice deliver the average power needed by the power train</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">it determines the optimal ice speed at which the requested power is delivered with minimum fuel consumption and asks the &QUOT;gen&QUOT; to control so that the ice opertes at that speed</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">the vehicle motion is controlled acting on the &QUOT;mot&QUOT;.</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">it determines the optimal ice speed at which the requested power is delivered with minimum fuel consumption and asks the &quot;gen&quot; to control so that the ice operates at that speed</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">the vehicle motion is controlled acting on the &quot;mot&quot;.</span></li>
 </ul>
-<p><span style=\"font-family: MS Shell Dlg 2;\"></p><p>Since this technique allows only approximatively the correct energy balance of the vehicle, the battery tends to sdischarge.This is solved with MBEcu2, in which a closed loop StateOfCharge (SOC) control is added.</span></p>
+<p>Since this technique allows only approximatively the correct energy balance of the vehicle, the battery tends to discharge.This is solved with Ecu2, in which a closed loop StateOfCharge (SOC) control is added.</p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">So:</span></p>
 <ul>
 <li><span style=\"font-family: MS Shell Dlg 2;\">powFilt Block filters the delivered power to obtained the power to ask the ICE to deliver</span></li>
 <li><span style=\"font-family: MS Shell Dlg 2;\">toIceWref converts the power to be requested from the ICE by its maximum torque at the actual speed</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">after a limiting block, this torque is the reference signal of a feedback; the corresponnding error controls the Gen torque.</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">after a limiting block, this torque is the reference signal of a feedback; the corresponding error controls the Gen torque.</span></li>
 </ul>
 </html>"));
   end Ecu1;
@@ -353,25 +353,25 @@ reference tau\nto gen",
                                                                         color = {0, 0, 127}, smooth = Smooth.None),
       Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
     annotation (
-      Documentation(info = "<html>
+      Documentation(info="<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Power Split Power Train Controller with ON/OFF</span></b></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This controller operates as follows:</span></p>
 <ul>
 <li><span style=\"font-family: MS Shell Dlg 2;\">it makes the ice deliver the average power needed by the power train</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">it determines the optimal ice speed at which the requested power is delivered with minimum fuel consumption and asks the &QUOT;gen&QUOT; to control so that the ice opertes at that speed</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">the vehicle motion is controlled acting on the &QUOT;mot&QUOT;.</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">it determines the optimal ice speed at which the requested power is delivered with minimum fuel consumption and asks the &quot;gen&quot; to control so that the ice operates at that speed</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">the vehicle motion is controlled acting on the &quot;mot&quot;.</span></li>
 <li><span style=\"font-family: MS Shell Dlg 2;\">a closed-loop SOC control avoids the battery do become too charged or discharged</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">an ON/OFF control determines ICe switching OFF when the looad is to loow and switching it ON again when the requested power is sifnigicntly high. this normally reduces fuel consumpton.</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">an ON/OFF control determines ICE switching OFF when the looad is to loow and switching it ON again when the requested power is significantly high. This normally reduces fuel consumpton.</span></li>
 </ul>
 <p><span style=\"font-family: MS Shell Dlg 2;\">So:</span></p>
 <ul>
 <li><span style=\"font-family: MS Shell Dlg 2;\">powFilt Block filters the delivered power to obtained the power to ask the ICE to deliver</span></li>
 <li><span style=\"font-family: MS Shell Dlg 2;\">toIceWref converts the power to be requested from the ICE by its maximum torque at the actual speed</span></li>
-<li><span style=\"font-family: MS Shell Dlg 2;\">after a limiting block, this torque is the reference signal of a feedback; the corresponnding error controls the Gen torque.</span></li>
+<li><span style=\"font-family: MS Shell Dlg 2;\">after a limiting block, this torque is the reference signal of a feedback; the corresponding error controls the Gen torque.</span></li>
 <li><span style=\"font-family: MS Shell Dlg 2;\">fbSOC sis the feedback for SOC control and socLoopGain is its gain</span></li>
 <li><span style=\"font-family: MS Shell Dlg 2;\">hysteresis manages switching ON/OFF the ice. </span></li>
 </ul>
-<p><span style=\"font-family: MS Shell Dlg 2;\"></p><p>Details of ice going to off (e.g. bringing its speed to zero) and to on (i.e. first making ice speed to rise, then start sending fuel) are not implemented.</span></p>
+<p>Details of ice going to off (e.g. bringing its speed to zero) and to on (i.e. first making ice speed to rise, then start sending fuel) are not implemented.</p>
 </html>"),
       Diagram(coordinateSystem(extent = {{-100, -40}, {120, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Text(extent = {{-86, 92}, {-28, 88}}, textString = "Send requested torque to mot"), Text(extent={{
                 14,50},{42,46}},
