@@ -33,8 +33,10 @@ model Batt1 "Battery model based on one R-C block in its electric circuit"
     Dialog(tab = "Battery pack data", group = "Size of the package"));
   parameter Integer np = 1 "Number of parallel connected strings" annotation (
     Dialog(tab = "Battery pack data", group = "Size of the package"));
-  Modelica.Units.SI.Voltage uBat(start=EBatteryMin + SOCInit*(EBatteryMax
-         - EBatteryMin), fixed=true);
+  //fixed=true in the following equation creates singularity when two batteries are directly coupled to each other.
+  //Modelica.Units.SI.Voltage uBat(start=EBatteryMin + SOCInit*(EBatteryMax  - EBatteryMin), fixed=true);
+  Modelica.Units.SI.Voltage uBat(start=EBatteryMin + SOCInit*(EBatteryMax  - EBatteryMin));
+
   Modelica.Units.SI.Power powerLoss;
   Modelica.Electrical.Analog.Basic.Capacitor cBattery(final C = CBattery) annotation (
     Placement(transformation(origin = {-60, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
