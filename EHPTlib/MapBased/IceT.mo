@@ -1,7 +1,9 @@
 within EHPTlib.MapBased;
 model IceT "Simple  map-based ice model with connector"
   import Modelica.Constants.*;
-  extends Partial.PartialIce;
+  extends Partial.PartialIce(toLimTau(table = maxIceTau, tableOnFile = tablesOnFile,
+      tableName = "maxIceTau", fileName = mapsFileName), toSpecCons(tableOnFile = tablesOnFile,
+      fileName = mapsFileName, tableName = "specificCons"));
   parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
   // rad/s
   Modelica.Blocks.Interfaces.RealInput tauRef "torque request (positive when motor)" annotation (
@@ -14,7 +16,7 @@ model IceT "Simple  map-based ice model with connector"
     Placement(transformation(extent = {{-48, 50}, {-28, 70}})));
 equation
   connect(toG_perHour.y, fuelCons) annotation (
-    Line(points = {{30, -61}, {30, -61}, {26, -61}, {60, -61}, {60, -90}}, color = {0, 0, 127}, smooth = Smooth.None));
+    Line(points={{30,-57},{30,-61},{26,-61},{60,-61},{60,-90}},            color = {0, 0, 127}, smooth = Smooth.None));
   connect(limiter.u, tauRef) annotation (
     Line(points = {{-60, -28}, {-60, -100}}, color = {0, 0, 127}, smooth = Smooth.None));
   connect(min.u1, toLimTau.y[1]) annotation (

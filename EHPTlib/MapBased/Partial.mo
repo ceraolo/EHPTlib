@@ -100,7 +100,7 @@ package Partial
     parameter Boolean tablesOnFile = false "= true, if tables are got from a file";
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = tablesOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
-    parameter Real maxIceTau[:, :] = [0, 80; 100, 80; 350, 95; 500, 95] "First column: speed (rad/s); first column: maximum ICE torque (Nm)" annotation (
+    parameter Real maxIceTau[:, :] = [0, 80; 100, 80; 350, 95; 500, 95] "First column: speed (rad/s); second column: maximum ICE torque (Nm)" annotation (
       Dialog(enable = not tablesOnFile));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor w annotation (
       Placement(visible = true, transformation(origin = {52, 44}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
@@ -116,11 +116,12 @@ package Partial
     Modelica.Blocks.Math.Product toPowW annotation (
       Placement(visible = true, transformation(origin = {0, 12}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Blocks.Math.Product toG_perHour annotation (
-      Placement(visible = true, transformation(origin = {30, -50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+      Placement(visible = true, transformation(origin={30,-46},    extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     //  Modelica.Blocks.Continuous.Integrator toGrams(k = 1 / 3600000.0)
     // annotation(Placement(visible = true, transformation(origin = {26, -44},
     //extent = {{-10, -10}, {10, 10}}, rotation = 270)));
-    Modelica.Blocks.Tables.CombiTable1Dv toLimTau(table=maxIceTau)
+    Modelica.Blocks.Tables.CombiTable1Dv toLimTau(tableOnFile=false,
+                                                  table=maxIceTau)
       annotation (Placement(visible=true, transformation(
           origin={-72,66},
           extent={{10,-10},{-10,10}},
@@ -128,10 +129,9 @@ package Partial
     Modelica.Blocks.Sources.RealExpression rotorW(y = w.w) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-88, 36})));
     Modelica.Blocks.Math.Gain tokW(k = 1e-3) annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {0, -18})));
+      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={0,-16})));
     Modelica.Blocks.Tables.CombiTable2Ds toSpecCons(
       tableOnFile=true,
-      fileName="PSDmaps.txt",
       tableName="specificCons") annotation (Placement(transformation(
           extent={{-10,10},{10,-10}},
           rotation=-90,
@@ -150,11 +150,11 @@ package Partial
     connect(toLimTau.u[1], rotorW.y) annotation (
       Line(points = {{-84, 66}, {-88, 66}, {-88, 47}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(toPowW.y, tokW.u) annotation (
-      Line(points = {{-2.22045e-015, 1}, {-2.22045e-015, -2}, {2.22045e-015, -2}, {2.22045e-015, -6}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{0,1},{0,-2},{2.22045e-15,-4}},                                                     color = {0, 0, 127}, smooth = Smooth.None));
     connect(toSpecCons.y, toG_perHour.u1) annotation (
-      Line(points = {{40, -11}, {40, -24}, {36, -24}, {36, -38}}, color = {0, 0, 127}));
+      Line(points={{40,-11},{40,-24},{36,-24},{36,-34}},          color = {0, 0, 127}));
     connect(toG_perHour.u2, tokW.y) annotation (
-      Line(points = {{24, -38}, {24, -32}, {0, -32}, {0, -29}}, color = {0, 0, 127}));
+      Line(points={{24,-34},{24,-30},{0,-30},{0,-27}},          color = {0, 0, 127}));
     connect(toSpecCons.u2, w.w) annotation (
       Line(points = {{46, 12}, {46, 28}, {52, 28}, {52, 33}}, color = {0, 0, 127}));
     connect(toSpecCons.u1, Tice.tau) annotation (
@@ -162,7 +162,8 @@ package Partial
     connect(toPowW.u2, Tice.tau) annotation (
       Line(points = {{-6, 24}, {-6, 42}, {-22, 42}, {-22, 60}, {-14, 60}}, color = {0, 0, 127}));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-60},
+              {100,80}})),
       Documentation(info="<html>
 <h4>Basic map-based ICE model.</h4>
 <p>Partial ICE model.</p>
