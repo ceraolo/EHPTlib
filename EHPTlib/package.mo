@@ -1,4 +1,4 @@
-﻿package EHPTlib "Electric and Hybrid Power train library Rev Jan 2023"
+package EHPTlib "Electric and Hybrid Power train library Rev Jan 2023"
       //Symbol to force Dymola to use UTF: €
   //package Propulsion
   extends Modelica.Icons.Package;
@@ -20,7 +20,8 @@
        fillPattern = FillPattern.Solid)}),
     Documentation(info="<html>
 <p>Library containing models of components, subsystems and full vehicles examples for simulation of electric and Hybrid vehicular power trains.</p>
-<p>A general description of the library composition and on how to use it effectively is in the companion paper:</p>
+<p>A general, rather old, description of the library composition and on how to use it effectively is in the companion paper:</p>
 <p>M. Ceraolo &quot;Modelica Electric and hybrid power trains library&quot; submitted for publication at the 11th International Modelica Conference, 2015, September 21-23, Palais des congr&egrave;s de Versailles, 23-23 September, France</p>
+<p>An updated description of the library and its usage can be found in file Tutorial.pdf&quot;, which comes with library https://github.com/ceraolo/EHPTexamples.</p>
 </html>"));
 end EHPTlib;
