@@ -123,8 +123,8 @@ package Partial
       Placement(visible = true, transformation(extent = {{30, 42}, {50, 62}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Sources.Torque iceTau annotation (
       Placement(visible = true, transformation(extent = {{4, 42}, {24, 62}}, rotation = 0)));
-    Modelica.Mechanics.Rotational.Sensors.PowerSensor Pice annotation (
-      Placement(transformation(extent = {{66, 62}, {86, 42}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor icePow
+      annotation (Placement(transformation(extent={{66,62},{86,42}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor w annotation (
       Placement(visible = true, transformation(origin = {58, 36}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
     Modelica.Blocks.Math.Product toPowW annotation (
@@ -159,6 +159,10 @@ package Partial
     Modelica.Blocks.Math.Min min1
                                  annotation (
       Placement(transformation(extent={{-34,42},{-14,62}})));
+    Modelica.Blocks.Logical.Switch switch1 annotation (
+      Placement(visible = true, transformation(origin={8,-52},    extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+    Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
+      Placement(visible = true, transformation(extent={{-34,-80},{-14,-60}},      rotation = 0)));
   equation
     connect(toPowW.y, tokW.u) annotation (
       Line(points = {{-18, -1}, {-18, -6}}, color = {0, 0, 127}));
@@ -170,14 +174,16 @@ package Partial
       Line(points = {{24, 52}, {30, 52}}));
     connect(w.flange, inertia.flange_b) annotation (
       Line(points = {{58, 46}, {58, 52}, {50, 52}}));
-    connect(Pice.flange_a, inertia.flange_b) annotation (
-      Line(points = {{66, 52}, {50, 52}}));
+    connect(icePow.flange_a, inertia.flange_b)
+      annotation (Line(points={{66,52},{50,52}}));
     connect(toGramsPerkWh.u2, w.w) annotation (
       Line(points = {{48, 10}, {48, 20}, {58, 20}, {58, 25}}, color = {0, 0, 127}));
     connect(toPowW.u1, w.w) annotation (
       Line(points = {{-12, 22}, {-12, 25}, {58, 25}}, color = {0, 0, 127}));
-    connect(Pice.flange_b, flange_a) annotation (
-      Line(points = {{86, 52}, {94, 52}, {94, 0}, {100, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(icePow.flange_b, flange_a) annotation (Line(
+        points={{86,52},{94,52},{94,0},{100,0}},
+        color={0,0,0},
+        smooth=Smooth.None));
     connect(toGramsPerkWh.y, toG_perHour.u1) annotation (Line(points={{42,-13},{42,
             -20},{44,-20},{44,-28}}, color={0,0,127}));
     connect(toG_perHour.y, tokgFuel.u)
@@ -188,8 +194,12 @@ package Partial
       annotation (Line(points={{-72,28},{-76,28},{-76,11}}, color={0,0,127}));
     connect(min1.u2, toLimTau.y[1]) annotation (Line(points={{-36,46},{-42,46},{-42,
             28},{-49,28}}, color={0,0,127}));
-    connect(tokW.y, toG_perHour.u2) annotation (Line(points={{-18,-29},{-18,-34},{
-            18,-34},{18,-22},{32,-22},{32,-28}}, color={0,0,127}));
+    connect(zero.y, switch1.u3) annotation (Line(points={{-13,-70},{-10,-70},{
+            -10,-60},{-4,-60}}, color={0,0,127}));
+    connect(toG_perHour.u2, switch1.y) annotation (Line(points={{32,-28},{32,
+            -20},{22,-20},{22,-52},{19,-52}}, color={0,0,127}));
+    connect(switch1.u1, tokW.y) annotation (Line(points={{-4,-44},{-18,-44},{
+            -18,-29}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
@@ -310,8 +320,10 @@ package Partial
   equation
     connect(gain.u,feedback. y) annotation (
       Line(points={{-68,58},{-75,58}},      color = {0, 0, 127}));
-    connect(feedback.u2, Pice.power) annotation (
-      Line(points={{-84,66},{-84,78},{68,78},{68,63}},          color = {0, 0, 127}, smooth = Smooth.None));
+    connect(feedback.u2, icePow.power) annotation (Line(
+        points={{-84,66},{-84,78},{68,78},{68,63}},
+        color={0,0,127},
+        smooth=Smooth.None));
     connect(min1.u1, gain.y)
       annotation (Line(points={{-36,58},{-45,58}}, color={0,0,127}));
     annotation (
@@ -334,8 +346,8 @@ package Partial
             textString="P",
             textStyle={TextStyle.Bold,TextStyle.Italic})}),
       Diagram(coordinateSystem(extent={{-140,-100},{100,80}},     preserveAspectRatio=false),
-          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-62,-42},
-                {-18,-78}},                                                                                                                                                           textString = "follows the power
+          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-92,-64},
+                {-48,-100}},                                                                                                                                                          textString = "follows the power
 reference \nand computes consumption")}));
   end PartialIcePnew;
 
@@ -357,8 +369,8 @@ reference \nand computes consumption")}));
       Placement(visible = true, transformation(extent = {{30, 42}, {50, 62}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Sources.Torque iceTau annotation (
       Placement(visible = true, transformation(extent = {{4, 42}, {24, 62}}, rotation = 0)));
-    Modelica.Mechanics.Rotational.Sensors.PowerSensor Pice annotation (
-      Placement(transformation(extent = {{66, 62}, {86, 42}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor icePow
+      annotation (Placement(transformation(extent={{66,62},{86,42}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor w annotation (
       Placement(visible = true, transformation(origin = {58, 36}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
     Modelica.Blocks.Math.Product toPowW annotation (
@@ -400,18 +412,22 @@ reference \nand computes consumption")}));
       Line(points = {{24, 52}, {30, 52}}));
     connect(w.flange, inertia.flange_b) annotation (
       Line(points = {{58, 46}, {58, 52}, {50, 52}}));
-    connect(Pice.flange_a, inertia.flange_b) annotation (
-      Line(points = {{66, 52}, {50, 52}}));
+    connect(icePow.flange_a, inertia.flange_b)
+      annotation (Line(points={{66,52},{50,52}}));
     connect(toGramsPerkWh.u2, w.w) annotation (
       Line(points = {{48, 10}, {48, 20}, {58, 20}, {58, 25}}, color = {0, 0, 127}));
     connect(toPowW.u1, w.w) annotation (
       Line(points = {{-12, 22}, {-12, 25}, {58, 25}}, color = {0, 0, 127}));
     connect(gain.u, feedback.y) annotation (
       Line(points = {{-64, 52}, {-71, 52}}, color = {0, 0, 127}));
-    connect(Pice.flange_b, flange_a) annotation (
-      Line(points = {{86, 52}, {94, 52}, {94, 0}, {100, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(feedback.u2, Pice.power) annotation (
-      Line(points = {{-80, 60}, {-80, 72}, {68, 72}, {68, 63}}, color = {0, 0, 127}, smooth = Smooth.None));
+    connect(icePow.flange_b, flange_a) annotation (Line(
+        points={{86,52},{94,52},{94,0},{100,0}},
+        color={0,0,0},
+        smooth=Smooth.None));
+    connect(feedback.u2, icePow.power) annotation (Line(
+        points={{-80,60},{-80,72},{68,72},{68,63}},
+        color={0,0,127},
+        smooth=Smooth.None));
     connect(toGramsPerkWh.y, toG_perHour.u1) annotation (Line(points={{42,-13},{42,
             -20},{44,-20},{44,-28}}, color={0,0,127}));
     connect(toG_perHour.y, tokgFuel.u)
@@ -427,8 +443,8 @@ reference \nand computes consumption")}));
         fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),                                      graphics={  Text(extent={{-38,-34},
-                {6,-70}},                                                                                                                                                             textString = "follows the power
+      Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),                                      graphics={  Text(extent={{-26,-34},
+                {18,-70}},                                                                                                                                                            textString = "follows the power
 reference \nand computes consumption"), Line(points={{-96,52},{-82,52}}, color=
                 {255,0,00})}));
   end PartialIceP;

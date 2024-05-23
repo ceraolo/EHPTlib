@@ -6,11 +6,15 @@ model IcePnew "Extends PartialIce0 adding power input"
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-88,-120}),    iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-120})));
   Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=1e99)     annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-88,-36})));
+  Modelica.Blocks.Sources.BooleanConstant onSignal
+    annotation (Placement(transformation(extent={{-52,-60},{-36,-44}})));
 equation
   connect(limiter.u, powRef)
     annotation (Line(points={{-88,-48},{-88,-120}}, color={0,0,127}));
   connect(limiter.y, feedback.u1) annotation (Line(points={{-88,-25},{-88,24},{
           -104,24},{-104,58},{-92,58}}, color={0,0,127}));
+  connect(onSignal.y, switch1.u2)
+    annotation (Line(points={{-35.2,-52},{-4,-52}}, color={255,0,255}));
   annotation (
     Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>

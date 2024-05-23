@@ -15,17 +15,17 @@ package TestingModels
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
       Placement(transformation(extent={{68,-2},{48,18}})));
     Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 60, amplitude = 30) annotation (
-      Placement(transformation(extent={{-46,-38},{-26,-18}})));
+      Placement(transformation(extent={{-46,-32},{-26,-12}})));
   equation
     connect(iceT.flange_a, inertia.flange_a) annotation (
       Line(points={{4,8},{14,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{34,8},{48,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(iceT.tauRef, trapezoid.y) annotation (
-      Line(points={{-12,-3.8},{-12,-28},{-25,-28}},      color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-12,-3.8},{-12,-22},{-25,-22}},      color = {0, 0, 127}, smooth = Smooth.None));
   //    experiment(StopTime = 50),
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-50},{
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-40},{
               80,40}})),
       __Dymola_experimentSetupOutput,
       Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
@@ -36,7 +36,8 @@ package TestingModels
 <p>The user could compare the torque request tauRef with the torque generated and at the ICE flange (with this transient the inertia torques are very small and can be neglected). The user could also have a look at the rotational speeds and fuel consumption. </p>
 <p>The user can also use it with mapsOnFile=true and mapsOnFile=false, and check iceT.tokgFuel.</p>
 <p>They can change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
-</html>"));
+</html>"),
+      experiment(StopTime=60, __Dymola_Algorithm="Dassl"));
   end TestIceT;
 
   model TestIceP
@@ -84,6 +85,96 @@ package TestingModels
 </html>"),
       experiment(StopTime=60, __Dymola_Algorithm="Dassl"));
   end TestIceP;
+
+  model TestIceConnNew
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(phi(start = 0, fixed = true), J = 10) annotation (
+      Placement(transformation(extent = {{-14, 0}, {6, 20}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
+      Placement(transformation(extent = {{64, 0}, {44, 20}})));
+    IceConnPnew ice(
+      contrGain=0.5,wIceStart = 90, mapsFileName = "PSDmaps.txt") annotation (
+      Placement(transformation(extent = {{-42, 0}, {-22, 20}})));
+    SupportModels.ConnectorRelated.ToConnIcePowRef toConnIceTauRef annotation (
+      Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 90, origin = {-32, -18})));
+    Modelica.Blocks.Sources.Trapezoid powReq(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 60, amplitude = 10e3) annotation (
+      Placement(transformation(extent = {{-74, -30}, {-54, -10}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor outPow annotation (
+      Placement(transformation(extent = {{18, 0}, {38, 20}})));
+  equation
+    connect(inertia.flange_a, ice.flange_a) annotation (
+      Line(points = {{-14, 10}, {-22, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(toConnIceTauRef.conn, ice.conn) annotation (
+      Line(points={{-32,-12},{-32,-0.2}},     color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
+    connect(toConnIceTauRef.u, powReq.y) annotation (
+      Line(points = {{-32, -25.4}, {-32, -32}, {-44, -32}, {-44, -20}, {-53, -20}}, color = {0, 0, 127}, smooth = Smooth.None));
+    connect(inertia.flange_b, outPow.flange_a) annotation (
+      Line(points = {{6, 10}, {18, 10}}, color = {0, 0, 0}));
+    connect(loadTorque.flange, outPow.flange_b) annotation (
+      Line(points = {{44, 10}, {38, 10}}, color = {0, 0, 0}));
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-40},{
+              80,40}})),
+      experiment(StopTime = 50),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-80, -60}, {80, 60}})),
+      Documentation(info = "<html>
+<p>This is a simple test of model IceConn, loaded with a huge inertia and a quadratic dependent load torque.</p>
+<p>It shows that the generated power (variable icePowDel inside connectors and bus) follows the power request. The load power outPow.Power differs from the generated power due to the large inertia in-between. If closer matching between icePowDel and powReq.y is wanted the ice inner control gain contrGain can be raised.</p>
+<p>It shows also the fuel consumption output. The user could also have a look at the rotational speed. </p>
+</html>"));
+  end TestIceConnNew;
+
+  model TestIceConnOONew
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(phi(start = 0, fixed = true), J = 10) annotation (
+      Placement(transformation(extent = {{-14, 0}, {6, 20}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
+      Placement(transformation(extent = {{64, 0}, {44, 20}})));
+    IceConnPOOnew ice(
+      contrGain=0.5,wIceStart = 90, mapsFileName = "PSDmaps.txt") annotation (
+      Placement(transformation(extent = {{-42, 0}, {-22, 20}})));
+    SupportModels.ConnectorRelated.ToConnIcePowRef toConnIceTauRef annotation (
+      Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 90, origin = {-32, -18})));
+    Modelica.Blocks.Sources.Trapezoid powReq(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 60, amplitude = 10e3) annotation (
+      Placement(transformation(extent = {{-74, -30}, {-54, -10}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor outPow annotation (
+      Placement(transformation(extent = {{18, 0}, {38, 20}})));
+    SupportModels.ConnectorRelated.ToConnIceON toConnIceON annotation (
+        Placement(transformation(
+          extent={{-6,-6},{6,6}},
+          rotation=90,
+          origin={-16,-18})));
+    Modelica.Blocks.Sources.BooleanStep booleanStep(startTime=25, startValue=
+          true)
+      annotation (Placement(transformation(extent={{30,-34},{10,-14}})));
+  equation
+    connect(inertia.flange_a, ice.flange_a) annotation (
+      Line(points = {{-14, 10}, {-22, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(toConnIceTauRef.conn, ice.conn) annotation (
+      Line(points={{-32,-12},{-32,0.2}},      color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
+    connect(toConnIceTauRef.u, powReq.y) annotation (
+      Line(points = {{-32, -25.4}, {-32, -32}, {-44, -32}, {-44, -20}, {-53, -20}}, color = {0, 0, 127}, smooth = Smooth.None));
+    connect(inertia.flange_b, outPow.flange_a) annotation (
+      Line(points = {{6, 10}, {18, 10}}, color = {0, 0, 0}));
+    connect(loadTorque.flange, outPow.flange_b) annotation (
+      Line(points = {{44, 10}, {38, 10}}, color = {0, 0, 0}));
+    connect(booleanStep.y, toConnIceON.u) annotation (Line(points={{9,-24},{4,
+            -24},{4,-34},{-16,-34},{-16,-26}}, color={255,0,255}));
+    connect(toConnIceON.conn, ice.conn) annotation (Line(
+        points={{-16,-12},{-16,-6},{-32,-6},{-32,0.2}},
+        color={255,204,51},
+        thickness=0.5));
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-40},{80,
+              40}})),
+      experiment(StopTime = 50),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-80, -60}, {80, 60}})),
+      Documentation(info = "<html>
+<p>This is a simple test of model IceConn, loaded with a huge inertia and a quadratic dependent load torque.</p>
+<p>It shows that the generated power (variable icePowDel inside connectors and bus) follows the power request. The load power outPow.Power differs from the generated power due to the large inertia in-between. If closer matching between icePowDel and powReq.y is wanted the ice inner control gain contrGain can be raised.</p>
+<p>It shows also the fuel consumption output. The user could also have a look at the rotational speed. </p>
+</html>"));
+  end TestIceConnOONew;
 
   model TestOneFlange
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
@@ -146,31 +237,32 @@ package TestingModels
   end TestOneFlange;
 
   model TestIceConn
-    Modelica.Mechanics.Rotational.Components.Inertia inertia(phi(start = 0, fixed = true), J = 10) annotation (
-      Placement(transformation(extent = {{-14, 0}, {6, 20}})));
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(phi(start = 0, fixed = true), J=10)   annotation (
+      Placement(transformation(extent={{-10,0},{10,20}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
-      Placement(transformation(extent = {{64, 0}, {44, 20}})));
+      Placement(transformation(extent={{68,0},{48,20}})));
     IceConnP ice(wIceStart = 90, mapsFileName = "PSDmaps.txt") annotation (
-      Placement(transformation(extent = {{-42, 0}, {-22, 20}})));
+      Placement(transformation(extent={{-38,0},{-18,20}})));
     SupportModels.ConnectorRelated.ToConnIcePowRef toConnIceTauRef annotation (
-      Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 90, origin = {-32, -18})));
+      Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 90, origin={-28,-18})));
     Modelica.Blocks.Sources.Trapezoid powReq(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 60, amplitude = 10e3) annotation (
       Placement(transformation(extent = {{-74, -30}, {-54, -10}})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor outPow annotation (
-      Placement(transformation(extent = {{18, 0}, {38, 20}})));
+      Placement(transformation(extent={{22,0},{42,20}})));
   equation
     connect(inertia.flange_a, ice.flange_a) annotation (
-      Line(points = {{-14, 10}, {-22, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
+      Line(points={{-10,10},{-18,10}},      color = {0, 0, 0}, smooth = Smooth.None));
     connect(toConnIceTauRef.conn, ice.conn) annotation (
-      Line(points={{-32,-12},{-32,-0.2}},     color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
+      Line(points={{-28,-12},{-28,-0.2}},     color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
     connect(toConnIceTauRef.u, powReq.y) annotation (
-      Line(points = {{-32, -25.4}, {-32, -32}, {-44, -32}, {-44, -20}, {-53, -20}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-28,-25.4},{-28,-32},{-44,-32},{-44,-20},{-53,-20}},            color = {0, 0, 127}, smooth = Smooth.None));
     connect(inertia.flange_b, outPow.flange_a) annotation (
-      Line(points = {{6, 10}, {18, 10}}, color = {0, 0, 0}));
+      Line(points={{10,10},{22,10}},     color = {0, 0, 0}));
     connect(loadTorque.flange, outPow.flange_b) annotation (
-      Line(points = {{44, 10}, {38, 10}}, color = {0, 0, 0}));
+      Line(points={{48,10},{42,10}},      color = {0, 0, 0}));
     annotation (
-      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-80, -60}, {80, 60}})),
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-40},{
+              80,40}})),
       experiment(StopTime = 50),
       __Dymola_experimentSetupOutput,
       Icon(coordinateSystem(extent = {{-80, -60}, {80, 60}})),

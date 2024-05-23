@@ -20,9 +20,11 @@ equation
   connect(feedback.u1, conn.icePowRef) annotation (
     Line(points = {{-88, 52}, {-88, 52}, {-88, -98}, {0, -98}}, color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-  connect(Pice.power, conn.icePowDel) annotation (
-    Line(points = {{68, 63}, {68, 63}, {68, 6}, {78, 6}, {78, -98}, {0, -98}}, color = {0, 0, 127}),
-    Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
+  connect(icePow.power, conn.icePowDel) annotation (Line(points={{68,63},{68,63},
+          {68,6},{78,6},{78,-98},{0,-98}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
   connect(w.w, conn.iceW) annotation (
     Line(points = {{58, 25}, {58, 25}, {58, 6}, {58, -98}, {0, -98}}, color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
