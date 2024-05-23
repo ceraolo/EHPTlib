@@ -1,25 +1,15 @@
 within EHPTlib.MapBased;
-model IceConnPOO "Simple map-based ice model with connector; follows power request with ON-OFF"
-  extends Partial.PartialIceP(toGramsPerkWh(fileName = mapsFileName));
+model IceConnPOO
+  "Simple map-based ice model with connector; follows power request with ON-OFF"
+  extends Partial.PartialIcePnew(toGramsPerkWh(fileName = mapsFileName));
   import Modelica.Constants.*;
   // rad/s
 //  parameter String mapsFileName = "maps.txt" "Name of the file containing data maps (names: maxIceTau, specificCons, optiSpeed)";
   SupportModels.ConnectorRelated.Conn conn annotation (
     Placement(visible = true, transformation(extent = {{-20, -78}, {20, -118}}, rotation = 0), iconTransformation(extent = {{-20, -78}, {20, -118}}, rotation = 0)));
-  Modelica.Blocks.Logical.Switch switch1 annotation (
-    Placement(visible = true, transformation(origin = {2, -46}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
-  Modelica.Blocks.Sources.Constant zero(k = 0) annotation (
-    Placement(visible = true, transformation(extent = {{-46, -74}, {-26, -54}}, rotation = 0)));
+  Modelica.Blocks.Logical.Switch switch2 annotation (
+    Placement(visible = true, transformation(origin={-46,-28},  extent = {{-10, -10}, {10, 10}}, rotation=90)));
 equation
-  connect(tokW.y, switch1.u1) annotation (
-    Line(points = {{-18, -29}, {-18, -29}, {-18, -38}, {-10, -38}, {-10, -38}}, color = {0, 0, 127}));
-  connect(switch1.u3, zero.y) annotation (
-    Line(points = {{-10, -54}, {-18.5, -54}, {-18.5, -64}, {-25, -64}}, color = {0, 0, 127}));
-  connect(switch1.u2, conn.iceON) annotation (
-    Line(points = {{-10, -46}, {-60, -46}, {-60, -82}, {0, -82}, {0, -98}}, color = {255, 0, 255}));
-  connect(feedback.u1, conn.icePowRef) annotation (
-    Line(points = {{-88, 52}, {-88, 52}, {-88, -98}, {0, -98}}, color = {0, 0, 127}),
-    Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   connect(icePow.power, conn.icePowDel) annotation (Line(points={{68,63},{68,63},
           {68,6},{78,6},{78,-98},{0,-98}}, color={0,0,127}), Text(
       string="%second",
@@ -28,8 +18,24 @@ equation
   connect(w.w, conn.iceW) annotation (
     Line(points = {{58, 25}, {58, 25}, {58, 6}, {58, -98}, {0, -98}}, color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-  connect(toG_perHour.u2, switch1.y) annotation (Line(points={{32,-28},{32,-20},
-          {18,-20},{18,-46},{13,-46}}, color={0,0,127}));
+  connect(switch1.u2, conn.iceON) annotation (Line(points={{-4,-52},{-46,-52},{
+          -46,-90},{0,-90},{0,-98}}, color={255,0,255}), Text(
+      string="%second",
+      index=1,
+      extent={{-6,3},{-6,3}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(switch2.u1, conn.icePowRef) annotation (Line(points={{-54,-40},{-54,
+          -98},{0,-98}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{-3,-6},{-3,-6}},
+      horizontalAlignment=TextAlignment.Right));
+  connect(switch2.u3, zero.y) annotation (Line(points={{-38,-40},{-38,-56},{-10,
+          -56},{-10,-74},{-13,-74}}, color={0,0,127}));
+  connect(switch1.u2, switch2.u2) annotation (Line(points={{-4,-52},{-46,-52},{
+          -46,-40}}, color={255,0,255}));
+  connect(switch2.y, feedback.u1) annotation (Line(points={{-46,-17},{-46,-10},
+          {-92,-10},{-92,58}}, color={0,0,127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}})),
     Documentation(info = "<html>

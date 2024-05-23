@@ -1,13 +1,16 @@
 within EHPTlib.MapBased;
-model IceConnP "Simple map-based ice model with connector; follows power request"
-  extends Partial.PartialIceP;
+model IceConnP
+  "Simple map-based ice model with connector; follows power request"
+  extends Partial.PartialIcePnew;
   import Modelica.Constants.*;
   parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
   SupportModels.ConnectorRelated.Conn conn annotation (
     Placement(visible = true, transformation(extent = {{-20, -82}, {20, -122}}, rotation = 0), iconTransformation(extent = {{-20, -82}, {20, -122}}, rotation = 0)));
+  Modelica.Blocks.Sources.BooleanConstant onSignal
+    annotation (Placement(transformation(extent={{-56,-60},{-40,-44}})));
 equation
   connect(feedback.u1, conn.icePowRef) annotation (
-    Line(points = {{-88, 52}, {-88, 52}, {-88, -102}, {0, -102}}, color = {0, 0, 127}),
+    Line(points={{-92,58},{-92,58},{-92,-102},{0,-102}},          color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   connect(icePow.power, conn.icePowDel) annotation (Line(points={{68,63},{68,63},
           {68,6},{78,6},{78,-102},{0,-102}}, color={0,0,127}), Text(
@@ -17,8 +20,8 @@ equation
   connect(w.w, conn.iceW) annotation (
     Line(points={{58,25},{58,25},{58,6},{58,-102},{0,-102}},            color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-  connect(tokW.y, toG_perHour.u2) annotation (Line(points={{-18,-29},{-18,-34},
-          {18,-34},{18,-22},{32,-22},{32,-28}}, color={0,0,127}));
+  connect(onSignal.y, switch1.u2)
+    annotation (Line(points={{-39.2,-52},{-4,-52}}, color={255,0,255}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}}, initialScale = 0.1)),
     Documentation(info="<html>

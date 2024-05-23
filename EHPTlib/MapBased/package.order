@@ -2,9 +2,7 @@ Information
 TestingModels
 IceT
 IceP
-IcePnew
 IceConnP
-IceConnPnew
 IceT01
 OneFlange
 OneFlange2
@@ -14,7 +12,6 @@ TwoFlangeConn
 Genset
 GensetOO
 IceConnPOO
-IceConnPOOnew
 OneFlangeConn
 Partial
 ECUs
