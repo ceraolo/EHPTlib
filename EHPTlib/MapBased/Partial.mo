@@ -155,14 +155,14 @@ package Partial
           extent={{10,-10},{-10,10}},
           rotation=180)));
     Modelica.Blocks.Sources.RealExpression rotorW(y=w.w)   annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-76,0})));
+      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-76,6})));
     Modelica.Blocks.Math.Min min1
                                  annotation (
       Placement(transformation(extent={{-34,42},{-14,62}})));
     Modelica.Blocks.Logical.Switch switch1 annotation (
       Placement(visible = true, transformation(origin={8,-52},    extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
-      Placement(visible = true, transformation(extent={{-34,-80},{-14,-60}},      rotation = 0)));
+      Placement(visible = true, transformation(extent={{-34,-84},{-14,-64}},      rotation = 0)));
   equation
     connect(toPowW.y, tokW.u) annotation (
       Line(points = {{-18, -1}, {-18, -6}}, color = {0, 0, 127}));
@@ -191,10 +191,10 @@ package Partial
     connect(min1.y, iceTau.tau)
       annotation (Line(points={{-13,52},{2,52}}, color={0,0,127}));
     connect(toLimTau.u[1], rotorW.y)
-      annotation (Line(points={{-72,28},{-76,28},{-76,11}}, color={0,0,127}));
+      annotation (Line(points={{-72,28},{-76,28},{-76,17}}, color={0,0,127}));
     connect(min1.u2, toLimTau.y[1]) annotation (Line(points={{-36,46},{-42,46},{-42,
             28},{-49,28}}, color={0,0,127}));
-    connect(zero.y, switch1.u3) annotation (Line(points={{-13,-70},{-10,-70},{
+    connect(zero.y, switch1.u3) annotation (Line(points={{-13,-74},{-10,-74},{
             -10,-60},{-4,-60}}, color={0,0,127}));
     connect(toG_perHour.u2, switch1.y) annotation (Line(points={{32,-28},{32,
             -20},{22,-20},{22,-52},{19,-52}}, color={0,0,127}));
@@ -346,8 +346,8 @@ package Partial
             textString="P",
             textStyle={TextStyle.Bold,TextStyle.Italic})}),
       Diagram(coordinateSystem(extent={{-140,-100},{100,80}},     preserveAspectRatio=false),
-          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-92,-64},
-                {-48,-100}},                                                                                                                                                          textString = "follows the power
+          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-98,-64},
+                {-54,-100}},                                                                                                                                                          textString = "follows the power
 reference \nand computes consumption")}));
   end PartialIcePnew;
 
