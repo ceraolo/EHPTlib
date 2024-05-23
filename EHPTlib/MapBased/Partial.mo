@@ -183,11 +183,9 @@ package Partial
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request trhough an expandable connector</span></p>
-<p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
-<h4>Inherited models connect torque request to the free input of min() block.</h4>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceT01 used when ICE must follow a Torque request in per unit of the maximum allowed</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}},
             fillColor={255,255,255},
@@ -197,11 +195,12 @@ package Partial
                 {124,-86}},                                                                                                                        textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),
+      Diagram(coordinateSystem(                                   preserveAspectRatio=false,
+            extent={{-100,-100},{100,80}}),
           graphics={Line(points={{-20,52},{-4,52}}, color={238,46,47})}));
   end PartialIceBase;
 
-  model PartialIceNm "Partial map-based ice model"
+  model PartialIceTNm "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
@@ -252,12 +251,14 @@ package Partial
       annotation (Line(points={{-13,52},{2,52}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Models that inherit from this:</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- partialIceP that contains an in ternal loop so that the request from the exterior is now in power instead of torque</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request trhough an expandable connector</span></p>
-<p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
-<h4>Inherited models connect torque request to the free input of min() block.</h4>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request through an expandable connector</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnPOO used when ICE must follow a Power request through an expandable connector, and also ON7Off can be commanded from the outside</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
+<p><span style=\"font-family: Arial;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}},
             fillColor={255,255,255},
@@ -269,7 +270,7 @@ package Partial
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),
           graphics={Line(points={{-50,58},{-36,58}}, color={255,0,00})}));
-  end PartialIceNm;
+  end PartialIceTNm;
 
   model PartialIceT01 "Partial map-based ice model"
     import Modelica.Constants.*;
@@ -329,12 +330,9 @@ package Partial
       annotation (Line(points={{-60,-36},{-60,-102}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request trhough an expandable connector</span></p>
-<p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
-<h4>Inherited models connect torque request to the free input of min() block.</h4>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in per unit of the maximum torque. Models that inherit from this:</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT01 used when ICE must follow a Torque request in per unit of the maximum torque.</span></p>
+<p>See its documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</p>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}},
             fillColor={255,255,255},
@@ -344,100 +342,11 @@ package Partial
                 {124,-86}},                                                                                                                        textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false)));
+      Diagram(coordinateSystem(                                   preserveAspectRatio=false)));
   end PartialIceT01;
 
-  partial model PartialIce "Simple  map-based Internal Combustion Engine model"
-    import Modelica.Constants.*;
-    parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
-    // rad/s
-    parameter Modelica.Units.SI.MomentOfInertia iceJ=0.5
-      "ICE moment of inertia";
-    parameter Boolean tablesOnFile = false "= true, if tables are got from a file";
-    parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
-      Dialog(enable = tablesOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
-    parameter Real maxIceTau[:, :] = [0, 80; 100, 80; 350, 95; 500, 95] "First column: speed (rad/s); second column: maximum ICE torque (Nm)" annotation (
-      Dialog(enable = not tablesOnFile));
-    Modelica.Mechanics.Rotational.Sensors.SpeedSensor w annotation (
-      Placement(visible = true, transformation(origin = {52, 44}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
-    Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a annotation (
-      Placement(visible = true, transformation(extent={{90,-10},{110,10}},     rotation = 0), iconTransformation(extent={{90,-10},
-              {110,10}},                                                                                                                         rotation = 0)));
-    Modelica.Mechanics.Rotational.Sensors.PowerSensor icePow annotation (
-      Placement(visible = true, transformation(extent = {{66, 50}, {86, 70}}, rotation = 0)));
-    Modelica.Mechanics.Rotational.Sources.Torque Tice annotation (
-      Placement(visible = true, transformation(extent = {{-12, 50}, {8, 70}}, rotation = 0)));
-    Modelica.Mechanics.Rotational.Components.Inertia inertia(w(fixed = true, start = wIceStart, displayUnit = "rpm"), J = iceJ) annotation (
-      Placement(visible = true, transformation(extent = {{16, 50}, {36, 70}}, rotation = 0)));
-    Modelica.Blocks.Math.Product toPowW annotation (
-      Placement(visible = true, transformation(origin = {0, 12}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    Modelica.Blocks.Math.Product toG_perHour annotation (
-      Placement(visible = true, transformation(origin={30,-46},    extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    //  Modelica.Blocks.Continuous.Integrator toGrams(k = 1 / 3600000.0)
-    // annotation(Placement(visible = true, transformation(origin = {26, -44},
-    //extent = {{-10, -10}, {10, 10}}, rotation = 270)));
-    Modelica.Blocks.Tables.CombiTable1Dv toLimTau(tableOnFile=false,
-                                                  table=maxIceTau)
-      annotation (Placement(visible=true, transformation(
-          origin={-72,66},
-          extent={{10,-10},{-10,10}},
-          rotation=180)));
-    Modelica.Blocks.Sources.RealExpression rotorW(y = w.w) annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-88, 36})));
-    Modelica.Blocks.Math.Gain tokW(k = 1e-3) annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={0,-16})));
-    Modelica.Blocks.Tables.CombiTable2Ds toSpecCons(
-      tableOnFile=true,
-      tableName="specificCons") annotation (Placement(transformation(
-          extent={{-10,10},{10,-10}},
-          rotation=-90,
-          origin={40,0})));
-  equation
-    connect(toPowW.u1, w.w) annotation (
-      Line(points = {{6, 24}, {6, 33}, {52, 33}}, color = {0, 0, 127}));
-    connect(w.flange, inertia.flange_b) annotation (
-      Line(points = {{52, 54}, {52, 60}, {36, 60}}));
-    connect(icePow.flange_a, inertia.flange_b) annotation (
-      Line(points = {{66, 60}, {36, 60}}));
-    connect(Tice.flange, inertia.flange_a) annotation (
-      Line(points = {{8, 60}, {16, 60}}));
-    connect(icePow.flange_b, flange_a) annotation (
-      Line(points={{86,60},{94,60},{94,0},{100,0}}));
-    connect(toLimTau.u[1], rotorW.y) annotation (
-      Line(points = {{-84, 66}, {-88, 66}, {-88, 47}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(toPowW.y, tokW.u) annotation (
-      Line(points={{0,1},{0,-2},{2.22045e-15,-4}},                                                     color = {0, 0, 127}, smooth = Smooth.None));
-    connect(toSpecCons.y, toG_perHour.u1) annotation (
-      Line(points={{40,-11},{40,-24},{36,-24},{36,-34}},          color = {0, 0, 127}));
-    connect(toG_perHour.u2, tokW.y) annotation (
-      Line(points={{24,-34},{24,-30},{0,-30},{0,-27}},          color = {0, 0, 127}));
-    connect(toSpecCons.u2, w.w) annotation (
-      Line(points = {{46, 12}, {46, 28}, {52, 28}, {52, 33}}, color = {0, 0, 127}));
-    connect(toSpecCons.u1, Tice.tau) annotation (
-      Line(points = {{34, 12}, {34, 12}, {34, 38}, {34, 42}, {-22, 42}, {-22, 60}, {-14, 60}}, color = {0, 0, 127}));
-    connect(toPowW.u2, Tice.tau) annotation (
-      Line(points = {{-6, 24}, {-6, 42}, {-22, 42}, {-22, 60}, {-14, 60}}, color = {0, 0, 127}));
-    annotation (
-      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-60},
-              {100,80}})),
-      Documentation(info="<html>
-<h4>Basic map-based ICE model.</h4>
-<p>Partial ICE model.</p>
-</html>"),
-      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-        fillPattern = FillPattern.Solid), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent={{-24,48},{76,-44}}),      Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent={{76,10},{100,-10}}),     Text(origin={0,28},    lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent={{-90,48},
-                {-32,-46}}),                                                                                                                                                                                                        Rectangle(fillColor = {95, 95, 95},
-        fillPattern = FillPattern.Solid, extent={{-90,2},{-32,-20}}),     Line(points={{-60,36},
-                {-60,12}}),                                                                                      Polygon(points={{-60,46},
-                {-66,36},{-54,36},{-60,46}}),                                                                                                                                    Polygon(points={{-60,4},
-                {-66,14},{-54,14},{-60,4}}),                                                                                                                                                                                                     Rectangle(fillColor = {135, 135, 135},
-        fillPattern = FillPattern.Solid, extent={{-64,-20},{-54,-40}})}));
-  end PartialIce;
-
   partial model PartialIceP "Extends PartialIce0 adding power input"
-    extends PartialIceNm;
+    extends PartialIceTNm;
 
     Modelica.Blocks.Math.Feedback feedback annotation (
       Placement(transformation(extent={{-94,68},{-74,48}})));

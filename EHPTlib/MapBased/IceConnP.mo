@@ -7,7 +7,7 @@ model IceConnP
   SupportModels.ConnectorRelated.Conn conn annotation (
     Placement(visible = true, transformation(extent = {{-20, -82}, {20, -122}}, rotation = 0), iconTransformation(extent = {{-20, -82}, {20, -122}}, rotation = 0)));
   Modelica.Blocks.Sources.BooleanConstant onSignal
-    annotation (Placement(transformation(extent={{-56,-60},{-40,-44}})));
+    annotation (Placement(transformation(extent={{-54,-60},{-38,-44}})));
 equation
   connect(feedback.u1, conn.icePowRef) annotation (
     Line(points={{-92,58},{-92,58},{-92,-102},{0,-102}},          color = {0, 0, 127}),
@@ -21,7 +21,7 @@ equation
     Line(points={{58,25},{58,25},{58,6},{58,-102},{0,-102}},            color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   connect(onSignal.y, switch1.u2)
-    annotation (Line(points={{-39.2,-52},{-4,-52}}, color={255,0,255}));
+    annotation (Line(points={{-37.2,-52},{-4,-52}}, color={255,0,255}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}}, initialScale = 0.1)),
     Documentation(info="<html>

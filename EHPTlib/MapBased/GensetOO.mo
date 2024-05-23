@@ -28,7 +28,7 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
     Placement(visible = true, transformation(extent = {{-72, -10}, {-52, 10}}, rotation = 0)));
   OneFlange gen(wMax = maxGenW, mapsFileName = mapsFileName, mapsOnFile = true, powMax = maxPow, tauMax = maxTau, effTableName = "gensetDriveEffTable") annotation (
     Placement(visible = true, transformation(extent = {{68, 2}, {48, -18}}, rotation = 0)));
-  IceT01 mbIce(wIceStart = wIceStart, mapsFileName = mapsFileName, iceJ = 10, tablesOnFile = true) annotation (
+  IceT01 mbIce(wIceStart = wIceStart, mapsFileName = mapsFileName, iceJ = 10, mapsOnFile = true) annotation (
     Placement(visible = true, transformation(extent = {{-36, -22}, {-16, -2}}, rotation = 0)));
   Modelica.Blocks.Math.Gain revGain(k = -0.9 * gsRatio) annotation (
     Placement(visible = true, transformation(extent = {{-10, 10}, {10, 30}}, rotation = 0)));
@@ -50,7 +50,7 @@ equation
   connect(mbIce.flange_a, idealGear.flange_a) annotation (
     Line(points={{-16,-12},{-12,-12},{-6,-12},{-6,-9},{0,-9}}));
   connect(mbIce.nTauRef, gms.throttle) annotation (
-    Line(points={{-32,-20},{-32,-26},{-51,-26},{-51,-6}},          color = {0, 0, 127}));
+    Line(points={{-32,-22.2},{-32,-26},{-51,-26},{-51,-6}},        color = {0, 0, 127}));
   connect(ON, gms.on) annotation (
     Line(points = {{-55, 69}, {-55, 18}, {-73.8, 18}, {-73.8, 6}}, color = {255, 0, 255}));
   connect(limiter.y, gms.pRef) annotation (
@@ -62,7 +62,7 @@ equation
   connect(speedSensor.flange, idealGear.flange_a) annotation (
     Line(points = {{-18, -40}, {-6, -40}, {-6, -9}, {0, -9}}));
   connect(toGrams.u, mbIce.fuelCons) annotation (
-    Line(points = {{16, -38}, {2, -38}, {2, -30}, {-20, -30}, {-20, -21}}, color = {0, 0, 127}));
+    Line(points={{16,-38},{2,-38},{2,-30},{-20,-30},{-20,-21.8}},          color = {0, 0, 127}));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}})),
     Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},

@@ -31,7 +31,7 @@ model Genset "GenSet GMS+GEN+SEngine"
     tauMax=maxTau,
     effTableName="gensetDriveEffTable") annotation (Placement(visible=true,
         transformation(extent={{68,18},{48,-2}}, rotation=0)));
-  IceT01 mBiceT(tablesOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart) annotation (
+  IceT01 mBiceT(mapsOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart) annotation (
     Placement(transformation(extent={{-34,-2},{-14,20}})));
   Modelica.Blocks.Math.Gain gain(k = -1) annotation (
     Placement(transformation(extent = {{-14, 30}, {6, 50}})));
@@ -60,13 +60,13 @@ equation
   connect(limiter.y, myGMS.pRef) annotation (
     Line(points = {{-80, 43}, {-80, 20}, {-72, 20}}, color = {0, 0, 127}, smooth = Smooth.None));
   connect(mBiceT.nTauRef, myGMS.throttle) annotation (
-    Line(points={{-30,0.2},{-30,-6},{-49,-6},{-49,14}},         color = {0, 0, 127}));
+    Line(points={{-30,-2.22},{-30,-6},{-49,-6},{-49,14}},       color = {0, 0, 127}));
   connect(speedSensor.flange, mBiceT.flange_a) annotation (
     Line(points={{-16,-20},{-6,-20},{-6,9},{-14,9}},            color = {0, 0, 0}));
   connect(gain.u, myGMS.tRef) annotation (
     Line(points = {{-16, 40}, {-40, 40}, {-40, 26}, {-49, 26}}, color = {0, 0, 127}));
   connect(toGrams.u, mBiceT.fuelCons) annotation (
-    Line(points={{16,-32},{8,-32},{8,-10},{-18,-10},{-18,-0.9}},                   color = {0, 0, 127}));
+    Line(points={{16,-32},{8,-32},{8,-10},{-18,-10},{-18,-1.78}},                  color = {0, 0, 127}));
   connect(idealGear.flange_a, mBiceT.flange_a) annotation (
     Line(points={{0,9},{-14,9}},                            color = {0, 0, 0}));
   connect(idealGear.flange_b, IcePow.flange_a) annotation (

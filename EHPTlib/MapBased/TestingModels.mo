@@ -4,7 +4,7 @@ package TestingModels
 
   model TestIceT "Test IceT"
     IceT iceT(
-      wIceStart=90,
+      wIceStart=220.0,
       mapsOnFile=true,
       mapsFileName=Modelica.Utilities.Files.loadResource(
           "modelica://EHPTlib/Resources/PSDmaps.txt"),
@@ -14,7 +14,8 @@ package TestingModels
       Placement(transformation(extent={{14,-2},{34,18}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
       Placement(transformation(extent={{68,-2},{48,18}})));
-    Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 60, amplitude = 30) annotation (
+    Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset=400.0,amplitude=200.0)
+                                                                                                                                                  annotation (
       Placement(transformation(extent={{-46,-32},{-26,-12}})));
   equation
     connect(iceT.flange_a, inertia.flange_a) annotation (
@@ -23,7 +24,6 @@ package TestingModels
       Line(points={{34,8},{48,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(iceT.tauRef, trapezoid.y) annotation (
       Line(points={{-12,-3.8},{-12,-22},{-25,-22}},      color = {0, 0, 127}, smooth = Smooth.None));
-  //    experiment(StopTime = 50),
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-40},{
               80,40}})),
@@ -42,19 +42,19 @@ package TestingModels
 
   model TestIceT01 "Test IceT01"
     IceT01 iceT(
-      wIceStart=90,
+      wIceStart=210.0,
       mapsOnFile=true,
       mapsFileName=Modelica.Utilities.Files.loadResource(
           "modelica://EHPTlib/Resources/PSDmaps.txt"),
       specConsName="iceSpecificCons")
       annotation (Placement(transformation(extent={{-16,-2},{4,18}})));
-    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation (
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J=10.0,  phi(start = 0, fixed = true)) annotation (
       Placement(transformation(extent={{14,-2},{34,18}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
       Placement(transformation(extent={{68,-2},{48,18}})));
     Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10,
-      offset=0.4,
-      amplitude=0.2) annotation (
+      offset=0.5,
+      amplitude=0.3) annotation (
       Placement(transformation(extent={{-46,-32},{-26,-12}})));
   equation
     connect(iceT.flange_a, inertia.flange_a) annotation (
