@@ -1,7 +1,7 @@
 within EHPTlib.MapBased;
 model IceConnPOO
   "Simple map-based ice model with connector; follows power request with ON-OFF"
-  extends Partial.PartialIcePnew(toGramsPerkWh(fileName = mapsFileName));
+  extends Partial.PartialIceP   (toGramsPerkWh(fileName = mapsFileName));
   import Modelica.Constants.*;
   // rad/s
 //  parameter String mapsFileName = "maps.txt" "Name of the file containing data maps (names: maxIceTau, specificCons, optiSpeed)";

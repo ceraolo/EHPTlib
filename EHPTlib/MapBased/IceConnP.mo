@@ -1,7 +1,7 @@
 within EHPTlib.MapBased;
 model IceConnP
   "Simple map-based ice model with connector; follows power request"
-  extends Partial.PartialIcePnew;
+  extends Partial.PartialIceP;
   import Modelica.Constants.*;
   parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
   SupportModels.ConnectorRelated.Conn conn annotation (

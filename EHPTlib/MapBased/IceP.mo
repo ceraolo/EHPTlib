@@ -1,6 +1,6 @@
 within EHPTlib.MapBased;
 model IceP "Extends PartialIce0 adding power input"
-  extends Partial.PartialIcePnew;
+  extends Partial.PartialIceP;
 
   Modelica.Blocks.Interfaces.RealInput powRef "torque request (positive when motor)" annotation (
     Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-88,-120}),    iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-120})));

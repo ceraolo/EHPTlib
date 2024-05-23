@@ -2,7 +2,7 @@ within EHPTlib.MapBased;
 package TestingModels
   extends Modelica.Icons.ExamplesPackage;
 
-  model TestIceT
+  model TestIceT "Test IceT"
     IceT iceT(
       wIceStart=90,
       mapsOnFile=true,
@@ -40,13 +40,51 @@ package TestingModels
       experiment(StopTime=60, __Dymola_Algorithm="Dassl"));
   end TestIceT;
 
-  model TestIceP
+  model TestIceT01 "Test IceT01"
+    IceT01 iceT(
+      wIceStart=90,
+      mapsOnFile=true,
+      mapsFileName=Modelica.Utilities.Files.loadResource(
+          "modelica://EHPTlib/Resources/PSDmaps.txt"),
+      specConsName="iceSpecificCons")
+      annotation (Placement(transformation(extent={{-16,-2},{4,18}})));
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation (
+      Placement(transformation(extent={{14,-2},{34,18}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
+      Placement(transformation(extent={{68,-2},{48,18}})));
+    Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10,
+      offset=0.4,
+      amplitude=0.2) annotation (
+      Placement(transformation(extent={{-46,-32},{-26,-12}})));
+  equation
+    connect(iceT.flange_a, inertia.flange_a) annotation (
+      Line(points={{4,8},{14,8}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(inertia.flange_b, loadTorque.flange) annotation (
+      Line(points={{34,8},{48,8}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(iceT.nTauRef, trapezoid.y) annotation (Line(points={{-12,-2.2},{-12,
+            -22},{-25,-22}}, color={0,0,127}));
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-40},{
+              80,40}})),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
+      Documentation(info="<html>
+<p>This is a simple test of model IceT.</p>
+<p>It shows that the generated torque follows the torque request as long as the maximum allowed is not overcome; otherwise this maximum is generated.</p>
+<p>It shows also the fuel consumption output.</p>
+<p>The user could compare the torque request tauRef with the torque generated and at the ICE flange (with this transient the inertia torques are very small and can be neglected). The user could also have a look at the rotational speeds and fuel consumption. </p>
+<p>The user can also use it with mapsOnFile=true and mapsOnFile=false, and check iceT.tokgFuel.</p>
+<p>They can change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
+</html>"),
+      experiment(StopTime=60, __Dymola_Algorithm="Dassl"));
+  end TestIceT01;
+
+  model TestIceP "Test IceP"
     IceP iceP(
       contrGain=1,
       wIceStart=90,
       mapsOnFile=false,
-      mapsFileName=Modelica.Utilities.Files.loadResource(
-          "modelica://EHPTlib/Resources/PSDmaps.txt"),
+      mapsFileName=Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"),
       specConsName="iceSpecificCons")
       annotation (Placement(transformation(extent={{-22,-2},{-2,18}})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation (
@@ -86,7 +124,7 @@ package TestingModels
       experiment(StopTime=60, __Dymola_Algorithm="Dassl"));
   end TestIceP;
 
-  model TestIceConn
+  model TestIceConn "Test IceConn"
     Modelica.Mechanics.Rotational.Components.Inertia inertia(phi(start = 0, fixed = true), J = 10) annotation (
       Placement(transformation(extent = {{-14, 0}, {6, 20}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
@@ -126,7 +164,7 @@ package TestingModels
 </html>"));
   end TestIceConn;
 
-  model TestIceConnOO
+  model TestIceConnOO "Test IceConnOO"
     Modelica.Mechanics.Rotational.Components.Inertia inertia(phi(start = 0, fixed = true), J = 10) annotation (
       Placement(transformation(extent = {{-14, 0}, {6, 20}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
@@ -170,12 +208,12 @@ package TestingModels
         points={{-16,-12},{-16,-6},{-32,-6},{-32,0.2}},
         color={255,204,51},
         thickness=0.5));
-    connect(stepOn.y, or1.u1) annotation (Line(points={{59.3,-13},{27.6,-13},{
-            27.6,-24}}, color={255,0,255}));
-    connect(stepOff.y, or1.u2) annotation (Line(points={{39.3,-29},{39.3,-30.4},
-            {27.6,-30.4}}, color={255,0,255}));
-    connect(or1.y, toConnIceON.u) annotation (Line(points={{9.2,-24},{2,-24},{2,
-            -32},{-16,-32},{-16,-26}}, color={255,0,255}));
+    connect(stepOn.y, or1.u1) annotation (Line(points={{59.3,-13},{27.6,-13},{27.6,
+            -24}}, color={255,0,255}));
+    connect(stepOff.y, or1.u2) annotation (Line(points={{39.3,-29},{39.3,-30.4},{27.6,
+            -30.4}}, color={255,0,255}));
+    connect(or1.y, toConnIceON.u) annotation (Line(points={{9.2,-24},{2,-24},{2,-32},
+            {-16,-32},{-16,-26}}, color={255,0,255}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-40},{80,
               40}})),
