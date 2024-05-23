@@ -1,4 +1,4 @@
-﻿within EHPTlib.ElectricDrives.SMArelated;
+within EHPTlib.ElectricDrives.SMArelated;
 model MTPAalExperimental
   "MTPA logic for an anisotropic PMSM machine with current limitation"
   // Non-Ascii Symbol to cause UTF-8 saving by Dymola: €

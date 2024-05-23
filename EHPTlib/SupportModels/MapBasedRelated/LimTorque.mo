@@ -1,4 +1,4 @@
-﻿within EHPTlib.SupportModels.MapBasedRelated;
+within EHPTlib.SupportModels.MapBasedRelated;
 block LimTorque "Torque limiter"
   Modelica.Blocks.Interfaces.RealInput w annotation (
     Placement(transformation(extent = {{-140, -20}, {-100, 20}}), iconTransformation(extent = {{-140, -20}, {-100, 20}})));

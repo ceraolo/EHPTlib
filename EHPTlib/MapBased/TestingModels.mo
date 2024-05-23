@@ -3,8 +3,13 @@ package TestingModels
   extends Modelica.Icons.ExamplesPackage;
 
   model TestIceT
-    IceT iceT(wIceStart = 90) annotation (
-      Placement(transformation(extent={{-16,-2},{4,18}})));
+    IceT iceT(
+      wIceStart=90,
+      mapsOnFile=true,
+      mapsFileName=Modelica.Utilities.Files.loadResource(
+          "modelica://EHPTlib/Resources/PSDmaps.txt"),
+      specConsName="iceSpecificCons")
+      annotation (Placement(transformation(extent={{-16,-2},{4,18}})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation (
       Placement(transformation(extent={{14,-2},{34,18}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
@@ -21,21 +26,16 @@ package TestingModels
   //    experiment(StopTime = 50),
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-50},{
-              80,50}}),                                                                       graphics={Text(
-            extent={{6,-18},{64,-44}},
-            textColor={238,46,47},
-            textString="Model not working, see info")}),
+              80,40}})),
       __Dymola_experimentSetupOutput,
       Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
       Documentation(info="<html>
-<p><br><b>Model IceT works only when parameter tablesOnFile=true </b>(Implementation related to TablesOnFile=false has still to be finalised).<b> </b></p>
-<b>Therefore TestIceT is currently not working</b>
-<p>Because of this, the experiment annotation has been commented out.</p>
-<p><br>*******************************************************************************************</p>
 <p>This is a simple test of model IceT.</p>
 <p>It shows that the generated torque follows the torque request as long as the maximum allowed is not overcome; otherwise this maximum is generated.</p>
 <p>It shows also the fuel consumption output.</p>
 <p>The user could compare the torque request tauRef with the torque generated and at the ICE flange (with this transient the inertia torques are very small and can be neglected). The user could also have a look at the rotational speeds and fuel consumption. </p>
+<p>The user can also use it with mapsOnFile=true and mapsOnFile=false, and check iceT.tokgFuel.</p>
+<p>They can change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
 </html>"));
   end TestIceT;
 
@@ -116,7 +116,7 @@ package TestingModels
     connect(inertia.flange_a, ice.flange_a) annotation (
       Line(points = {{-14, 10}, {-22, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(toConnIceTauRef.conn, ice.conn) annotation (
-      Line(points = {{-32, -12}, {-32, 0.2}}, color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
+      Line(points={{-32,-12},{-32,-0.2}},     color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
     connect(toConnIceTauRef.u, powReq.y) annotation (
       Line(points = {{-32, -25.4}, {-32, -32}, {-44, -32}, {-44, -20}, {-53, -20}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(inertia.flange_b, outPow.flange_a) annotation (
