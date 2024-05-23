@@ -203,7 +203,8 @@ package Partial
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),                                               Rectangle(fillColor = {192, 192, 192},
         fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(                  extent={{-72,-52},
+                {124,-86}},                                                                                                                        textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),
@@ -299,6 +300,45 @@ package Partial
         fillPattern = FillPattern.Solid, extent={{-64,-20},{-54,-40}})}));
   end PartialIce;
 
+  partial model PartialIcePnew "Extends PartialIce0 adding power input"
+    extends PartialIce0;
+
+    Modelica.Blocks.Math.Feedback feedback annotation (
+      Placement(transformation(extent={{-94,68},{-74,48}})));
+    Modelica.Blocks.Math.Gain gain(k=contrGain)   annotation (
+      Placement(visible = true, transformation(extent={{-66,48},{-46,68}},      rotation = 0)));
+  equation
+    connect(gain.u,feedback. y) annotation (
+      Line(points={{-68,58},{-75,58}},      color = {0, 0, 127}));
+    connect(feedback.u2, Pice.power) annotation (
+      Line(points={{-84,66},{-84,78},{68,78},{68,63}},          color = {0, 0, 127}, smooth = Smooth.None));
+    connect(min1.u1, gain.y)
+      annotation (Line(points={{-36,58},{-45,58}}, color={0,0,127}));
+    annotation (
+      Documentation(info="<html>
+<p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
+<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request trhough an expandable connector</span></p>
+<p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
+<h4>Inherited models connect torque request to the free input of min() block.</h4>
+</html>"),
+      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}),                                                                                  Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+        fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
+        fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}}),
+          Text(
+            extent={{-88,-58},{-34,-90}},
+            textColor={162,29,33},
+            textString="P",
+            textStyle={TextStyle.Bold,TextStyle.Italic})}),
+      Diagram(coordinateSystem(extent={{-140,-100},{100,80}},     preserveAspectRatio=false),
+          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-62,-42},
+                {-18,-78}},                                                                                                                                                           textString = "follows the power
+reference \nand computes consumption")}));
+  end PartialIcePnew;
+
   model PartialIceP "Simple map-based ice model with connector and Power request"
     import Modelica.Constants.*;
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
@@ -380,9 +420,11 @@ package Partial
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model to be used when input is power request.</span></p>
 </html>"),
-      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
+      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}},
+            fillColor={255,255,255},
+            fillPattern=FillPattern.Solid),                                               Rectangle(fillColor = {192, 192, 192},
         fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"), Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),                                      graphics={  Text(extent={{-38,-34},
@@ -702,37 +744,4 @@ reference \nand computes consumption"), Line(points={{-96,52},{-82,52}}, color=
 </html>"));
   end PartialOneFlange2LF;
 
-  partial model PartialIcePnew "Extends PartialIce0 adding power input"
-    extends PartialIce0;
-
-    Modelica.Blocks.Math.Feedback feedback annotation (
-      Placement(transformation(extent={{-94,68},{-74,48}})));
-    Modelica.Blocks.Math.Gain gain(k=contrGain)   annotation (
-      Placement(visible = true, transformation(extent={{-66,48},{-46,68}},      rotation = 0)));
-  equation
-    connect(gain.u,feedback. y) annotation (
-      Line(points={{-68,58},{-75,58}},      color = {0, 0, 127}));
-    connect(feedback.u2, Pice.power) annotation (
-      Line(points={{-84,66},{-84,78},{68,78},{68,63}},          color = {0, 0, 127}, smooth = Smooth.None));
-    connect(min1.u1, gain.y)
-      annotation (Line(points={{-36,58},{-45,58}}, color={0,0,127}));
-    annotation (
-      Documentation(info="<html>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request trhough an expandable connector</span></p>
-<p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
-<h4>Inherited models connect torque request to the free input of min() block.</h4>
-</html>"),
-      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(origin = {-2, 0}, extent = {{-140, -52}, {140, -86}}, textString = "J=%J"), Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
-        fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
-        fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent={{-140,-100},{100,80}},     preserveAspectRatio=false),
-          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-62,-42},
-                {-18,-78}},                                                                                                                                                           textString = "follows the power
-reference \nand computes consumption")}));
-  end PartialIcePnew;
 end Partial;

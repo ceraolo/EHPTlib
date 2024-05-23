@@ -60,7 +60,7 @@ equation
   connect(limiter.y, myGMS.pRef) annotation (
     Line(points = {{-80, 43}, {-80, 20}, {-72, 20}}, color = {0, 0, 127}, smooth = Smooth.None));
   connect(mBiceT.nTauRef, myGMS.throttle) annotation (
-    Line(points={{-30,-2},{-30,-6},{-49,-6},{-49,14}},          color = {0, 0, 127}));
+    Line(points={{-30,0.2},{-30,-6},{-49,-6},{-49,14}},         color = {0, 0, 127}));
   connect(speedSensor.flange, mBiceT.flange_a) annotation (
     Line(points={{-16,-20},{-6,-20},{-6,9},{-14,9}},            color = {0, 0, 0}));
   connect(gain.u, myGMS.tRef) annotation (

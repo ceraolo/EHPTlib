@@ -50,7 +50,7 @@ equation
   connect(mbIce.flange_a, idealGear.flange_a) annotation (
     Line(points={{-16,-12},{-12,-12},{-6,-12},{-6,-9},{0,-9}}));
   connect(mbIce.nTauRef, gms.throttle) annotation (
-    Line(points = {{-32, -22}, {-32, -26}, {-51, -26}, {-51, -6}}, color = {0, 0, 127}));
+    Line(points={{-32,-20},{-32,-26},{-51,-26},{-51,-6}},          color = {0, 0, 127}));
   connect(ON, gms.on) annotation (
     Line(points = {{-55, 69}, {-55, 18}, {-73.8, 18}, {-73.8, 6}}, color = {255, 0, 255}));
   connect(limiter.y, gms.pRef) annotation (

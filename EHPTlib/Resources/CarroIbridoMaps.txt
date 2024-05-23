@@ -1,0 +1,19 @@
+#1
+
+# maxIceTau (della Volpe dimezzata)
+#   First column: speed, 2nd column: torque
+# specificCons  (=specific consumption)
+#   First row: (from column 2) speed (rad/s), 1st column (from row 2): torque; body: spec. consumption.
+
+double maxIceTau (7,2)
+100	75
+200	90
+300	93
+400	96
+500	95
+600	80
+
+double specificCons(3,3)
+	0	0	1
+	0	1	1
+	1	1	1

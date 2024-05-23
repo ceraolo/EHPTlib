@@ -22,7 +22,7 @@ package TestingModels
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{34,8},{48,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(iceT.tauRef, trapezoid.y) annotation (
-      Line(points={{-12,-2},{-12,-28},{-25,-28}},        color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-12,-3.8},{-12,-28},{-25,-28}},      color = {0, 0, 127}, smooth = Smooth.None));
   //    experiment(StopTime = 50),
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-50},{
@@ -38,6 +38,52 @@ package TestingModels
 <p>They can change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
 </html>"));
   end TestIceT;
+
+  model TestIceP
+    IcePnew iceP(
+      contrGain=1,
+      wIceStart=90,
+      mapsOnFile=false,
+      mapsFileName=Modelica.Utilities.Files.loadResource(
+          "modelica://EHPTlib/Resources/PSDmaps.txt"),
+      specConsName="iceSpecificCons")
+      annotation (Placement(transformation(extent={{-22,-2},{-2,18}})));
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation (
+      Placement(transformation(extent={{28,-2},{48,18}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
+      Placement(transformation(extent={{76,-2},{56,18}})));
+    Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10,
+      offset=4000,
+      amplitude=2000)                                                                                                                             annotation (
+      Placement(transformation(extent={{-52,-30},{-32,-10}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor pow
+      annotation (Placement(transformation(extent={{4,-2},{24,18}})));
+  equation
+    connect(inertia.flange_b, loadTorque.flange) annotation (
+      Line(points={{48,8},{56,8}},        color = {0, 0, 0}, smooth = Smooth.None));
+  //    experiment(StopTime = 50),
+    connect(iceP.powRef, trapezoid.y)
+      annotation (Line(points={{-18,-4},{-18,-20},{-31,-20}}, color={0,0,127}));
+    connect(iceP.flange_a, pow.flange_a)
+      annotation (Line(points={{-2,8},{4,8}}, color={0,0,0}));
+    connect(inertia.flange_a, pow.flange_b)
+      annotation (Line(points={{28,8},{24,8}}, color={0,0,0}));
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-60,-40},{
+              80,40}})),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
+      Documentation(info="<html>
+<p>This is a simple test of model IceP.</p>
+<p>It shows that the generated power follows the power request with some error: the internal control loop ii simply proportional. TRo reduce steaady-steate error, better would be to use a PI controller.</p>
+<p>It shows also the fuel consumption output.</p>
+<p>The user could compare the torque power powRef with the power delivered generated and at the ICE flange (with this transient the inertia torques are very small and can be neglected). The user could also have a look at the rotational speeds and fuel consumption. </p>
+<p>The user can also use it with mapsOnFile=true and mapsOnFile=false, and check iceT.tokgFuel.</p>
+<p>They can change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
+<p>the power request is 4-6 kW, which is reasonable, since the nominal load is 80Nm at 100 rad/s, which corresponds to 8 kW.</p>
+</html>"),
+      experiment(StopTime=60, __Dymola_Algorithm="Dassl"));
+  end TestIceP;
 
   model TestOneFlange
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
