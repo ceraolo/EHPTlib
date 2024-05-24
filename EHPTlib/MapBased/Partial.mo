@@ -102,10 +102,13 @@ package Partial
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
       Dialog(enable = mapsOnFile));
-    parameter Real maxIceTau[:,2](each unit = "N.m")=
-        [80,380;100,620;120,800;170,800;220,670;230,650;240,570]
-        "Maximum ICE generated torque"
-                                      annotation (
+    parameter Real maxIceTau[:,2](each unit = "N.m")=   [
+        100, 80;
+        200, 85;
+        300, 92;
+        350, 98;
+        400, 98]    "Maximum ICE generated torque"
+                                                  annotation (
       Dialog(enable = not mapsOnFile));
     parameter Real specificCons[:, :](each unit = "g/(kW.h)") =
           [0.0, 100, 200, 300, 400, 500;
@@ -214,22 +217,7 @@ package Partial
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
       Dialog(enable = mapsOnFile));
-    parameter Real maxIceTau[:,2](each unit = "N.m")=
-        [80,380;100,620;120,800;170,800;220,670;230,650;240,570]
-        "Maximum ICE generated torque";
-    parameter Real specificCons[:, :](each unit = "g/(kW.h)") =
-          [0.0, 100, 200, 300, 400, 500;
-           10, 630, 580, 550, 580, 630;
-           20, 430, 420, 400, 400, 450;
-           30, 320, 325, 330, 340, 350;
-           40, 285, 285, 288, 290, 300;
-           50, 270, 265, 265, 270, 275;
-           60, 255, 248, 250, 255, 258;
-           70, 245, 237, 238, 243, 246;
-           80, 245, 230, 233, 237, 240;
-           90, 235, 230, 228, 233, 235]
-           "ICE specific consumption map. First column torque, first row speed" annotation (
-      Dialog(enable = not mapsOnFile));
+
     Modelica.Blocks.Tables.CombiTable1Dv toLimTau(
       table=maxIceTau,
       tableOnFile=mapsOnFile,
@@ -286,22 +274,7 @@ package Partial
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
       Dialog(enable = mapsOnFile));
-    parameter Real maxIceTau[:,2](each unit = "N.m")=
-        [80,380;100,620;120,800;170,800;220,670;230,650;240,570]
-        "Maximum ICE generated torque";
-    parameter Real specificCons[:, :](each unit = "g/(kW.h)") =
-          [0.0, 100, 200, 300, 400, 500;
-           10, 630, 580, 550, 580, 630;
-           20, 430, 420, 400, 400, 450;
-           30, 320, 325, 330, 340, 350;
-           40, 285, 285, 288, 290, 300;
-           50, 270, 265, 265, 270, 275;
-           60, 255, 248, 250, 255, 258;
-           70, 245, 237, 238, 243, 246;
-           80, 245, 230, 233, 237, 240;
-           90, 235, 230, 228, 233, 235]
-           "ICE specific consumption map. First column torque, first row speed" annotation (
-      Dialog(enable = not mapsOnFile));
+
     Modelica.Blocks.Tables.CombiTable1Dv toLimTau(
       table=maxIceTau,
       tableOnFile=mapsOnFile,

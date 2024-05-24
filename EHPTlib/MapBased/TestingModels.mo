@@ -41,13 +41,13 @@ package TestingModels
 
   model TestIceT01 "Test IceT01"
     IceT01 iceT(
-      wIceStart=210.0,
+      wIceStart=70.0,
       mapsOnFile=true,
       mapsFileName=Modelica.Utilities.Files.loadResource(
           "modelica://EHPTlib/Resources/PSDmaps.txt"),
       specConsName="iceSpecificCons")
       annotation (Placement(transformation(extent={{-16,-2},{4,18}})));
-    Modelica.Mechanics.Rotational.Components.Inertia inertia(J=10.0,  phi(start = 0, fixed = true)) annotation (
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J=5.0,   phi(start = 0, fixed = true)) annotation (
       Placement(transformation(extent={{14,-2},{34,18}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation (
       Placement(transformation(extent={{68,-2},{48,18}})));
