@@ -104,7 +104,9 @@ package Partial
       Dialog(enable = mapsOnFile));
     parameter Real maxIceTau[:,2](each unit = "N.m")=
         [80,380;100,620;120,800;170,800;220,670;230,650;240,570]
-        "Maximum ICE generated torque";
+        "Maximum ICE generated torque"
+                                      annotation (
+      Dialog(enable = not mapsOnFile));
     parameter Real specificCons[:, :](each unit = "g/(kW.h)") =
           [0.0, 100, 200, 300, 400, 500;
            10, 630, 580, 550, 580, 630;
