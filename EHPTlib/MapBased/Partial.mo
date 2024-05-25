@@ -96,7 +96,6 @@ package Partial
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
-    // rad/s
     parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
@@ -196,8 +195,10 @@ package Partial
             fillColor={255,255,255},
             fillPattern=FillPattern.Solid),                                               Rectangle(fillColor = {192, 192, 192},
         fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(                  extent={{-72,-52},
-                {124,-86}},                                                                                                                        textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(                  extent={{-42,-56},
+                {112,-80}},
+            textString="J=%iceJ",
+            textColor={0,0,0}),                                                                                                                                                                                         Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(                                   preserveAspectRatio=false,
@@ -210,8 +211,6 @@ package Partial
     extends PartialIceBase;
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
-    parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
-    // rad/s
     parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
@@ -250,12 +249,8 @@ package Partial
 <p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
 <p><span style=\"font-family: Arial;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p>
 </html>"),
-      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),                                               Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(                  extent={{-72,-52},
-                {124,-86}},                                                                                                                        textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={Rectangle(fillColor = {192, 192, 192},
+        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}),                                                                                                                                                                                                        Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),
@@ -309,12 +304,7 @@ package Partial
 <p><span style=\"font-family: MS Shell Dlg 2;\">- IceT01 used when ICE must follow a Torque request in per unit of the maximum torque.</span></p>
 <p>See its documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</p>
 </html>"),
-      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}},
-            fillColor={255,255,255},
-            fillPattern=FillPattern.Solid),                                               Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(                  extent={{-72,-52},
-                {124,-86}},                                                                                                                        textString = "J=%J"),                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
+      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                                                                Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(                                   preserveAspectRatio=false)));
@@ -345,13 +335,11 @@ package Partial
 <p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
 <h4>Inherited models connect torque request to the free input of min() block.</h4>
 </html>"),
-      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
-        fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}),                                                                                  Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
-        fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
+      Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={                                                                                 Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}),
+                                                                           Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}}),
           Text(
-            extent={{-88,-58},{-34,-90}},
+            extent={{-90,-52},{-36,-84}},
             textColor={162,29,33},
             textString="P",
             textStyle={TextStyle.Bold,TextStyle.Italic})}),
