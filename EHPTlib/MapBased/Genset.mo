@@ -31,7 +31,8 @@ model Genset "GenSet GMS+GEN+SEngine"
     tauMax=maxTau,
     effTableName="gensetDriveEffTable") annotation (Placement(visible=true,
         transformation(extent={{68,18},{48,-2}}, rotation=0)));
-  IceT01 mBiceT(mapsOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart) annotation (
+  IceT01 mBiceT(mapsOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart,
+    specConsName="specificCons")                                                       annotation (
     Placement(transformation(extent={{-34,-2},{-14,20}})));
   Modelica.Blocks.Math.Gain gain(k = -1) annotation (
     Placement(transformation(extent = {{-14, 30}, {6, 50}})));

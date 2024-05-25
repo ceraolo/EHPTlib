@@ -1,4 +1,4 @@
-within EHPTlib.MapBased;
+﻿within EHPTlib.MapBased;
 package ECUs
   model Ecu1 "Power Split hybrid power train controller, not using ON/OFF strategy"
     parameter Real genTorqueMax = 80 "maximum absolute value of gen torque (Nm)";

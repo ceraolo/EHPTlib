@@ -28,7 +28,8 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
     Placement(visible = true, transformation(extent = {{-72, -10}, {-52, 10}}, rotation = 0)));
   OneFlange gen(wMax = maxGenW, mapsFileName = mapsFileName, mapsOnFile = true, powMax = maxPow, tauMax = maxTau, effTableName = "gensetDriveEffTable") annotation (
     Placement(visible = true, transformation(extent = {{68, 2}, {48, -18}}, rotation = 0)));
-  IceT01 mbIce(wIceStart = wIceStart, mapsFileName = mapsFileName, iceJ = 10, mapsOnFile = true) annotation (
+  IceT01 mbIce(wIceStart = wIceStart, mapsFileName = mapsFileName, iceJ = 10, mapsOnFile = true,
+    specConsName="specificCons")                                                                 annotation (
     Placement(visible = true, transformation(extent = {{-36, -22}, {-16, -2}}, rotation = 0)));
   Modelica.Blocks.Math.Gain revGain(k = -0.9 * gsRatio) annotation (
     Placement(visible = true, transformation(extent = {{-10, 10}, {10, 30}}, rotation = 0)));
@@ -72,7 +73,12 @@ equation
             fillPattern = FillPattern.HorizontalCylinder, extent = {{-44, 30}, {-14, -44}}), Line(points = {{-72, 30}, {-72, 6}}), Polygon(points = {{-72, -2}, {-78, 8}, {-66, 8}, {-72, -2}}), Rectangle(extent = {{-96, 38}, {-50, -48}}), Rectangle(fillColor = {95, 95, 95},
             fillPattern = FillPattern.Solid, extent = {{-96, -6}, {-50, -24}}), Rectangle(fillColor = {135, 135, 135},
             fillPattern = FillPattern.Solid, extent = {{-78, -24}, {-68, -44}}), Polygon(points = {{-72, 34}, {-78, 24}, {-66, 24}, {-72, 34}}), Rectangle(fillColor = {192, 192, 192},
-            fillPattern = FillPattern.HorizontalCylinder, extent = {{6, 30}, {62, -44}}), Line(points = {{94, 60}, {74, 60}, {74, 18}, {62, 18}}, color = {0, 0, 255}), Line(points = {{100, -60}, {74, -60}, {74, -28}, {62, -28}}, color = {0, 0, 255})}),
+            fillPattern = FillPattern.HorizontalCylinder, extent = {{6, 30}, {62, -44}}), Line(points = {{94, 60}, {74, 60}, {74, 18}, {62, 18}}, color = {0, 0, 255}), Line(points = {{100, -60}, {74, -60}, {74, -28}, {62, -28}}, color = {0, 0, 255}),
+                                                                                                                                            Text(origin={6.8,
+              -80.1668},                                                                                                                                            lineColor={162,29,
+              33},                                                                                                                                                                               extent={{39.2,
+              -15.8332},{-58.8,24.1668}},
+          textString="OO")}),
     Documentation(info = "<html>
 <p>Generator set containing Internal Combustion Engine, Electric generator (with DC output), and the related control.</p>
 <p>The control logic tends to deliver at the DC port the input power, using the optimal generator speed.</p>

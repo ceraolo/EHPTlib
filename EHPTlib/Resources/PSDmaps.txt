@@ -2,7 +2,6 @@
 
 # genEffTable, motEffTable
 # efficiency - rows:speeds pu, columns:torques pu
-#
 
 double genEffTable (6,6)
     0.00  0.00  0.25  0.50  0.75  1.00 
