@@ -379,13 +379,13 @@ reference \nand computes consumption")}));
     SupportModels.MapBasedRelated.ConstPg constPDC(vNom = uDcNom) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-100, 0})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = J) annotation (
-      Placement(transformation(extent = {{22, 50}, {42, 70}})));
+      Placement(transformation(extent={{46,50},{66,70}})));
     Modelica.Mechanics.Rotational.Sources.Torque torque annotation (
       Placement(transformation(extent = {{-16, 50}, {4, 70}})));
     Modelica.Blocks.Math.Gain gain(k = 1) annotation (
       Placement(transformation(extent = {{-64, -10}, {-84, 10}})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor powSensor annotation (
-      Placement(transformation(extent = {{50, 50}, {70, 70}})));
+      Placement(transformation(extent={{16,50},{36,70}})));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
   equation
@@ -399,16 +399,10 @@ reference \nand computes consumption")}));
       Line(points = {{-100, -40}, {-100, -9.8}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(constPDC.Pref, gain.y) annotation (
       Line(points = {{-91.8, 0}, {-85, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(powSensor.flange_b, flange_a) annotation (
-      Line(points = {{70, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(wSensor.flange, flange_a) annotation (
       Line(points = {{78, 52}, {78, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(toElePow.elePow, gain.u) annotation (
       Line(points = {{-26.6, -18}, {-46, -18}, {-46, 0}, {-62, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(inertia.flange_a, torque.flange) annotation (
-      Line(points = {{22, 60}, {4, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(inertia.flange_b, powSensor.flange_a) annotation (
-      Line(points = {{42, 60}, {50, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(variableLimiter.limit1, limTau.yH) annotation (
       Line(points = {{-2, 38}, {19, 38}, {19, 37.2}}, color = {0, 0, 127}));
     connect(variableLimiter.limit2, limTau.yL) annotation (
@@ -419,6 +413,12 @@ reference \nand computes consumption")}));
       Line(points = {{-4, -14}, {2, -14}, {2, 12}, {-36, 12}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
+    connect(torque.flange, powSensor.flange_a)
+      annotation (Line(points={{4,60},{16,60}}, color={0,0,0}));
+    connect(powSensor.flange_b, inertia.flange_a)
+      annotation (Line(points={{36,60},{46,60}}, color={0,0,0}));
+    connect(inertia.flange_b, flange_a)
+      annotation (Line(points={{66,60},{98,60}}, color={0,0,0}));
     annotation (
       Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false)),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={                                                                                        Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
@@ -474,13 +474,13 @@ reference \nand computes consumption")}));
     SupportModels.MapBasedRelated.ConstPg constPDC(vNom = uDcNom) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-100, 0})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = J) annotation (
-      Placement(transformation(extent = {{22, 50}, {42, 70}})));
+      Placement(transformation(extent={{48,50},{68,70}})));
     Modelica.Mechanics.Rotational.Sources.Torque torque annotation (
       Placement(transformation(extent = {{-16, 50}, {4, 70}})));
     Modelica.Blocks.Math.Gain gain(k = 1) annotation (
       Placement(transformation(extent = {{-64, -10}, {-84, 10}})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor powSensor annotation (
-      Placement(transformation(extent = {{50, 50}, {70, 70}})));
+      Placement(transformation(extent={{18,50},{38,70}})));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
   equation
@@ -493,16 +493,10 @@ reference \nand computes consumption")}));
       Line(points = {{-100, -40}, {-100, -9.8}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(constPDC.Pref, gain.y) annotation (
       Line(points = {{-91.8, 0}, {-85, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(powSensor.flange_b, flange_a) annotation (
-      Line(points = {{70, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(wSensor.flange, flange_a) annotation (
       Line(points = {{78, 52}, {78, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(toElePow.elePow, gain.u) annotation (
       Line(points = {{-26.6, -18}, {-46, -18}, {-46, 0}, {-62, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(inertia.flange_a, torque.flange) annotation (
-      Line(points = {{22, 60}, {4, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(inertia.flange_b, powSensor.flange_a) annotation (
-      Line(points = {{42, 60}, {50, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(variableLimiter.limit1, limTau.yH) annotation (
       Line(points = {{-2, 38}, {19, 38}, {19, 37.2}}, color = {0, 0, 127}));
     connect(variableLimiter.limit2, limTau.yL) annotation (
@@ -513,6 +507,12 @@ reference \nand computes consumption")}));
       Line(points = {{-4, -14}, {2, -14}, {2, 12}, {-36, 12}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
+    connect(torque.flange, powSensor.flange_a)
+      annotation (Line(points={{4,60},{18,60}}, color={0,0,0}));
+    connect(powSensor.flange_b, inertia.flange_a)
+      annotation (Line(points={{38,60},{48,60}}, color={0,0,0}));
+    connect(inertia.flange_b, flange_a)
+      annotation (Line(points={{68,60},{98,60}}, color={0,0,0}));
     annotation (
       Diagram(coordinateSystem(extent={{-100,-60},{100,80}},  preserveAspectRatio=false)),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false,
