@@ -1,6 +1,6 @@
 within EHPTlib.SupportModels.MapBasedRelated;
 block EfficiencyLF
-  "Determines the electric power from the mechanical considering efficiency map"
+  "Determines the electric power from the mechanical freom a Loss-formula efficiency "
   parameter Real A = 0.006 "fixed losses";
   parameter Real bT = 0.05 "torque losses coefficient";
   parameter Real bW = 0.02 "speed losses coefficient";

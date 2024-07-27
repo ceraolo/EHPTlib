@@ -1,6 +1,6 @@
 within EHPTlib.MapBased;
 model OneFlangeConn "Simple map-based one-flange electric drive"
-  extends Partial.PartialOneFlange;
+  extends Partial.PartialOneFlangeFVCT;
   SupportModels.ConnectorRelated.Conn conn annotation (
     Placement(visible = true, transformation(extent = {{-18, -62}, {22, -102}}, rotation = 0), iconTransformation(extent={{70,-58},
             {110,-98}},                                                                                                                             rotation = 0)));

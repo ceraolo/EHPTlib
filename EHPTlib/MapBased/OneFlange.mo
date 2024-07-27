@@ -1,6 +1,6 @@
 within EHPTlib.MapBased;
 model OneFlange "Simple map-based model of an electric drive"
-  extends Partial.PartialOneFlange;
+  extends Partial.PartialOneFlangeFVCT;
   Modelica.Blocks.Interfaces.RealInput tauRef "(positive when motor peration)" annotation (
     Placement(visible = true, transformation(origin = {-118, -66}, extent = {{-18, -18}, {18, 18}}, rotation = 0), iconTransformation(origin={-102,0},    extent = {{-20, -20}, {20, 20}}, rotation = 0)));
 equation

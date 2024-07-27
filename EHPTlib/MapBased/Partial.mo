@@ -23,8 +23,15 @@ package Partial
       Placement(transformation(extent = {{8, 40}, {28, 60}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedRing annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-80, 40})));
-    SupportModels.MapBasedRelated.EfficiencyT effMap(tauMax = tauMax, wMax = wMax, powMax = powMax, mapsOnFile = mapsOnFile, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation (
-      Placement(transformation(extent = {{20, -46}, {40, -26}})));
+    SupportModels.MapBasedRelated.EfficiencyCT effMap(
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax,
+      mapsOnFile=mapsOnFile,
+      mapsFileName=mapsFileName,
+      effTableName=effTableName,
+      effTable=effTable)
+      annotation (Placement(transformation(extent={{20,-46},{40,-26}})));
     SupportModels.MapBasedRelated.ConstPg constPDC annotation (
       Placement(transformation(extent = {{-10, 10}, {10, -10}}, rotation = -90, origin = {0, 100})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor outBPow_ annotation (
@@ -352,7 +359,8 @@ package Partial
 reference \nand computes consumption")}));
   end PartialIceP;
 
-  partial model PartialOneFlange "Partial map-based one-Flange electric drive model"
+  partial model PartialOneFlangeFVCT
+    "Partial map-based one-Flange electric drive model"
     parameter Modelica.Units.SI.Power powMax=22000
       "Maximum mechnical power";
     parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque";
@@ -376,8 +384,15 @@ reference \nand computes consumption")}));
       wMax=wMax,
       powMax=powMax)
       annotation (Placement(transformation(extent={{40,18},{20,42}})));
-    SupportModels.MapBasedRelated.EfficiencyT toElePow(mapsOnFile = mapsOnFile, tauMax = tauMax, powMax = powMax, wMax = wMax, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation (
-      Placement(transformation(extent = {{-6, -28}, {-26, -8}})));
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(
+      mapsOnFile=mapsOnFile,
+      tauMax=tauMax,
+      powMax=powMax,
+      wMax=wMax,
+      mapsFileName=mapsFileName,
+      effTableName=effTableName,
+      effTable=effTable)
+      annotation (Placement(transformation(extent={{-14,-28},{-34,-8}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
       Placement(transformation(extent = {{-110, 30}, {-90, 50}}), iconTransformation(extent = {{-110, 30}, {-90, 50}})));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
@@ -398,7 +413,7 @@ reference \nand computes consumption")}));
   //  assert(wMax >= powMax / tauMax, "\n****  " + "wMax=" + String(wMax)+
   //       ";  powMax=" + String(powMax)+";  tauMax="+String(tauMax)+"  ***\n");
     connect(toElePow.w, wSensor.w) annotation (
-      Line(points = {{-4, -22}, {78, -22}, {78, 35.2}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-12,-22},{78,-22},{78,35.2}},       color = {0, 0, 127}, smooth = Smooth.None));
     connect(pin_p, constPDC.pin_p) annotation (
       Line(points = {{-100, 40}, {-100, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(pin_n, constPDC.pin_n) annotation (
@@ -408,7 +423,7 @@ reference \nand computes consumption")}));
     connect(wSensor.flange, flange_a) annotation (
       Line(points = {{78, 52}, {78, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(toElePow.elePow, gain.u) annotation (
-      Line(points = {{-26.6, -18}, {-46, -18}, {-46, 0}, {-62, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-34.6,-18},{-48,-18},{-48,0},{-62,0}},          color = {0, 0, 127}, smooth = Smooth.None));
     connect(variableLimiter.limit1, limTau.yH) annotation (
       Line(points = {{-2, 38}, {19, 38}, {19, 37.2}}, color = {0, 0, 127}));
     connect(variableLimiter.limit2, limTau.yL) annotation (
@@ -416,7 +431,7 @@ reference \nand computes consumption")}));
     connect(variableLimiter.y, torque.tau) annotation (
       Line(points = {{-25, 30}, {-36, 30}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
     connect(toElePow.tau, torque.tau) annotation (
-      Line(points = {{-4, -14}, {2, -14}, {2, 12}, {-36, 12}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
+      Line(points={{-12,-14},{0,-14},{0,10},{-36,10},{-36,60},{-18,60}},             color = {0, 0, 127}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
     connect(torque.flange, powSensor.flange_a)
@@ -440,9 +455,10 @@ reference \nand computes consumption")}));
       Documentation(info="<html>
 <p>Partial model for one-flange components (version 1).</p>
 </html>"));
-  end PartialOneFlange;
+  end PartialOneFlangeFVCT;
 
-  partial model PartialOneFlange2 "Partial map-based one-Flange electric drive model"
+  partial model PartialOneFlangeCTCT
+    "Partial map-based one-Flange electric drive model"
     parameter Modelica.Units.SI.Voltage uDcNom=100 "nominal DC voltage";
     parameter Modelica.Units.SI.MomentOfInertia J=0.25
       "Rotor's moment of inertia";
@@ -478,8 +494,15 @@ reference \nand computes consumption")}));
       maxTorqueTableName=maxTorqueTableName,
       minTorqueTableName=minTorqueTableName)
       annotation (Placement(transformation(extent={{40,18},{20,42}})));
-    SupportModels.MapBasedRelated.EfficiencyT toElePow(mapsOnFile = effMapOnFile, tauMax = tauMax, powMax = powMax, wMax = wMax, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation (
-      Placement(transformation(extent={{-14,-28},{-34,-8}})));
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(
+      mapsOnFile=effMapOnFile,
+      tauMax=tauMax,
+      powMax=powMax,
+      wMax=wMax,
+      mapsFileName=mapsFileName,
+      effTableName=effTableName,
+      effTable=effTable)
+      annotation (Placement(transformation(extent={{-14,-28},{-34,-8}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
       Placement(transformation(extent = {{-110, 30}, {-90, 50}}), iconTransformation(extent = {{-110, 30}, {-90, 50}})));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
@@ -549,9 +572,9 @@ reference \nand computes consumption")}));
 <p>Partial model for one-flange components.</p>
 <p>This version 2 allows defing torque limits from a file, instead of just max torque and power.</p>
 </html>"));
-  end PartialOneFlange2;
+  end PartialOneFlangeCTCT;
 
-  partial model PartialOneFlange2LF
+  partial model PartialOneFlangeCTLF
     "Partial map-based one-Flange electric drive model"
     parameter Real A = 0.006 "fixed losses";
     parameter Real bT = 0.05 "torque losses coefficient";
@@ -674,6 +697,6 @@ reference \nand computes consumption")}));
 <p>Partial one-flange electric drive, with efficiency computed through a Loss Formula (LF)</p>
 <p>The input signal is the requested normalised torque (1 means nominal torque)</p>
 </html>"));
-  end PartialOneFlange2LF;
+  end PartialOneFlangeCTLF;
 
 end Partial;
