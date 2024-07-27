@@ -14,8 +14,11 @@ package Partial
       Dialog(enable = mapsOnFile));
     parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] annotation (
       Dialog(enable = not mapsOnFile));
-    SupportModels.MapBasedRelated.LimTau limTau(tauMax = tauMax, wMax = wMax, powMax = powMax) annotation (
-      Placement(transformation(extent = {{-58, -8}, {-36, 14}})));
+    SupportModels.MapBasedRelated.LimTorqueFV limTau(
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax)
+      annotation (Placement(transformation(extent={{-58,-8},{-36,14}})));
     SupportModels.MapBasedRelated.InertiaTq inertia(w(displayUnit = "rad/s", start = 0), J = J) annotation (
       Placement(transformation(extent = {{8, 40}, {28, 60}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedRing annotation (
@@ -91,7 +94,7 @@ package Partial
 </html>"));
   end PartialTwoFlange;
 
-  model PartialIceBase "Partial map-based ice model"
+  partial model PartialIceBase "Partial map-based ice model"
     import Modelica.Constants.*;
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
@@ -206,7 +209,7 @@ package Partial
           graphics={Line(points={{-20,52},{-4,52}}, color={238,46,47})}));
   end PartialIceBase;
 
-  model PartialIceTNm "Partial map-based ice model"
+  partial model PartialIceTNm "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
@@ -257,7 +260,7 @@ package Partial
           graphics={Line(points={{-50,58},{-36,58}}, color={255,0,00})}));
   end PartialIceTNm;
 
-  model PartialIceT01 "Partial map-based ice model"
+  partial model PartialIceT01 "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
     parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
@@ -368,8 +371,11 @@ reference \nand computes consumption")}));
       Placement(transformation(extent = {{88, 50}, {108, 70}}, rotation = 0), iconTransformation(extent = {{90, -10}, {110, 10}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation (
       Placement(transformation(extent = {{8, -8}, {-8, 8}}, rotation = 90, origin = {78, 44})));
-    SupportModels.MapBasedRelated.LimTau limTau(tauMax = tauMax, wMax = wMax, powMax = powMax) annotation (
-      Placement(transformation(extent = {{40, 18}, {20, 42}})));
+    SupportModels.MapBasedRelated.LimTorqueFV limTau(
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax)
+      annotation (Placement(transformation(extent={{40,18},{20,42}})));
     SupportModels.MapBasedRelated.EfficiencyT toElePow(mapsOnFile = mapsOnFile, tauMax = tauMax, powMax = powMax, wMax = wMax, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation (
       Placement(transformation(extent = {{-6, -28}, {-26, -8}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
@@ -379,13 +385,13 @@ reference \nand computes consumption")}));
     SupportModels.MapBasedRelated.ConstPg constPDC(vNom = uDcNom) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-100, 0})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = J) annotation (
-      Placement(transformation(extent={{46,50},{66,70}})));
+      Placement(transformation(extent={{48,50},{68,70}})));
     Modelica.Mechanics.Rotational.Sources.Torque torque annotation (
       Placement(transformation(extent = {{-16, 50}, {4, 70}})));
     Modelica.Blocks.Math.Gain gain(k = 1) annotation (
       Placement(transformation(extent = {{-64, -10}, {-84, 10}})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor powSensor annotation (
-      Placement(transformation(extent={{16,50},{36,70}})));
+      Placement(transformation(extent={{18,50},{38,70}})));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
   equation
@@ -414,11 +420,11 @@ reference \nand computes consumption")}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
     connect(torque.flange, powSensor.flange_a)
-      annotation (Line(points={{4,60},{16,60}}, color={0,0,0}));
+      annotation (Line(points={{4,60},{18,60}}, color={0,0,0}));
     connect(powSensor.flange_b, inertia.flange_a)
-      annotation (Line(points={{36,60},{46,60}}, color={0,0,0}));
+      annotation (Line(points={{38,60},{48,60}}, color={0,0,0}));
     connect(inertia.flange_b, flange_a)
-      annotation (Line(points={{66,60},{98,60}}, color={0,0,0}));
+      annotation (Line(points={{68,60},{98,60}}, color={0,0,0}));
     annotation (
       Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false)),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={                                                                                        Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
@@ -463,10 +469,17 @@ reference \nand computes consumption")}));
       Placement(transformation(extent = {{88, 50}, {108, 70}}, rotation = 0), iconTransformation(extent = {{90, -10}, {110, 10}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation (
       Placement(transformation(extent = {{8, -8}, {-8, 8}}, rotation = 90, origin = {78, 44})));
-    SupportModels.MapBasedRelated.LimTorque limTau(limitsOnFile = limitsOnFile, tauMax = tauMax, wMax = wMax, powMax = powMax, limitsFileName = mapsFileName, maxTorqueTableName = maxTorqueTableName, minTorqueTableName = minTorqueTableName) annotation (
-      Placement(transformation(extent = {{40, 18}, {20, 42}})));
+    SupportModels.MapBasedRelated.LimTorqueCT limTau(
+      limitsOnFile=limitsOnFile,
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax,
+      limitsFileName=mapsFileName,
+      maxTorqueTableName=maxTorqueTableName,
+      minTorqueTableName=minTorqueTableName)
+      annotation (Placement(transformation(extent={{40,18},{20,42}})));
     SupportModels.MapBasedRelated.EfficiencyT toElePow(mapsOnFile = effMapOnFile, tauMax = tauMax, powMax = powMax, wMax = wMax, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation (
-      Placement(transformation(extent = {{-6, -28}, {-26, -8}})));
+      Placement(transformation(extent={{-14,-28},{-34,-8}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
       Placement(transformation(extent = {{-110, 30}, {-90, 50}}), iconTransformation(extent = {{-110, 30}, {-90, 50}})));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
@@ -484,9 +497,9 @@ reference \nand computes consumption")}));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
   equation
-  //  assert(wMax >= powMax / tauMax, "\n****\n" + "PARAMETER VERIFICATION ERROR:\nwMax must be not lower than powMax/tauMax" + "\n***\n");
+
     connect(toElePow.w, wSensor.w) annotation (
-      Line(points = {{-4, -22}, {78, -22}, {78, 35.2}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-12,-22},{78,-22},{78,35.2}},       color = {0, 0, 127}, smooth = Smooth.None));
     connect(pin_p, constPDC.pin_p) annotation (
       Line(points = {{-100, 40}, {-100, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(pin_n, constPDC.pin_n) annotation (
@@ -496,7 +509,7 @@ reference \nand computes consumption")}));
     connect(wSensor.flange, flange_a) annotation (
       Line(points = {{78, 52}, {78, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(toElePow.elePow, gain.u) annotation (
-      Line(points = {{-26.6, -18}, {-46, -18}, {-46, 0}, {-62, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-34.6,-18},{-48,-18},{-48,0},{-62,0}},          color = {0, 0, 127}, smooth = Smooth.None));
     connect(variableLimiter.limit1, limTau.yH) annotation (
       Line(points = {{-2, 38}, {19, 38}, {19, 37.2}}, color = {0, 0, 127}));
     connect(variableLimiter.limit2, limTau.yL) annotation (
@@ -504,7 +517,7 @@ reference \nand computes consumption")}));
     connect(variableLimiter.y, torque.tau) annotation (
       Line(points = {{-25, 30}, {-36, 30}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
     connect(toElePow.tau, torque.tau) annotation (
-      Line(points = {{-4, -14}, {2, -14}, {2, 12}, {-36, 12}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
+      Line(points={{-12,-14},{0,-14},{0,10},{-36,10},{-36,60},{-18,60}},             color = {0, 0, 127}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
     connect(torque.flange, powSensor.flange_a)
@@ -566,12 +579,15 @@ reference \nand computes consumption")}));
       Placement(transformation(extent = {{88, 50}, {108, 70}}, rotation = 0), iconTransformation(extent = {{90, -10}, {110, 10}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation (
       Placement(transformation(extent = {{8, -8}, {-8, 8}}, rotation = 90, origin = {78, 44})));
-    SupportModels.MapBasedRelated.LimTorque limTau(
-      limitsOnFile = limitsOnFile, tauMax = tauMax, wMax = wMax,
-       powMax = powMax, limitsFileName = limitsFileName,
-       maxTorqueTableName = maxTorqueTableName,
-       minTorqueTableName = minTorqueTableName) annotation (
-      Placement(transformation(extent = {{40, 18}, {20, 42}})));
+    SupportModels.MapBasedRelated.LimTorqueCT limTau(
+      limitsOnFile=limitsOnFile,
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax,
+      limitsFileName=limitsFileName,
+      maxTorqueTableName=maxTorqueTableName,
+      minTorqueTableName=minTorqueTableName)
+      annotation (Placement(transformation(extent={{40,18},{20,42}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
       Placement(transformation(extent = {{-110, 30}, {-90, 50}}), iconTransformation(extent = {{-110, 30}, {-90, 50}})));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
@@ -579,13 +595,13 @@ reference \nand computes consumption")}));
     SupportModels.MapBasedRelated.ConstPg constPDC(vNom = uDcNom) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-100, 0})));
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = J) annotation (
-      Placement(transformation(extent = {{22, 50}, {42, 70}})));
+      Placement(transformation(extent={{48,50},{68,70}})));
     Modelica.Mechanics.Rotational.Sources.Torque torque annotation (
       Placement(transformation(extent = {{-16, 50}, {4, 70}})));
     Modelica.Blocks.Math.Gain gain(k = 1) annotation (
       Placement(transformation(extent = {{-64, -10}, {-84, 10}})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor powSensor annotation (
-      Placement(transformation(extent = {{50, 50}, {70, 70}})));
+      Placement(transformation(extent={{18,50},{38,70}})));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
       Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
     SupportModels.MapBasedRelated.EfficiencyLF toElePow(
@@ -596,7 +612,7 @@ reference \nand computes consumption")}));
       tauMax=tauMax,
       powMax=powMax,
       wMax=wMax)
-      annotation (Placement(transformation(extent={{-20,-36},{-40,-16}})));
+      annotation (Placement(transformation(extent={{-14,-28},{-34,-8}})));
   equation
   //  assert(wMax >= powMax / tauMax, "\n****\n" + "PARAMETER VERIFICATION ERROR:\nwMax must be not lower than powMax/tauMax" + "\n***\n");
     connect(pin_p, constPDC.pin_p) annotation (
@@ -605,14 +621,8 @@ reference \nand computes consumption")}));
       Line(points = {{-100, -40}, {-100, -9.8}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(constPDC.Pref, gain.y) annotation (
       Line(points = {{-91.8, 0}, {-85, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(powSensor.flange_b, flange_a) annotation (
-      Line(points = {{70, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(wSensor.flange, flange_a) annotation (
       Line(points = {{78, 52}, {78, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(inertia.flange_a, torque.flange) annotation (
-      Line(points = {{22, 60}, {4, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(inertia.flange_b, powSensor.flange_a) annotation (
-      Line(points = {{42, 60}, {50, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(variableLimiter.limit1, limTau.yH) annotation (
       Line(points = {{-2, 38}, {19, 38}, {19, 37.2}}, color = {0, 0, 127}));
     connect(variableLimiter.limit2, limTau.yL) annotation (
@@ -621,12 +631,18 @@ reference \nand computes consumption")}));
       Line(points = {{-25, 30}, {-36, 30}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
     connect(limTau.w, wSensor.w) annotation (
       Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
-    connect(gain.u, toElePow.elePow) annotation (Line(points={{-62,0},{-52,
-            0},{-52,-26},{-40.6,-26}}, color={0,0,127}));
-    connect(toElePow.w, wSensor.w) annotation (Line(points={{-18,-30},{78,
-            -30},{78,35.2}}, color={0,0,127}));
-    connect(toElePow.tau, torque.tau) annotation (Line(points={{-18,-22},{
-            -2,-22},{-2,10},{-36,10},{-36,60},{-18,60}}, color={0,0,127}));
+    connect(gain.u, toElePow.elePow) annotation (Line(points={{-62,0},{-48,0},{
+            -48,-18},{-34.6,-18}},     color={0,0,127}));
+    connect(toElePow.w, wSensor.w) annotation (Line(points={{-12,-22},{78,-22},
+            {78,35.2}},      color={0,0,127}));
+    connect(toElePow.tau, torque.tau) annotation (Line(points={{-12,-14},{0,-14},
+            {0,10},{-36,10},{-36,60},{-18,60}},          color={0,0,127}));
+    connect(powSensor.flange_a, torque.flange)
+      annotation (Line(points={{18,60},{4,60}}, color={0,0,0}));
+    connect(powSensor.flange_b, inertia.flange_a)
+      annotation (Line(points={{38,60},{48,60}}, color={0,0,0}));
+    connect(inertia.flange_b, flange_a)
+      annotation (Line(points={{68,60},{98,60}}, color={0,0,0}));
     annotation (
       Diagram(coordinateSystem(extent={{-100,-60},{100,80}},  preserveAspectRatio = false,
         initialScale = 0.1, grid = {2, 2})),

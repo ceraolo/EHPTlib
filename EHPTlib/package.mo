@@ -1,4 +1,4 @@
-package EHPTlib "Electric and Hybrid Power train library Rev Jan 2023"
+﻿package EHPTlib "Electric and Hybrid Power train library Rev Jan 2023"
       //Symbol to force Dymola to use UTF: €
   //package Propulsion
   extends Modelica.Icons.Package;

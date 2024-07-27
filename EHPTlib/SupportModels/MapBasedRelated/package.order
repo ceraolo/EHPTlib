@@ -5,6 +5,6 @@ EffiPlot
 EffiPlot2
 ComputeEffFromPu
 ConstPg
-LimTau
+LimTorqueFV
 Pel
-LimTorque
+LimTorqueCT
