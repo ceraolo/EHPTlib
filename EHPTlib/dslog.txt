@@ -1,0 +1,37 @@
+Log-file of program ./dymosim
+(generated: Sat May 25 09:53:31 2024)
+
+dymosim started
+... "EHPTexamples.SHEV.SHEV_OO" simulating
+... "dsin.txt" loading (dymosim input file)
+... loading "optiSpeed" from "D:/OneDrive - University of Pisa/2_MODELICA/GITHUB LINKED/EHPTexamples/EHPTexamples/Resources/SHEVmaps.txt"
+... loading "maxIceTau" from "D:/OneDrive - University of Pisa/2_MODELICA/GITHUB LINKED/EHPTexamples/EHPTexamples/Resources/SHEVmaps.txt"
+... loading "gensetDriveEffTable" from "D:/OneDrive - University of Pisa/2_MODELICA/GITHUB LINKED/EHPTexamples/EHPTexamples/Resources/SHEVmaps.txt"
+... loading "specificCons" from "D:/OneDrive - University of Pisa/2_MODELICA/GITHUB LINKED/EHPTexamples/EHPTexamples/Resources/SHEVmaps.txt"
+... loading "Cycle" from "D:/OneDrive - University of Pisa/2_MODELICA/GITHUB LINKED/EHPTexamples/EHPTexamples/Resources/Sort1.txt"
+... "dsres.mat" creating (simulation result file)
+
+Integration started at T = 0 using integration method DASSL
+(DAE multi-step solver (dassl/dasslrt of Petzold modified by Dassault Systemes))
+
+Integration terminated successfully at T = 2000
+   CPU-time for integration                : 0.184 seconds
+   CPU-time for one grid interval          : 0.0368 milliseconds
+   CPU-time for initialization             : 0.001 seconds
+   Number of result points                 : 5765
+   Number of grid points                   : 5001
+   Number of accepted steps                : 13615
+   Number of f-evaluations (dynamics)      : 25501
+   Number of crossing function evaluations : 20265
+   Number of Jacobian-evaluations          : 4596
+   Number of model time events             : 160
+   Number of input time events             : 0
+   Number of state events                  : 228
+   Number of step events                   : 0
+   Minimum integration stepsize            : 4.59e-09
+   Maximum integration stepsize            : 3.47
+   Maximum integration order               : 5
+Calling terminal section
+... "dsfinal.txt" creating (final states)
+
+SUCCESSFUL simulation of EHPTexamples.SHEV.SHEV_OO
