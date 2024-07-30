@@ -18,8 +18,7 @@ equation
   connect(switch1.u2, onSignal.y)
     annotation (Line(points={{-4,-52},{-29.2,-52}}, color={255,0,255}));
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-100},{100,
-            80}})),
+    Diagram(coordinateSystem(preserveAspectRatio=false)),
     __Dymola_experimentSetupOutput,
     Documentation(info="<html>
 <p>This model belongs to the map-based models of power train components.</p>

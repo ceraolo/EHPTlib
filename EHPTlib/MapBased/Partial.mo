@@ -107,6 +107,10 @@ package Partial
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
     parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
+    parameter Modelica.Units.SI.Torque nomTorque=1 "Torque multiplier for efficiency map"
+           annotation (Dialog(enable = mapsOnFile));
+    parameter Modelica.Units.SI.AngularVelocity nomSpeed=1 "Speed multiplier for efficiency map"
+          annotation (Dialog(enable = mapsOnFile));
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
@@ -132,17 +136,25 @@ package Partial
            90, 235, 230, 228, 233, 235]
            "ICE specific consumption map. First column torque, first row speed" annotation (
       Dialog(enable = not mapsOnFile));
+
+    Modelica.Units.SI.Torque tauGenerated=iceTau.tau;
+    Modelica.Units.SI.Torque tauMechanical=-flange_a.tau;
+    Modelica.Units.SI.AngularVelocity wMechanical=wSensor.w;
+
     Modelica.Mechanics.Rotational.Components.Inertia inertia(w(fixed = true, start = wIceStart,
         displayUnit = "rpm"), J = iceJ) annotation (
-      Placement(visible = true, transformation(extent = {{30, 42}, {50, 62}}, rotation = 0)));
+      Placement(visible = true, transformation(extent={{30,68},{50,88}},      rotation = 0)));
     Modelica.Mechanics.Rotational.Sources.Torque iceTau annotation (
-      Placement(visible = true, transformation(extent = {{4, 42}, {24, 62}}, rotation = 0)));
+      Placement(visible = true, transformation(extent={{4,68},{24,88}},      rotation = 0)));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor icePow
-      annotation (Placement(transformation(extent={{66,62},{86,42}})));
-    Modelica.Mechanics.Rotational.Sensors.SpeedSensor w annotation (
-      Placement(visible = true, transformation(origin = {58, 36}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+      annotation (Placement(transformation(extent={{66,88},{86,68}})));
+    Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation (
+        Placement(visible=true, transformation(
+          origin={58,62},
+          extent={{-10,-10},{10,10}},
+          rotation=270)));
     Modelica.Blocks.Math.Product toPowW annotation (
-      Placement(visible = true, transformation(origin = {-18, 10}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+      Placement(visible = true, transformation(origin={-18,36},    extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a annotation (
       Placement(transformation(extent = {{90, -10}, {110, 10}}), iconTransformation(extent = {{90, -10}, {110, 10}})));
     Modelica.Blocks.Tables.CombiTable2Ds toGramsPerkWh(
@@ -152,9 +164,9 @@ package Partial
       fileName=mapsFileName) annotation (Placement(transformation(
           extent={{-10,10},{10,-10}},
           rotation=-90,
-          origin={42,-2})));
+          origin={44,-2})));
     Modelica.Blocks.Math.Gain tokW(k = 0.001) annotation (
-      Placement(visible = true, transformation(origin = {-18, -18}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+      Placement(visible = true, transformation(origin={-18,8},      extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Blocks.Math.Product toG_perHour annotation (
       Placement(visible = true, transformation(origin={38,-40},    extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Blocks.Continuous.Integrator tokgFuel(k=1/3.6e6)     annotation (
@@ -162,38 +174,53 @@ package Partial
     Modelica.Blocks.Logical.Switch switch1 annotation (
       Placement(visible = true, transformation(origin={8,-52},    extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
-      Placement(visible = true, transformation(extent={{-34,-84},{-14,-64}},      rotation = 0)));
+      Placement(visible = true, transformation(extent={{-34,-82},{-14,-62}},      rotation = 0)));
+    Modelica.Blocks.Math.Gain toPuTorque(k=1/nomTorque)     annotation (Placement(
+          visible=true, transformation(
+          origin={25,29},
+          extent={{-7,-7},{7,7}},
+          rotation=-90)));
+    Modelica.Blocks.Math.Gain toPuSpeed(k=1/nomSpeed)
+                                                    annotation (Placement(visible
+          =true, transformation(
+          origin={61,29},
+          extent={{-7,-7},{7,7}},
+          rotation=-90)));
   equation
     connect(toPowW.y, tokW.u) annotation (
-      Line(points = {{-18, -1}, {-18, -6}}, color = {0, 0, 127}));
+      Line(points={{-18,25},{-18,20}},      color = {0, 0, 127}));
     connect(toPowW.u2, iceTau.tau) annotation (
-      Line(points = {{-24, 22}, {-24, 32}, {-6, 32}, {-6, 52}, {2, 52}}, color = {0, 0, 127}));
-    connect(toGramsPerkWh.u1, iceTau.tau) annotation (
-      Line(points = {{36, 10}, {36, 32}, {-6, 32}, {-6, 52}, {2, 52}}, color = {0, 0, 127}));
+      Line(points={{-24,48},{-24,58},{-6,58},{-6,78},{2,78}},            color = {0, 0, 127}));
     connect(iceTau.flange, inertia.flange_a) annotation (
-      Line(points = {{24, 52}, {30, 52}}));
-    connect(w.flange, inertia.flange_b) annotation (
-      Line(points = {{58, 46}, {58, 52}, {50, 52}}));
+      Line(points={{24,78},{30,78}}));
+    connect(wSensor.flange, inertia.flange_b)
+      annotation (Line(points={{58,72},{58,78},{50,78}}));
     connect(icePow.flange_a, inertia.flange_b)
-      annotation (Line(points={{66,52},{50,52}}));
-    connect(toGramsPerkWh.u2, w.w) annotation (
-      Line(points = {{48, 10}, {48, 20}, {58, 20}, {58, 25}}, color = {0, 0, 127}));
-    connect(toPowW.u1, w.w) annotation (
-      Line(points = {{-12, 22}, {-12, 25}, {58, 25}}, color = {0, 0, 127}));
+      annotation (Line(points={{66,78},{50,78}}));
+    connect(toPowW.u1, wSensor.w)
+      annotation (Line(points={{-12,48},{-12,51},{58,51}}, color={0,0,127}));
     connect(icePow.flange_b, flange_a) annotation (Line(
-        points={{86,52},{94,52},{94,0},{100,0}},
+        points={{86,78},{94,78},{94,0},{100,0}},
         color={0,0,0},
         smooth=Smooth.None));
-    connect(toGramsPerkWh.y, toG_perHour.u1) annotation (Line(points={{42,-13},{42,
-            -20},{44,-20},{44,-28}}, color={0,0,127}));
+    connect(toGramsPerkWh.y, toG_perHour.u1) annotation (Line(points={{44,-13},{44,
+            -28}},                   color={0,0,127}));
     connect(toG_perHour.y, tokgFuel.u)
       annotation (Line(points={{38,-51},{38,-62}}, color={0,0,127}));
-    connect(zero.y, switch1.u3) annotation (Line(points={{-13,-74},{-10,-74},{
-            -10,-60},{-4,-60}}, color={0,0,127}));
-    connect(toG_perHour.u2, switch1.y) annotation (Line(points={{32,-28},{32,
-            -20},{22,-20},{22,-52},{19,-52}}, color={0,0,127}));
-    connect(switch1.u1, tokW.y) annotation (Line(points={{-4,-44},{-18,-44},{
-            -18,-29}}, color={0,0,127}));
+    connect(zero.y, switch1.u3) annotation (Line(points={{-13,-72},{-10,-72},{-10,
+            -60},{-4,-60}},     color={0,0,127}));
+    connect(toG_perHour.u2, switch1.y) annotation (Line(points={{32,-28},{32,-20},
+            {22,-20},{22,-52},{19,-52}},      color={0,0,127}));
+    connect(switch1.u1, tokW.y) annotation (Line(points={{-4,-44},{-18,-44},{-18,-3}},
+                       color={0,0,127}));
+    connect(toPuTorque.u, iceTau.tau) annotation (Line(points={{25,37.4},{25,58},{
+            -6,58},{-6,78},{2,78}}, color={0,0,127}));
+    connect(wSensor.w, toPuSpeed.u) annotation (Line(points={{58,51},{58,46},{60,46},
+            {60,37.4},{61,37.4}}, color={0,0,127}));
+    connect(toPuSpeed.y, toGramsPerkWh.u2) annotation (Line(points={{61,21.3},{61,
+            16},{50,16},{50,10}}, color={0,0,127}));
+    connect(toPuTorque.y, toGramsPerkWh.u1) annotation (Line(points={{25,21.3},{25,
+            16},{38,16},{38,10}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
@@ -211,9 +238,8 @@ package Partial
             textColor={0,0,0}),                                                                                                                                                                                         Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(                                   preserveAspectRatio=false,
-            extent={{-100,-100},{100,80}}),
-          graphics={Line(points={{-20,52},{-4,52}}, color={238,46,47})}));
+      Diagram(coordinateSystem(                                   preserveAspectRatio=false),
+          graphics={Line(points={{-20,78},{-4,78}}, color={238,46,47})}));
   end PartialIceBase;
 
   partial model PartialIceTNm "Partial map-based ice model"
@@ -236,18 +262,22 @@ package Partial
           origin={-60,28},
           extent={{10,-10},{-10,10}},
           rotation=180)));
-    Modelica.Blocks.Sources.RealExpression rotorW(y=w.w)   annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-76,6})));
+    Modelica.Blocks.Sources.RealExpression rotorW(y=wSensor.w) annotation (
+        Placement(transformation(
+          extent={{-10,-10},{10,10}},
+          rotation=90,
+          origin={-76,6})));
     Modelica.Blocks.Math.Min min1
                                  annotation (
-      Placement(transformation(extent={{-34,42},{-14,62}})));
+      Placement(transformation(extent={{-34,68},{-14,88}})));
   equation
     connect(toLimTau.u[1], rotorW.y)
       annotation (Line(points={{-72,28},{-76,28},{-76,17}}, color={0,0,127}));
-    connect(min1.u2, toLimTau.y[1]) annotation (Line(points={{-36,46},{-42,46},{-42,
-            28},{-49,28}}, color={0,0,127}));
+    connect(min1.u2, toLimTau.y[1]) annotation (Line(points={{-36,72},{-42,72},
+            {-42,28},{-49,28}},
+                           color={0,0,127}));
     connect(min1.y, iceTau.tau)
-      annotation (Line(points={{-13,52},{2,52}}, color={0,0,127}));
+      annotation (Line(points={{-13,78},{2,78}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
@@ -263,8 +293,8 @@ package Partial
         fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}),                                                                                                                                                                                                        Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
         fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135},
         fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent={{-100,-100},{100,80}},     preserveAspectRatio=false),
-          graphics={Line(points={{-50,58},{-36,58}}, color={255,0,00})}));
+      Diagram(coordinateSystem(extent={{-100,-100},{100,100}},     preserveAspectRatio=false),
+          graphics={Line(points={{-50,84},{-36,84}}, color={255,0,00})}));
   end PartialIceTNm;
 
   partial model PartialIceT01 "Partial map-based ice model"
@@ -286,26 +316,29 @@ package Partial
       tableName="maxIceTau",
       fileName=mapsFileName)
       annotation (Placement(visible=true, transformation(
-          origin={-72,58},
+          origin={-72,84},
           extent={{10,-10},{-10,10}},
           rotation=180)));
-    Modelica.Blocks.Sources.RealExpression rotorW(y=w.w)   annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-88,36})));
+    Modelica.Blocks.Sources.RealExpression rotorW(y=wSensor.w) annotation (
+        Placement(transformation(
+          extent={{-10,-10},{10,10}},
+          rotation=90,
+          origin={-88,62})));
     Modelica.Blocks.Math.Product product
-      annotation (Placement(transformation(extent={{-38,42},{-18,62}})));
+      annotation (Placement(transformation(extent={{-38,68},{-18,88}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=1)     annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-60,-24})));
     Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation (
       Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102}),    iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102})));
   equation
     connect(toLimTau.u[1], rotorW.y)
-      annotation (Line(points={{-84,58},{-88,58},{-88,47}}, color={0,0,127}));
+      annotation (Line(points={{-84,84},{-88,84},{-88,73}}, color={0,0,127}));
     connect(product.y, iceTau.tau)
-      annotation (Line(points={{-17,52},{2,52}}, color={0,0,127}));
+      annotation (Line(points={{-17,78},{2,78}}, color={0,0,127}));
     connect(product.u1, toLimTau.y[1])
-      annotation (Line(points={{-40,58},{-61,58}}, color={0,0,127}));
+      annotation (Line(points={{-40,84},{-61,84}}, color={0,0,127}));
     connect(product.u2, limiter.y)
-      annotation (Line(points={{-40,46},{-60,46},{-60,-13}}, color={0,0,127}));
+      annotation (Line(points={{-40,72},{-60,72},{-60,-13}}, color={0,0,127}));
     connect(limiter.u, nTauRef)
       annotation (Line(points={{-60,-36},{-60,-102}}, color={0,0,127}));
     annotation (
@@ -324,18 +357,18 @@ package Partial
     extends PartialIceTNm;
 
     Modelica.Blocks.Math.Feedback feedback annotation (
-      Placement(transformation(extent={{-94,68},{-74,48}})));
+      Placement(transformation(extent={{-94,94},{-74,74}})));
     Modelica.Blocks.Math.Gain gain(k=contrGain)   annotation (
-      Placement(visible = true, transformation(extent={{-66,48},{-46,68}},      rotation = 0)));
+      Placement(visible = true, transformation(extent={{-66,74},{-46,94}},      rotation = 0)));
   equation
     connect(gain.u,feedback. y) annotation (
-      Line(points={{-68,58},{-75,58}},      color = {0, 0, 127}));
+      Line(points={{-68,84},{-75,84}},      color = {0, 0, 127}));
     connect(feedback.u2, icePow.power) annotation (Line(
-        points={{-84,66},{-84,78},{68,78},{68,63}},
+        points={{-84,92},{-84,98},{68,98},{68,89}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(min1.u1, gain.y)
-      annotation (Line(points={{-36,58},{-45,58}}, color={0,0,127}));
+      annotation (Line(points={{-36,84},{-45,84}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
@@ -353,8 +386,8 @@ package Partial
             textColor={162,29,33},
             textString="P",
             textStyle={TextStyle.Bold,TextStyle.Italic})}),
-      Diagram(coordinateSystem(extent={{-140,-100},{100,80}},     preserveAspectRatio=false),
-          graphics={Line(points={{-106,58},{-92,58}}, color={255,0,00}),                                                                       Text(extent={{-98,-64},
+      Diagram(coordinateSystem(extent={{-140,-100},{100,100}},     preserveAspectRatio=false),
+          graphics={Line(points={{-106,84},{-92,84}}, color={255,0,00}),                                                                       Text(extent={{-98,-64},
                 {-54,-100}},                                                                                                                                                          textString = "follows the power
 reference \nand computes consumption")}));
   end PartialIceP;
@@ -444,16 +477,24 @@ reference \nand computes consumption")}));
       Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false)),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={                                                                                        Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
               fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}), Line(points = {{-98, 40}, {-70, 40}}, color = {0, 0, 255}), Line(points = {{-92, -40}, {-70, -40}}, color = {0, 0, 255}), Text(origin={-17.6473,
-                12.3183},                                                                                                                                                                                                        textColor = {0, 0, 255}, extent={{
-                -82.3527,87.6817},{117.641,53.6817}},                                                                                                                                                                                                        textString = "%name"), Rectangle(fillColor = {192, 192, 192},
+                11.476},                                                                                                                                                                                                        textColor = {0, 0, 255}, extent={{
+                -82.3527,82.524},{117.641,50.524}},                                                                                                                                                                                                        textString = "%name"), Rectangle(fillColor = {192, 192, 192},
               fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent={{-80,54},
-                {78,-54}}),                                                                                                                                                                                                        Rectangle(fillColor = {255, 255, 255},
-              fillPattern =                                                                                                                                                                                                        FillPattern.Solid, extent={{-68,16},
-                {66,-14}}),                                                                                                                                                                                                        Text(origin={-5.5886,
-                34.3},                                                                                                                                                                                                      extent={{
-                -64.4114,-24.3},{73.5886,-42.3}},                                                                                                                                                                                                    textString = "J=%J")}),
+                {84,-54}}),Rectangle(fillColor = {255, 255, 255},
+              fillPattern =  FillPattern.Solid, extent={{-72,32},{78,-30}}),
+                    Text(origin={-1.3226,25.7},
+                       extent={{-60.6773,-29.7},{69.3226,-51.7}},
+            textColor={238,46,47},
+            textStyle={TextStyle.Italic},
+            textString="FV-CT"),                                                                                                                                                                                                   Text(origin={-1.9876,
+                53.7},                                                                                                                                                                                                      extent={{
+                -70.0124,-29.7},{79.9876,-51.7}},                                                                                                                                                                                                    textString = "J=%J")}),
       Documentation(info="<html>
 <p>Partial model for one-flange components (version 1).</p>
+</html>", revisions="<html>
+<p>Partial one-flange electric drive, with </p>
+<p>- torque limits from a Fixed Values of torque and power (FV in the name)</p>
+<p>- efficiency computed from a Combi table (CT in the name)</p>
 </html>"));
   end PartialOneFlangeFVCT;
 
@@ -564,9 +605,14 @@ reference \nand computes consumption")}));
                 {-68,-40}}, color = {0, 0, 255}), Rectangle(fillColor = {192, 192, 192},
               fillPattern =  FillPattern.HorizontalCylinder, extent={{-80,54},{
                 84,-54}}), Rectangle(fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, extent={{-70,18},{76,-14}}),
-                             Text(origin={-1.1871,41.7},
-                        extent={{-72.8129,-29.7},{83.1871,-51.7}},
+              fillPattern =  FillPattern.Solid, extent={{-72,32},{78,-30}}),
+                    Text(origin={-3.32261,25.7},
+                       extent={{-60.6773,-29.7},{69.3226,-51.7}},
+            textColor={238,46,47},
+            textStyle={TextStyle.Italic},
+            textString="CT-CT"),
+                             Text(origin={-1.9876,53.7},
+                        extent={{-70.0124,-29.7},{79.9876,-51.7}},
                         textString = "J=%J")}),
       Documentation(info="<html>
 <p>Partial model for one-flange components.</p>
@@ -685,17 +731,18 @@ reference \nand computes consumption")}));
               fillPattern =  FillPattern.Solid, fillColor = {255, 255, 255}),
                            Rectangle(fillColor = {255, 255, 255},
               fillPattern =  FillPattern.Solid, extent={{-72,32},{78,-30}}),
-                             Text(origin={-5.05401,59.7},
-                             extent={{-70.9459,-29.7},{81.054,-51.7}},
+                             Text(origin={-1.98751,53.7},
+                             extent={{-70.0124,-29.7},{79.9875,-51.7}},
                                                  textString = "J=%J"),
-                    Text(origin={-3.32261,27.7},
+                    Text(origin={-3.32261,25.7},
                        extent={{-60.6773,-29.7},{69.3226,-51.7}},
-            textString="LF",
             textColor={238,46,47},
-            textStyle={TextStyle.Italic})}),
+            textStyle={TextStyle.Italic},
+            textString="CT-LF")}),
       Documentation(info="<html>
-<p>Partial one-flange electric drive, with efficiency computed through a Loss Formula (LF)</p>
-<p>The input signal is the requested normalised torque (1 means nominal torque)</p>
+<p>Partial one-flange electric drive, with </p>
+<p>- torque limits from a combiTable (CT in the name)</p>
+<p>- efficiency computed through a Loss Formula (LF in the name)</p>
 </html>"));
   end PartialOneFlangeCTLF;
 

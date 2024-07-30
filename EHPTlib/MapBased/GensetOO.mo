@@ -5,9 +5,15 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
   parameter Real gsRatio = 2 "IdealGear speed reduction factor";
   parameter String mapsFileName = "maps.txt" "Name of the file containing data maps (names: maxIceTau, specificCons, optiSpeed)";
   parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6;
+    parameter Boolean useNormalisedFCMap = false "= true, if fuel consumption map has torque and speed between 0 and 1; else between 0 and maxTau and maxGenW"
+  annotation(Evaluate=true, HideResult=true, choices(checkBox=true));
+
   parameter Modelica.Units.SI.Torque maxTau=200 "Max mechanical torque";
   parameter Modelica.Units.SI.Power maxPow=20e3 "Max mechanical power";
   parameter Modelica.Units.SI.AngularVelocity wIceStart=300;
+  final parameter Modelica.Units.SI.Torque actualTauMax(fixed=false);  //actual Max torque value for consumption map
+  final parameter Modelica.Units.SI.AngularVelocity actualSpeedMax(fixed=false); //actual Max speed value for consumption map
+
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
     Placement(visible = true, transformation(origin = {-26, -40}, extent = {{-8, -8}, {8, 8}}, rotation = 180)));
   Modelica.Mechanics.Rotational.Components.IdealGear idealGear(ratio = gsRatio) annotation (
@@ -28,13 +34,25 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
     Placement(visible = true, transformation(extent = {{-72, -10}, {-52, 10}}, rotation = 0)));
   OneFlange gen(wMax = maxGenW, mapsFileName = mapsFileName, mapsOnFile = true, powMax = maxPow, tauMax = maxTau, effTableName = "gensetDriveEffTable") annotation (
     Placement(visible = true, transformation(extent = {{68, 2}, {48, -18}}, rotation = 0)));
-  IceT01 mbIce(wIceStart = wIceStart, mapsFileName = mapsFileName, iceJ = 10, mapsOnFile = true,
+  IceT01 mbIce(wIceStart = wIceStart,
+    nomTorque=actualTauMax,
+    nomSpeed=actualSpeedMax,          mapsFileName = mapsFileName, iceJ = 10, mapsOnFile = true,
     specConsName="specificCons")                                                                 annotation (
     Placement(visible = true, transformation(extent = {{-36, -22}, {-16, -2}}, rotation = 0)));
   Modelica.Blocks.Math.Gain revGain(k = -0.9 * gsRatio) annotation (
     Placement(visible = true, transformation(extent = {{-10, 10}, {10, 30}}, rotation = 0)));
   Modelica.Blocks.Continuous.Integrator toGrams(k = 1 / 3600) annotation (
     Placement(transformation(extent = {{18, -48}, {38, -28}})));
+
+initial equation
+  if useNormalisedFCMap then
+    actualTauMax=maxTau;
+    actualSpeedMax=maxGenW;
+  else
+    actualTauMax=1;
+    actualSpeedMax=1;
+  end if;
+
 equation
   connect(revGain.y, gen.tauRef) annotation (
     Line(points={{11,20},{68.2,20},{68.2,-6.88889}},        color = {0, 0, 127}));
@@ -79,10 +97,12 @@ equation
               33},                                                                                                                                                                               extent={{39.2,
               -15.8332},{-58.8,24.1668}},
           textString="OO")}),
-    Documentation(info = "<html>
+    Documentation(info="<html>
 <p>Generator set containing Internal Combustion Engine, Electric generator (with DC output), and the related control.</p>
 <p>The control logic tends to deliver at the DC port the input power, using the optimal generator speed.</p>
 <p>In addition, it switches ON or OFF depending on the input boolean control signal.</p>
+<p><i>Note on parameters</i></p>
+<p>See &quot;Note on parameters&quot; in the info of model &quot;Genset&quot;.</p>
 </html>"),
     __OpenModelica_commandLineOptions = "");
 end GensetOO;

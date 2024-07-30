@@ -15,9 +15,11 @@ equation
       string="%second",
       index=1,
       extent={{6,3},{6,3}}));
-  connect(w.w, conn.iceW) annotation (
-    Line(points = {{58, 25}, {58, 25}, {58, 6}, {58, -98}, {0, -98}}, color = {0, 0, 127}),
-    Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
+  connect(wSensor.w, conn.iceW) annotation (Line(points={{58,25},{58,25},{58,6},
+          {58,-98},{0,-98}}, color={0,0,127}), Text(
+      string="%second",
+      index=1,
+      extent={{6,3},{6,3}}));
   connect(switch1.u2, conn.iceON) annotation (Line(points={{-4,-52},{-46,-52},{
           -46,-90},{0,-90},{0,-98}}, color={255,0,255}), Text(
       string="%second",

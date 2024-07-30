@@ -6,11 +6,17 @@ model Genset "GenSet GMS+GEN+SEngine"
   parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)";
   parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6
     "Max generator angular speed";
+
+  parameter Boolean useNormalisedFCMap = false "= true, if fuel consumption map has torque and speed between 0 and 1; else between 0 and maxTau and maxGenW"
+  annotation(Evaluate=true, HideResult=true, choices(checkBox=true));
   parameter Modelica.Units.SI.Torque maxTau=200
     "Max mechanical torque between internal ICE and generator";
   parameter Modelica.Units.SI.Power maxPow=20e3
     "Max mechanical power of the internal generator";
   parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
+  final parameter Modelica.Units.SI.Torque actualTauMax(fixed=false);  //actual Max torque value for consumption map
+  final parameter Modelica.Units.SI.AngularVelocity actualSpeedMax(fixed=false); //actual Max speed value for consumption map
+
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
     Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin = {-24, -20})));
   Modelica.Mechanics.Rotational.Sensors.PowerSensor IcePow annotation (
@@ -31,9 +37,14 @@ model Genset "GenSet GMS+GEN+SEngine"
     tauMax=maxTau,
     effTableName="gensetDriveEffTable") annotation (Placement(visible=true,
         transformation(extent={{68,18},{48,-2}}, rotation=0)));
-  IceT01 mBiceT(mapsOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart,
-    specConsName="specificCons")                                                       annotation (
-    Placement(transformation(extent={{-34,-2},{-14,20}})));
+  IceT01 iceT(
+    mapsOnFile=true,
+    nomTorque=actualTauMax,
+    nomSpeed=actualSpeedMax,
+    mapsFileName=mapsFileName,
+    wIceStart=wIceStart,
+    specConsName="specificCons")
+    annotation (Placement(transformation(extent={{-34,-2},{-14,20}})));
   Modelica.Blocks.Math.Gain gain(k = -1) annotation (
     Placement(transformation(extent = {{-14, 30}, {6, 50}})));
   Modelica.Blocks.Math.Gain gain1(k = 1) annotation (
@@ -45,6 +56,15 @@ model Genset "GenSet GMS+GEN+SEngine"
   Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
     Placement(transformation(extent={{90,-30},{110,-10}}), iconTransformation(
           extent={{92,-70},{112,-50}})));
+initial equation
+  if useNormalisedFCMap then
+    actualTauMax=maxTau;
+    actualSpeedMax=maxGenW;
+  else
+    actualTauMax=1;
+    actualSpeedMax=1;
+  end if;
+
 equation
   connect(gain.y, gen.tauRef) annotation (
     Line(points={{7,40},{76,40},{76,8},{68.2,8},{68.2,9.11111}},                          color = {0, 0, 127}));
@@ -60,16 +80,16 @@ equation
     Line(points = {{-80, 66}, {-80, 80}, {61, 80}, {61, 115}}, color = {0, 0, 127}, smooth = Smooth.None));
   connect(limiter.y, myGMS.pRef) annotation (
     Line(points = {{-80, 43}, {-80, 20}, {-72, 20}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(mBiceT.nTauRef, myGMS.throttle) annotation (
-    Line(points={{-30,-2.22},{-30,-6},{-49,-6},{-49,14}},       color = {0, 0, 127}));
-  connect(speedSensor.flange, mBiceT.flange_a) annotation (
-    Line(points={{-16,-20},{-6,-20},{-6,9},{-14,9}},            color = {0, 0, 0}));
+  connect(iceT.nTauRef, myGMS.throttle) annotation (Line(points={{-30,-2.22},{-30,
+          -6},{-49,-6},{-49,14}}, color={0,0,127}));
+  connect(speedSensor.flange, iceT.flange_a) annotation (Line(points={{-16,-20},
+          {-6,-20},{-6,9},{-14,9}}, color={0,0,0}));
   connect(gain.u, myGMS.tRef) annotation (
     Line(points = {{-16, 40}, {-40, 40}, {-40, 26}, {-49, 26}}, color = {0, 0, 127}));
-  connect(toGrams.u, mBiceT.fuelCons) annotation (
-    Line(points={{16,-32},{8,-32},{8,-10},{-18,-10},{-18,-1.78}},                  color = {0, 0, 127}));
-  connect(idealGear.flange_a, mBiceT.flange_a) annotation (
-    Line(points={{0,9},{-14,9}},                            color = {0, 0, 0}));
+  connect(toGrams.u, iceT.fuelCons) annotation (Line(points={{16,-32},{8,-32},{8,
+          -10},{-18,-10},{-18,-1.78}}, color={0,0,127}));
+  connect(idealGear.flange_a, iceT.flange_a)
+    annotation (Line(points={{0,9},{-14,9}}, color={0,0,0}));
   connect(idealGear.flange_b, IcePow.flange_a) annotation (
     Line(points={{18,9},{24,9}},                          color = {0, 0, 0}));
   connect(gen.pin_p, pin_n) annotation (Line(points={{68,4.66667},{68,-20},{100,
@@ -88,6 +108,8 @@ equation
 <p>Generator set containing Internal Combustion Engine (ICE), electric generator (with DC output), and the related control.</p>
 <p>The control logic tends to deliver at the DC port the input power, using the optimal generator speed.</p>
 <p><i>Note on parameters.</i></p>
-<p>The internal ICE data are supplied through maps to be provided through a txt file. The values explicitly set through the <i>Parameters </i>dialog box refer to the internal generator (except wIceStart). Any change on these should be made considering joint changes in the ICE maps.</p>
+<p>Parameters maxTau, maxPow and maxGenW in <i>Parameters </i>dialog box refer in general to the internal generator, not the engine.</p>
+<p>However, in case useNormalisedFCMap=true, maxTau and maxGenW are also used as max values for the fuel consumption map. This way, larger or smaller engines can be simulated just changing them: leaving the consumption map invaried will keep that maps&apos;s shape unchanged.</p>
+<p>In case useNormalisedFCMap=true, instead, when maxTorque and/or maxPower and/or maxGenW are changed, the fuel consumption map must be changed as well accordingly.</p>
 </html>"));
 end Genset;

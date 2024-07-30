@@ -8,13 +8,13 @@ model IceT
   Modelica.Blocks.Sources.BooleanConstant onSignal
     annotation (Placement(transformation(extent={{-50,-60},{-34,-44}})));
 equation
-  connect(min1.u1, limiter.y) annotation (Line(points={{-36,58},{-92,58},{-92,
+  connect(min1.u1, limiter.y) annotation (Line(points={{-36,84},{-92,84},{-92,
           -40},{-80,-40},{-80,-45}}, color={0,0,127}));
   connect(limiter.u, tauRef)
     annotation (Line(points={{-80,-68},{-80,-96},{-60,-96},{-60,-122}},
                                                     color={0,0,127}));
-  connect(onSignal.y, switch1.u2) annotation (Line(points={{-33.2,-52},{-4,-52}},
-                               color={255,0,255}));
+  connect(onSignal.y, switch1.u2) annotation (Line(points={{-33.2,-52},{-18,-52},
+          {-18,-52},{-4,-52}}, color={255,0,255}));
   annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={Text(
           extent={{-88,-58},{-34,-90}},
           textColor={162,29,33},

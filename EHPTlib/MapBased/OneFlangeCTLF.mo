@@ -1,7 +1,7 @@
 within EHPTlib.MapBased;
 model OneFlangeCTLF "Simple map-based model of an electric drive"
   extends Partial.PartialOneFlangeCTLF(
-                                      toElePow(
+      toElePow(
       A=A,
       bT=bT,
       bW=bW,
