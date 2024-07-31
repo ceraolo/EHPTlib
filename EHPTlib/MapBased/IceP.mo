@@ -12,7 +12,7 @@ equation
   connect(limiter.u, powRef)
     annotation (Line(points={{-88,-48},{-88,-120}}, color={0,0,127}));
   connect(limiter.y, feedback.u1) annotation (Line(points={{-88,-25},{-88,24},{
-          -104,24},{-104,84},{-92,84}}, color={0,0,127}));
+          -110,24},{-110,84},{-96,84}}, color={0,0,127}));
   connect(onSignal.y, switch1.u2)
     annotation (Line(points={{-35.2,-52},{-20,-52},{-20,-52},{-4,-52}},
                                                     color={255,0,255}));

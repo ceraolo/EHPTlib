@@ -10,7 +10,7 @@ model IceConnP
     annotation (Placement(transformation(extent={{-54,-60},{-38,-44}})));
 equation
   connect(feedback.u1, conn.icePowRef) annotation (
-    Line(points={{-92,84},{-92,84},{-92,-102},{0,-102}},          color = {0, 0, 127}),
+    Line(points={{-96,84},{-92,84},{-92,-102},{0,-102}},          color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   connect(icePow.power, conn.icePowDel) annotation (Line(points={{68,89},{68,89},
           {68,6},{78,6},{78,-102},{0,-102}}, color={0,0,127}), Text(
@@ -25,7 +25,7 @@ equation
   connect(onSignal.y, switch1.u2)
     annotation (Line(points={{-37.2,-52},{-4,-52}}, color={255,0,255}));
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 80}}, initialScale = 0.1)),
+    Diagram(coordinateSystem(preserveAspectRatio=false)),
     Documentation(info="<html>
 <p><b><span style=\"font-family: MS Shell Dlg 2;\">Simple map-based ICE model for power-split power trains - with connector</span></b> </p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">This is a variation of model IceT, having the following differences:</span></p>
