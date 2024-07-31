@@ -3,7 +3,9 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
  extends Partial.PartialGenset;
   ECUs.GMSoo gms(
     mapsFileName=mapsFileName,
-    throttlePerWerr=0.1)                                                                  annotation (
+    throttlePerWerr=0.1,
+    nomTorque=actualTauMax,
+    nomSpeed=actualSpeedMax)                                                              annotation (
     Placement(visible = true, transformation(extent={{-70,8},{-50,28}},        rotation = 0)));
   Modelica.Blocks.Interfaces.BooleanInput ON "when true engine is ON" annotation (
     Placement(visible = true, transformation(origin={-59,107},   extent = {{15, -15}, {-15, 15}}, rotation = 90), iconTransformation(origin = {-60, 116}, extent = {{15, -15}, {-15, 15}}, rotation = 90)));

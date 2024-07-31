@@ -259,25 +259,39 @@ package Partial
       tableName="maxIceTau",
       fileName=mapsFileName)
       annotation (Placement(visible=true, transformation(
-          origin={-60,28},
+          origin={-60,44},
           extent={{10,-10},{-10,10}},
           rotation=180)));
     Modelica.Blocks.Sources.RealExpression rotorW(y=wSensor.w) annotation (
         Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=90,
-          origin={-76,6})));
+          origin={-76,-8})));
     Modelica.Blocks.Math.Min min1
                                  annotation (
       Placement(transformation(extent={{-34,68},{-14,88}})));
+    Modelica.Blocks.Math.Gain toPuSpeed1(k=1/nomSpeed)
+                                                    annotation (Placement(visible
+          =true, transformation(
+          origin={-76,20},
+          extent={{6,-6},{-6,6}},
+          rotation=-90)));
+    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+          visible=true, transformation(
+          origin={-52,72},
+          extent={{6,-6},{-6,6}},
+          rotation=180)));
   equation
-    connect(toLimTau.u[1], rotorW.y)
-      annotation (Line(points={{-72,28},{-76,28},{-76,17}}, color={0,0,127}));
-    connect(min1.u2, toLimTau.y[1]) annotation (Line(points={{-36,72},{-42,72},
-            {-42,28},{-49,28}},
-                           color={0,0,127}));
     connect(min1.y, iceTau.tau)
       annotation (Line(points={{-13,78},{2,78}}, color={0,0,127}));
+    connect(toPuSpeed1.y, toLimTau.u[1]) annotation (Line(points={{-76,26.6},{
+            -76,44},{-72,44}}, color={0,0,127}));
+    connect(toPuSpeed1.u, rotorW.y)
+      annotation (Line(points={{-76,12.8},{-76,3}}, color={0,0,127}));
+    connect(fromPuTorque.y, min1.u2)
+      annotation (Line(points={{-45.4,72},{-36,72}}, color={0,0,127}));
+    connect(fromPuTorque.u, toLimTau.y[1]) annotation (Line(points={{-59.2,72},
+            {-68,72},{-68,58},{-40,58},{-40,44},{-49,44}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
@@ -323,24 +337,39 @@ package Partial
         Placement(transformation(
           extent={{-10,-10},{10,10}},
           rotation=90,
-          origin={-88,62})));
+          origin={-88,28})));
     Modelica.Blocks.Math.Product product
-      annotation (Placement(transformation(extent={{-38,68},{-18,88}})));
+      annotation (Placement(transformation(extent={{-34,68},{-14,88}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=1)     annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-60,-24})));
     Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation (
       Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102}),    iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102})));
+    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+          visible=true, transformation(
+          origin={-48,84},
+          extent={{6,-6},{-6,6}},
+          rotation=180)));
+    Modelica.Blocks.Math.Gain toPuSpeed1(k=1/nomSpeed)
+                                                    annotation (Placement(visible
+          =true, transformation(
+          origin={-88,58},
+          extent={{6,-6},{-6,6}},
+          rotation=-90)));
   equation
-    connect(toLimTau.u[1], rotorW.y)
-      annotation (Line(points={{-84,84},{-88,84},{-88,73}}, color={0,0,127}));
     connect(product.y, iceTau.tau)
-      annotation (Line(points={{-17,78},{2,78}}, color={0,0,127}));
-    connect(product.u1, toLimTau.y[1])
-      annotation (Line(points={{-40,84},{-61,84}}, color={0,0,127}));
+      annotation (Line(points={{-13,78},{2,78}}, color={0,0,127}));
     connect(product.u2, limiter.y)
-      annotation (Line(points={{-40,72},{-60,72},{-60,-13}}, color={0,0,127}));
+      annotation (Line(points={{-36,72},{-60,72},{-60,-13}}, color={0,0,127}));
     connect(limiter.u, nTauRef)
       annotation (Line(points={{-60,-36},{-60,-102}}, color={0,0,127}));
+    connect(toLimTau.y[1], fromPuTorque.u)
+      annotation (Line(points={{-61,84},{-55.2,84}}, color={0,0,127}));
+    connect(fromPuTorque.y, product.u1)
+      annotation (Line(points={{-41.4,84},{-36,84}}, color={0,0,127}));
+    connect(toLimTau.u[1], toPuSpeed1.y) annotation (Line(points={{-84,84},{-88,
+            84},{-88,64.6}}, color={0,0,127}));
+    connect(toPuSpeed1.u, rotorW.y)
+      annotation (Line(points={{-88,50.8},{-88,39}}, color={0,0,127}));
     annotation (
       Documentation(info="<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in per unit of the maximum torque. Models that inherit from this:</span></p>
@@ -750,15 +779,19 @@ reference \nand computes consumption")}));
     import Modelica.Constants.inf;
     import Modelica.Constants.pi;
     parameter Real gsRatio = 2 "IdealGear speed reduction factor";
-    parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)";
+    parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)" annotation(Dialog(group = "Input map parameters"));
     parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6
       "Max generator angular speed";
 
-    parameter Boolean useNormalisedIceMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTau and maxGenW (see info)"
-    annotation(Evaluate=true, HideResult=true, choices(checkBox=true));
+    parameter Boolean useNormalisedIceMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm (see info)"
+    annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Input map parameters"));
     parameter Modelica.Units.SI.Torque maxTau=200
       "Max mechanical torque between internal ICE and generator";
-    parameter Modelica.Units.SI.Power maxPow=20e3
+    parameter Modelica.Units.SI.Torque maxTauNorm=maxTau
+      "Max torque for normalised maps"   annotation(Dialog(group = "Input map parameters"));
+    parameter Modelica.Units.SI.AngularVelocity maxSpeedNorm=MaxGenW
+      "Max mechanical speed for normalised maps" annotation(Dialog(group = "Input map parameters"));
+    parameter Modelica.Units.SI.Power maxPow=maxGenW
       "Max mechanical power of the internal generator";
     parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
     final parameter Modelica.Units.SI.Torque actualTauMax(fixed=false);  //actual Max torque value for consumption map (which in file is between 0 and 1)
@@ -804,8 +837,10 @@ reference \nand computes consumption")}));
             extent={{92,-70},{112,-50}})));
   initial equation
     if useNormalisedIceMaps then
-      actualTauMax=maxTau;
-      actualSpeedMax=maxGenW;
+      actualTauMax=maxTauNorm;
+  //    actualTauMax=570;
+      actualSpeedMax=maxSpeedNorm;
+  //    actualSpeedMax=1;
     else
       actualTauMax=1;
       actualSpeedMax=1;
