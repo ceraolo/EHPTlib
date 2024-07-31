@@ -778,20 +778,22 @@ reference \nand computes consumption")}));
   partial model PartialGenset "GenSet GMS+GEN+SEngine"
     import Modelica.Constants.inf;
     import Modelica.Constants.pi;
+    parameter Modelica.Units.SI.MomentOfInertia jIce=0.1 "ICE moment of inertia";
+    parameter Modelica.Units.SI.MomentOfInertia jGen=0.1 "Generator moment of inertia";
     parameter Real gsRatio = 2 "IdealGear speed reduction factor";
     parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)" annotation(Dialog(group = "Input map parameters"));
     parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6
       "Max generator angular speed";
 
-    parameter Boolean useNormalisedIceMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm (see info)"
+    parameter Boolean useNormalisedIceMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm"
     annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Input map parameters"));
     parameter Modelica.Units.SI.Torque maxTau=200
       "Max mechanical torque between internal ICE and generator";
     parameter Modelica.Units.SI.Torque maxTauNorm=maxTau
       "Max torque for normalised maps"   annotation(Dialog(group = "Input map parameters"));
-    parameter Modelica.Units.SI.AngularVelocity maxSpeedNorm=MaxGenW
+    parameter Modelica.Units.SI.AngularVelocity maxSpeedNorm
       "Max mechanical speed for normalised maps" annotation(Dialog(group = "Input map parameters"));
-    parameter Modelica.Units.SI.Power maxPow=maxGenW
+    parameter Modelica.Units.SI.Power maxPow=100e3
       "Max mechanical power of the internal generator";
     parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
     final parameter Modelica.Units.SI.Torque actualTauMax(fixed=false);  //actual Max torque value for consumption map (which in file is between 0 and 1)
@@ -807,8 +809,9 @@ reference \nand computes consumption")}));
       Placement(transformation(extent = {{90, 50}, {110, 70}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMax = inf, uMin = 0) annotation (
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 54})));
-    EHPTlib.MapBased.OneFlange gen(
+    EHPTlib.MapBased.OneFlangeFVCT gen(
       wMax=maxGenW,
+      J=jGen,
       mapsFileName=mapsFileName,
       mapsOnFile=true,
       powMax=maxPow,
@@ -816,6 +819,7 @@ reference \nand computes consumption")}));
       effTableName="gensetDriveEffTable") annotation (Placement(visible=true,
           transformation(extent={{68,18},{48,-2}}, rotation=0)));
     IceT01 iceT(
+      iceJ=jIce,
       mapsOnFile=true,
       nomTorque=actualTauMax,
       nomSpeed=actualSpeedMax,
@@ -838,9 +842,7 @@ reference \nand computes consumption")}));
   initial equation
     if useNormalisedIceMaps then
       actualTauMax=maxTauNorm;
-  //    actualTauMax=570;
       actualSpeedMax=maxSpeedNorm;
-  //    actualSpeedMax=1;
     else
       actualTauMax=1;
       actualSpeedMax=1;
@@ -848,11 +850,11 @@ reference \nand computes consumption")}));
 
   equation
     connect(gain.y, gen.tauRef) annotation (
-      Line(points={{7,40},{76,40},{76,8},{68.2,8},{68.2,9.11111}},                          color = {0, 0, 127}));
+      Line(points={{7,40},{76,40},{76,8},{68.2,8},{68.2,8}},                                color = {0, 0, 127}));
     connect(gen.pin_n, pin_p) annotation (
-      Line(points={{68,13.5556},{80,13.5556},{80,60},{100,60}},          color = {0, 0, 255}));
+      Line(points={{68,13},{80,13},{80,60},{100,60}},                    color = {0, 0, 255}));
     connect(IcePow.flange_b, gen.flange_a) annotation (
-      Line(points={{42,9},{46,9},{46,9.11111},{48,9.11111}}));
+      Line(points={{42,9},{46,9},{46,8},{48,8}}));
     connect(gain1.u, speedSensor.w) annotation (
       Line(points = {{-60, -15.2}, {-60, -20}, {-32.8, -20}}, color = {0, 0, 127}));
     connect(limiter.u, powRef) annotation (
@@ -865,8 +867,8 @@ reference \nand computes consumption")}));
       annotation (Line(points={{0,9},{-14,9}}, color={0,0,0}));
     connect(idealGear.flange_b, IcePow.flange_a) annotation (
       Line(points={{18,9},{24,9}},                          color = {0, 0, 0}));
-    connect(gen.pin_p, pin_n) annotation (Line(points={{68,4.66667},{68,-20},{100,
-            -20}}, color={0,0,255}));
+    connect(gen.pin_p, pin_n) annotation (Line(points={{68,3},{68,-20},{100,-20}},
+                   color={0,0,255}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 100}})),
       Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
@@ -983,4 +985,88 @@ reference \nand computes consumption")}));
 <p>The control logic commands the genset to deliver at the DC port the input power, using the optimal generator speed.</p>
 </html>"));
   end PartialGMS;
+
+  partial model PartialOneFlange
+    "Partial map-based one-Flange electric drive model"
+    parameter Modelica.Units.SI.Power powMax=22000
+      "Maximum mechnical power"
+                               annotation (
+      Dialog(group = "General parameters"));
+    parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
+      annotation (Dialog(enable=not limitsOnFile,group = "General parameters"));
+    parameter Modelica.Units.SI.Voltage uDcNom=100 "nominal DC voltage"
+                                                                       annotation (
+      Dialog(group = "General parameters"));
+    parameter Modelica.Units.SI.AngularVelocity wMax= 3000 "Maximum drive speed"
+                                                                                annotation (
+      Dialog(group = "General parameters"));
+    parameter Modelica.Units.SI.MomentOfInertia J=0.25
+      "Rotor's moment of inertia"
+                                 annotation (
+      Dialog(group = "General parameters"));
+
+    Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a "Left flange of shaft" annotation (
+      Placement(transformation(extent = {{88, 50}, {108, 70}}, rotation = 0), iconTransformation(extent = {{90, -10}, {110, 10}})));
+    Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation (
+      Placement(transformation(extent = {{8, -8}, {-8, 8}}, rotation = 90, origin={84,44})));
+    Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
+      Placement(transformation(extent = {{-110, 30}, {-90, 50}}), iconTransformation(extent = {{-110, 30}, {-90, 50}})));
+    Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
+      Placement(transformation(extent = {{-110, -50}, {-90, -30}}), iconTransformation(extent = {{-110, -50}, {-90, -30}})));
+    SupportModels.MapBasedRelated.ConstPg constPDC(vNom = uDcNom) annotation (
+      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-100, 0})));
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = J) annotation (
+      Placement(transformation(extent={{48,50},{68,70}})));
+    Modelica.Mechanics.Rotational.Sources.Torque torque annotation (
+      Placement(transformation(extent = {{-16, 50}, {4, 70}})));
+    Modelica.Blocks.Math.Gain gain(k = 1) annotation (
+      Placement(transformation(extent = {{-64, -10}, {-84, 10}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor powSensor annotation (
+      Placement(transformation(extent={{18,50},{38,70}})));
+    Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
+      Placement(transformation(extent={{-16,20},{-36,40}})));
+    Modelica.Blocks.Interfaces.RealInput tauRef "(positive when motor peration)" annotation (
+      Placement(visible = true, transformation(origin={-118,-70},    extent = {{-18, -18}, {18, 18}}, rotation = 0), iconTransformation(origin={-102,0},    extent = {{-20, -20}, {20, 20}}, rotation = 0)));
+  equation
+  //  assert(wMax >= powMax / tauMax, "\n****  " + "wMax=" + String(wMax)+
+  //       ";  powMax=" + String(powMax)+";  tauMax="+String(tauMax)+"  ***\n");
+    connect(pin_p, constPDC.pin_p) annotation (
+      Line(points = {{-100, 40}, {-100, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(pin_n, constPDC.pin_n) annotation (
+      Line(points = {{-100, -40}, {-100, -9.8}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(constPDC.Pref, gain.y) annotation (
+      Line(points = {{-91.8, 0}, {-85, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+    connect(wSensor.flange, flange_a) annotation (
+      Line(points={{84,52},{84,60},{98,60}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(variableLimiter.y, torque.tau) annotation (
+      Line(points={{-37,30},{-40,30},{-40,60},{-18,60}},          color = {0, 0, 127}));
+    connect(torque.flange, powSensor.flange_a)
+      annotation (Line(points={{4,60},{18,60}}, color={0,0,0}));
+    connect(powSensor.flange_b, inertia.flange_a)
+      annotation (Line(points={{38,60},{48,60}}, color={0,0,0}));
+    connect(inertia.flange_b, flange_a)
+      annotation (Line(points={{68,60},{98,60}}, color={0,0,0}));
+    connect(variableLimiter.u, tauRef) annotation (Line(points={{-14,30},{0,30},
+            {0,-70},{-118,-70}},
+                              color={0,0,127}));
+    annotation (
+      Diagram(coordinateSystem(extent={{-100,-80},{100,80}},      preserveAspectRatio=false)),
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={                                                                                        Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
+              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}), Line(points = {{-98, 40}, {-70, 40}}, color = {0, 0, 255}), Line(points = {{-92, -40}, {-70, -40}}, color = {0, 0, 255}), Text(origin={-17.6473,
+                11.476},                                                                                                                                                                                                        textColor = {0, 0, 255}, extent={{
+                -82.3527,82.524},{117.641,50.524}},                                                                                                                                                                                                        textString = "%name"), Rectangle(fillColor = {192, 192, 192},
+              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent={{-80,54},
+                {84,-54}}),Rectangle(fillColor = {255, 255, 255},
+              fillPattern =  FillPattern.Solid, extent={{-72,32},{78,-30}}),                                                                                                                                                       Text(origin={-1.9876,
+                53.7},                                                                                                                                                                                                      extent={{
+                -70.0124,-29.7},{79.9876,-51.7}},                                                                                                                                                                                                    textString = "J=%J")}),
+      Documentation(info="<html>
+<p>Partial model for one-flange components (version 1).</p>
+</html>", revisions="<html>
+<p>Partial one-flange electric drive, with </p>
+<p>- torque limits from a Fixed Values of torque and power (FV in the name)</p>
+<p>- efficiency computed from a Combi table (CT in the name)</p>
+</html>"));
+  end PartialOneFlange;
+
 end Partial;

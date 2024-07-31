@@ -224,15 +224,18 @@ package TestingModels
 </html>"));
   end TestIceConnOO;
 
-  model TestOneFlange
+  model TestOneFlangeFVCT
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
       Placement(transformation(extent={{38,-2},{58,18}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -50, w_nominal = 400) annotation (
       Placement(transformation(extent={{92,-2},{72,18}})));
     Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 50, offset = 20) annotation (
       Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
-    OneFlange oneFlange(powMax = 10000, tauMax = 50, J = 0.5, wMax = 300) annotation (
-      Placement(transformation(extent = {{-22, 0}, {-2, 20}})));
+    OneFlangeFVCT oneFlange(
+      powMax=10000,
+      tauMax=50,
+      J=0.5,
+      wMax=300) annotation (Placement(transformation(extent={{-22,0},{-2,20}})));
     Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
     Modelica.Electrical.Analog.Basic.Ground ground annotation (
@@ -245,24 +248,23 @@ package TestingModels
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{58,8},{72,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(tauRef.y, oneFlange.tauRef) annotation (
-      Line(points={{-39,-28},{-32,-28},{-32,8},{-22.2,8},{-22.2,8.88889}},            color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-39,-28},{-32,-28},{-32,8},{-22.2,8},{-22.2,10}},                 color = {0, 0, 127}, smooth = Smooth.None));
     connect(ground.p, gen.n) annotation (
       Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(oneFlange.flange_a, powMech.flange_a) annotation (
-      Line(points={{-2,8.88889},{6,8.88889},{6,8},{12,8}},            color = {0, 0, 0}, smooth = Smooth.None));
+      Line(points={{-2,10},{6,10},{6,8},{12,8}},                      color = {0, 0, 0}, smooth = Smooth.None));
     connect(inertia.flange_a, powMech.flange_b) annotation (
       Line(points={{38,8},{32,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(powElec.nc, oneFlange.pin_p) annotation (
-      Line(points={{-28,30},{-22,30},{-22,13.3333}}, color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-28,30},{-22,30},{-22,15}},      color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.pc, gen.p) annotation (
       Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.pv, powElec.nc) annotation (
       Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(gen.n, oneFlange.pin_n) annotation (
-      Line(points={{-64,0},{-38,0},{-38,4.44444},{-22,4.44444}},  color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-64,0},{-38,0},{-38,5},{-22,5}},              color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.nv, oneFlange.pin_n) annotation (
-      Line(points={{-38,20},{-38,4.44444},{-22,4.44444}},
-                                              color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-38,20},{-38,5},{-22,5}}, color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics),
       experiment(StopTime = 50),
@@ -282,7 +284,67 @@ package TestingModels
 </ul>
 <p><br><u>Second suggested plot</u>: Once the first plot is anaysed, the user might want to have an idea of the mechanical and electrical powers: these are seen putting in the same plot powMech.power and powElec.power.</p>
 </html>"));
-  end TestOneFlange;
+  end TestOneFlangeFVCT;
+
+  model TestOneFlangeCTCT
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
+      Placement(transformation(extent={{38,-2},{58,18}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -50, w_nominal = 400) annotation (
+      Placement(transformation(extent={{92,-2},{72,18}})));
+    Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 50, offset = 20) annotation (
+      Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
+    OneFlangeCTCT oneFlange(
+      powMax=10000,
+      tauMax=50,
+      J=0.5,
+      wMax=300,
+      limitsOnFile=true,
+      limitsFileName="EVmapsNew.txt",
+      maxTorqueTableName="maxTorque",
+      minTorqueTableName="minTorque",
+      effMapOnFile=true,
+      effMapFileName="EVmapsNew.txt",
+      effTableName="effTable")
+                annotation (Placement(transformation(extent={{-22,0},{-2,20}})));
+    Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation (
+      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
+    Modelica.Electrical.Analog.Basic.Ground ground annotation (
+      Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech annotation (
+      Placement(transformation(extent={{12,-2},{32,18}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation (
+      Placement(transformation(extent = {{-48, 20}, {-28, 40}})));
+  equation
+    connect(inertia.flange_b, loadTorque.flange) annotation (
+      Line(points={{58,8},{72,8}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(tauRef.y, oneFlange.tauRef) annotation (
+      Line(points={{-39,-28},{-32,-28},{-32,8},{-22.2,8},{-22.2,10}},                 color = {0, 0, 127}, smooth = Smooth.None));
+    connect(ground.p, gen.n) annotation (
+      Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(oneFlange.flange_a, powMech.flange_a) annotation (
+      Line(points={{-2,10},{6,10},{6,8},{12,8}},                      color = {0, 0, 0}, smooth = Smooth.None));
+    connect(inertia.flange_a, powMech.flange_b) annotation (
+      Line(points={{38,8},{32,8}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(powElec.nc, oneFlange.pin_p) annotation (
+      Line(points={{-28,30},{-22,30},{-22,15}},      color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.pc, gen.p) annotation (
+      Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.pv, powElec.nc) annotation (
+      Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(gen.n, oneFlange.pin_n) annotation (
+      Line(points={{-64,0},{-38,0},{-38,5},{-22,5}},              color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.nv, oneFlange.pin_n) annotation (
+      Line(points={{-38,20},{-38,5},{-22,5}}, color = {0, 0, 255}, smooth = Smooth.None));
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics),
+      experiment(StopTime = 50),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}})),
+      Documentation(info="<html>
+<p>For cgeneral info, see TestOneFlangeFVCT.</p>
+<p>This new test tests input from a txt file. In both FVCT and CTCT the generated torque is limiteed by the variable limits, but in a different way.</p>
+</html>"));
+  end TestOneFlangeCTCT;
 
   model TestOneFlangeConn
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (

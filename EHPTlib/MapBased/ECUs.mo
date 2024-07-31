@@ -498,7 +498,7 @@ reference tau\nto gen",
       Placement(visible = true, transformation(origin = {26, -48}, extent = {{10, 10}, {-10, -10}}, rotation = 180)));
     Modelica.Blocks.Interfaces.BooleanOutput on annotation (
       Placement(visible = true, transformation(extent = {{100, 30}, {120, 50}}, rotation = 0), iconTransformation(extent = {{98, 50}, {118, 70}}, rotation = 0)));
-    Modelica.Blocks.Interfaces.RealOutput pcPowReq(displayUnit = "kW") annotation (
+    Modelica.Blocks.Interfaces.RealOutput pcPowReq annotation (
       Placement(visible = true, transformation(extent = {{100, -50}, {120, -30}}, rotation = 0), iconTransformation(extent = {{98, -70}, {118, -50}}, rotation = 0)));
     Modelica.Blocks.Continuous.FirstOrder powFilt(y_start = 20e3, T = tauPowFilt) annotation (
       Placement(transformation(extent = {{-72, 44}, {-56, 60}})));
