@@ -424,191 +424,31 @@ reference tau\nto gen",
   end Ecu3;
 
   model GMS "Genset Management System (simplified)"
-    parameter Real contrGain = 0.01 "speed controller gain (throttle per rad/s)";
-    parameter String mapsFileName = "maps.txt" "File name where optimal speed is stored";
-    import Modelica.Constants.pi;
-    Modelica.Blocks.Tables.CombiTable1Dv optiSpeed(
-      tableOnFile=true,
-      columns={2},
-      tableName="optiSpeed",
-      fileName=mapsFileName)
-      "gives the optimal speed as a function of requested power"
-      annotation (Placement(transformation(extent={{-42,-50},{-22,-30}})));
-    Modelica.Blocks.Math.Division division annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-30, 48})));
-    Modelica.Blocks.Interfaces.RealInput Wmecc annotation (
-      Placement(transformation(extent = {{-15, -15}, {15, 15}}, rotation = 90, origin = {1, -115}), iconTransformation(extent = {{-15, -15}, {15, 15}}, rotation = 90, origin = {1, -115})));
-    Modelica.Blocks.Interfaces.RealInput pRef annotation (
-      Placement(transformation(extent = {{-134, -20}, {-94, 20}}), iconTransformation(extent = {{-140, -20}, {-100, 20}})));
-    Modelica.Blocks.Interfaces.RealOutput tRef "Torque request (positive when ICE delivers power)" annotation (
-      Placement(transformation(extent = {{100, 50}, {120, 70}}), iconTransformation(extent = {{100, 50}, {120, 70}})));
-    Modelica.Blocks.Interfaces.RealOutput throttle annotation (
-      Placement(transformation(extent = {{100, -70}, {120, -50}}), iconTransformation(extent = {{100, -70}, {120, -50}})));
-    Modelica.Blocks.Math.Feedback feedback annotation (
-      Placement(transformation(extent = {{24, -50}, {44, -30}})));
-    Modelica.Blocks.Math.Gain gain(k = 0.01) annotation (
-      Placement(transformation(extent = {{66, -50}, {86, -30}})));
-    Modelica.Blocks.Math.UnitConversions.To_rpm to_rpm annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {34, -70})));
-    Modelica.Blocks.Tables.CombiTable1Dv maxTau(
-      columns={2},
-      extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint,
-      fileName=mapsFileName,
-      tableName="maxIceTau",
-      tableOnFile=true)
-      "gives the optimal spees ad a function of requested power"
-      annotation (Placement(transformation(extent={{6,68},{26,88}})));
-    Modelica.Blocks.Nonlinear.VariableLimiter tauLimiter annotation (
-      Placement(transformation(extent = {{48, 50}, {68, 70}})));
-    Modelica.Blocks.Math.Gain gain1(k = -1) annotation (
-      Placement(transformation(extent = {{20, 28}, {36, 44}})));
+    extends MapBased.Partial.PartialGMS;
+
   equation
-    connect(division.u1, optiSpeed.u[1]) annotation (
-      Line(points = {{-36, 36}, {-36, 0}, {-60, 0}, {-60, -40}, {-44, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(optiSpeed.u[1], pRef) annotation (
-      Line(points = {{-44, -40}, {-60, -40}, {-60, 0}, {-114, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(throttle, gain.y) annotation (
-      Line(points = {{110, -60}, {98, -60}, {98, -40}, {87, -40}}, color = {0, 0, 127}));
-    connect(feedback.y, gain.u) annotation (
-      Line(points = {{43, -40}, {64, -40}}, color = {0, 0, 127}));
-    connect(feedback.u1, optiSpeed.y[1]) annotation (
-      Line(points = {{26, -40}, {4, -40}, {-21, -40}}, color = {0, 0, 127}));
-    connect(to_rpm.y, feedback.u2) annotation (
-      Line(points = {{34, -59}, {34, -59}, {34, -48}}, color = {0, 0, 127}));
-    connect(to_rpm.u, Wmecc) annotation (
-      Line(points = {{34, -82}, {34, -94}, {1, -94}, {1, -115}}, color = {0, 0, 127}));
-    connect(division.u2, Wmecc) annotation (
-      Line(points = {{-24, 36}, {-24, 0}, {-6, 0}, {-6, -96}, {1, -96}, {1, -115}}, color = {0, 0, 127}));
-    connect(tauLimiter.y, tRef) annotation (
-      Line(points = {{69, 60}, {84, 60}, {110, 60}}, color = {0, 0, 127}));
-    connect(tauLimiter.limit1, maxTau.y[1]) annotation (
-      Line(points = {{46, 68}, {36, 68}, {36, 78}, {27, 78}}, color = {0, 0, 127}));
-    connect(maxTau.u[1], Wmecc) annotation (
-      Line(points = {{4, 78}, {0, 78}, {0, -115}, {1, -115}}, color = {0, 0, 127}));
-    connect(division.y, tauLimiter.u) annotation (
-      Line(points = {{-30, 59}, {-32, 59}, {-32, 60}, {46, 60}}, color = {0, 0, 127}));
-    connect(gain1.y, tauLimiter.limit2) annotation (
-      Line(points = {{36.8, 36}, {40, 36}, {40, 34}, {40, 52}, {46, 52}}, color = {0, 0, 127}));
-    connect(gain1.u, maxTau.y[1]) annotation (
-      Line(points = {{18.4, 36}, {12, 36}, {12, 54}, {36, 54}, {36, 78}, {27, 78}}, color = {0, 0, 127}));
-    annotation (
-      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
-      experimentSetupOutput,
-      Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
-        fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}),
-          Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
-        fillPattern = FillPattern.Solid, extent = {{-98, 22}, {98, -16}}, textString = "%name")}),
-      Documentation(info = "<html>
-<p>Genset Management System.</p>
-<p>The control logic commands the genset to deliver at the DC port the input power, using the optimal generator speed.</p>
-</html>"));
+    connect(optiSpeed.y[1], feedback.u1)
+      annotation (Line(points={{-59,-40},{26,-40}}, color={0,0,127}));
   end GMS;
 
   model GMSoo "Genset Management System (simplified)"
-    parameter Real tauMax = 100 "maximum torque internally exchanged by the two machines";
-    parameter Real throttlePerWerr = 0.01 "speed controller gain (throttle per rad/s)";
-    parameter Boolean tablesOnFile = false;
-    parameter String mapsFileName = "maps.txt" "Name of the file containing data maps (names: maxIceTau, specificCons, optiSpeed)" annotation (
-      Dialog(enable = tablesOnFile));
-    parameter Real optiTable[:, :] = [0, 800; 20000, 850; 40000, 1100; 60000, 1250; 80000, 1280; 100000, 1340; 120000, 1400; 140000, 1650; 160000, 2130] "first row: speed, 1st column: torque, body: sp. consumption" annotation (
-      Dialog(enable = not tablesOnFile));
-    import Modelica.Constants.pi;
-    Modelica.Blocks.Tables.CombiTable1Dv optiSpeed(
-      columns={2},
-      smoothness=Modelica.Blocks.Types.Smoothness.ContinuousDerivative,
-      table=optiTable,
-      fileName=mapsFileName,
-      tableOnFile=tablesOnFile,
-      tableName="optiSpeed")
-      "gives the optimal spees ad a function of requested power"
-      annotation (Placement(visible=true, transformation(extent={{-66,-22},
-              {-46,-2}}, rotation=0)));
-    Modelica.Blocks.Math.Division division annotation (
-      Placement(visible = true, transformation(origin = {4, 16}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
-    Modelica.Blocks.Interfaces.RealInput Wmecc annotation (
-      Placement(visible = true, transformation(origin = {0, -96}, extent = {{-20, -20}, {20, 20}}, rotation = 90), iconTransformation(origin = {1, -115}, extent = {{-15, -15}, {15, 15}}, rotation = 90)));
-    Modelica.Blocks.Interfaces.RealInput pRef annotation (
-      Placement(visible = true, transformation(extent = {{-140, -60}, {-100, -20}}, rotation = 0), iconTransformation(extent = {{-140, -20}, {-100, 20}}, rotation = 0)));
-    Modelica.Blocks.Interfaces.RealOutput tRef "Torque request (positive when ICE delivers power)" annotation (
-      Placement(visible = true, transformation(extent = {{100, 30}, {120, 50}}, rotation = 0), iconTransformation(extent = {{100, 50}, {120, 70}}, rotation = 0)));
-    Modelica.Blocks.Interfaces.RealOutput throttle annotation (
-      Placement(visible = true, transformation(extent = {{100, -50}, {120, -30}}, rotation = 0), iconTransformation(extent = {{100, -70}, {120, -50}}, rotation = 0)));
-    Modelica.Blocks.Math.Feedback feedback annotation (
-      Placement(visible = true, transformation(extent = {{24, -30}, {44, -10}}, rotation = 0)));
-    Modelica.Blocks.Math.Gain gain(k = throttlePerWerr) annotation (
-      Placement(visible = true, transformation(extent = {{66, -30}, {86, -10}}, rotation = 0)));
-    Modelica.Blocks.Math.UnitConversions.To_rpm to_rpm annotation (
-      Placement(visible = true, transformation(origin = {34, -50}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+     extends MapBased.Partial.PartialGMS;
+
     Modelica.Blocks.Interfaces.BooleanInput on annotation (
-      Placement(visible = true, transformation(extent = {{-138, 28}, {-98, 68}}, rotation = 0), iconTransformation(extent = {{-138, 40}, {-98, 80}}, rotation = 0)));
+      Placement(visible = true, transformation(extent={{-134,60},{-94,100}},     rotation = 0), iconTransformation(extent = {{-138, 40}, {-98, 80}}, rotation = 0)));
     Modelica.Blocks.Logical.Switch switch1 annotation (
-      Placement(visible = true, transformation(extent = {{-18, -30}, {2, -10}}, rotation = 0)));
-    Modelica.Blocks.Sources.Constant zero(k = 0) annotation (
-      Placement(visible = true, transformation(extent = {{-60, -60}, {-40, -40}}, rotation = 0)));
-    Modelica.Blocks.Nonlinear.Limiter limMinW(uMax = 1e9, uMin = 10) annotation (
-      Placement(visible = true, transformation(origin = {4, -48}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
-    Modelica.Blocks.Tables.CombiTable1Dv maxTau(
-      tableOnFile=true,
-      columns={2},
-      fileName=mapsFileName,
-      tableName="maxIceTau")
-      "gives the optimal spees ad a function of requested power"
-      annotation (Placement(transformation(extent={{14,38},{34,58}})));
-    Modelica.Blocks.Math.Gain gain1(k = -1) annotation (
-      Placement(transformation(extent = {{34, 4}, {50, 20}})));
-    Modelica.Blocks.Nonlinear.VariableLimiter tauLimiter annotation (
-      Placement(transformation(extent = {{62, 26}, {82, 46}})));
-    Modelica.Blocks.Sources.RealExpression realExpression(y = Wmecc) annotation (
-      Placement(transformation(extent = {{-24, 36}, {-4, 56}})));
+      Placement(visible = true, transformation(extent={{-38,-50},{-18,-30}},    rotation = 0)));
+    Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
+      Placement(visible = true, transformation(extent={{-80,-80},{-60,-60}},      rotation = 0)));
   equation
-    connect(to_rpm.u, Wmecc) annotation (
-      Line(points = {{34, -62}, {34, -70}, {0, -70}, {0, -96}}, color = {0, 0, 127}));
-    connect(zero.y, switch1.u3) annotation (
-      Line(points = {{-39, -50}, {-30, -50}, {-30, -28}, {-20, -28}}, color = {0, 0, 127}));
-    connect(on, switch1.u2) annotation (
-      Line(points = {{-118, 48}, {-34, 48}, {-34, -20}, {-20, -20}}, color = {255, 0, 255}));
-    connect(optiSpeed.y[1], switch1.u1) annotation (
-      Line(points = {{-45, -12}, {-45, -12}, {-20, -12}}, color = {0, 0, 127}));
-    connect(switch1.y, feedback.u1) annotation (
-      Line(points = {{3, -20}, {26, -20}}, color = {0, 0, 127}));
-    connect(to_rpm.y, feedback.u2) annotation (
-      Line(points = {{34, -39}, {34, -39}, {34, -28}}, color = {0, 0, 127}));
-    connect(feedback.y, gain.u) annotation (
-      Line(points = {{43, -20}, {64, -20}}, color = {0, 0, 127}));
-    connect(throttle, gain.y) annotation (
-      Line(points = {{110, -40}, {98, -40}, {98, -20}, {87, -20}}, color = {0, 0, 127}));
-    connect(division.u1, optiSpeed.u[1]) annotation (
-      Line(points = {{-2, 4}, {-80, 4}, {-80, -12}, {-68, -12}}, color = {0, 0, 127}));
-    connect(optiSpeed.u[1], pRef) annotation (
-      Line(points = {{-68, -12}, {-80, -12}, {-80, -40}, {-120, -40}}, color = {0, 0, 127}));
-    connect(limMinW.u, Wmecc) annotation (
-      Line(points = {{4, -60}, {4, -70}, {0, -70}, {0, -96}}, color = {0, 0, 127}));
-    connect(limMinW.y, division.u2) annotation (
-      Line(points = {{4, -37}, {6, -37}, {6, 4}, {10, 4}}, color = {0, 0, 127}));
-    connect(tauLimiter.y, tRef) annotation (
-      Line(points = {{83, 36}, {96, 36}, {96, 40}, {110, 40}}, color = {0, 0, 127}));
-    connect(maxTau.y[1], tauLimiter.limit1) annotation (
-      Line(points = {{35, 48}, {60, 48}, {60, 44}}, color = {0, 0, 127}));
-    connect(tauLimiter.limit2, gain1.y) annotation (
-      Line(points = {{60, 28}, {58, 28}, {58, 26}, {50.8, 26}, {50.8, 12}}, color = {0, 0, 127}));
-    connect(gain1.u, tauLimiter.limit1) annotation (
-      Line(points = {{32.4, 12}, {26, 12}, {26, 30}, {44, 30}, {44, 48}, {60, 48}, {60, 44}}, color = {0, 0, 127}));
-    connect(division.y, tauLimiter.u) annotation (
-      Line(points = {{4, 27}, {4, 36}, {60, 36}}, color = {0, 0, 127}));
-    connect(realExpression.y, maxTau.u[1]) annotation (
-      Line(points = {{-3, 46}, {4, 46}, {4, 48}, {12, 48}}, color = {0, 0, 127}));
-    annotation (
-      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 60}})),
-      Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
-        fillPattern =  FillPattern.Solid, extent = {{-100, 100}, {100, -100}}),
-          Text(origin = {-2, 0}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
-        fillPattern =  FillPattern.Solid, extent = {{-98, 22}, {98, -16}}, textString = "%name")}),
-      Documentation(info = "<html>
-<p>Genset Management System witn ON/OFF.</p>
-<p>The control logic commands the genset to deliver at the DC port the input power, using the optimal generator speed.</p>
-<p>In addition, it commands ON or OFF depending on the input boolean control signal.</p>
-</html>"),
-      __OpenModelica_commandLineOptions = "");
+    connect(switch1.u3, zero.y) annotation (Line(points={{-40,-48},{-50,-48},{
+            -50,-70},{-59,-70}}, color={0,0,127}));
+    connect(switch1.u1, optiSpeed.y[1]) annotation (Line(points={{-40,-32},{-56,
+            -32},{-56,-40},{-59,-40}}, color={0,0,127}));
+    connect(switch1.u2, on) annotation (Line(points={{-40,-40},{-50,-40},{-50,
+            80},{-114,80}}, color={255,0,255}));
+    connect(switch1.y, feedback.u1)
+      annotation (Line(points={{-17,-40},{26,-40}}, color={0,0,127}));
   end GMSoo;
 
   block EleBalanceTau
@@ -739,4 +579,5 @@ reference tau\nto gen",
 </html>"),
       __OpenModelica_commandLineOptions = "");
   end EMS;
+
 end ECUs;

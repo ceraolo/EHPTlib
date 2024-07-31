@@ -1,4 +1,4 @@
-within EHPTlib.ElectricDrives.SMArelated;
+﻿within EHPTlib.ElectricDrives.SMArelated;
 model MTPAa "MTPA logic for a generic (anisotropic) machine"
   // Non-Ascii Symbol to cause UTF-8 saving by Dymola: €
   parameter Modelica.Units.SI.Current Ipm=1.5 "Permanent magnet current";

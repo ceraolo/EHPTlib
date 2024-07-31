@@ -21,7 +21,9 @@ block EfficiencyCT
     smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
     fileName=mapsFileName,
     tableName=effTableName,
-    table=effTable) "normalised efficiency" annotation (Placement(
+    table=effTable,
+    extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
+                    "normalised efficiency" annotation (Placement(
         transformation(
         extent={{-12,-12},{12,12}},
         rotation=0,
@@ -40,8 +42,8 @@ block EfficiencyCT
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-36, 50})));
   SupportModels.MapBasedRelated.Pel applyEta annotation (
     Placement(transformation(extent = {{60, -10}, {84, 12}})));
-  Modelica.Blocks.Math.Product PMOT annotation (
-    Placement(transformation(extent = {{-72, 0}, {-52, 20}})));
+  Modelica.Blocks.Math.Product toPmot
+    annotation (Placement(transformation(extent={{-72,0},{-52,20}})));
   Modelica.Blocks.Math.Gain normalizeSpeed(k = 1 / wMax) annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-34, -40})));
 equation
@@ -61,12 +63,18 @@ equation
       points={{35.2,-20},{48,-20},{48,-5.6},{57.6,-5.6}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(PMOT.u1, tau) annotation (
-    Line(points = {{-74, 16}, {-84, 16}, {-84, 40}, {-120, 40}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(PMOT.u2, w) annotation (
-    Line(points = {{-74, 4}, {-84, 4}, {-84, -40}, {-120, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(PMOT.y, applyEta.P) annotation (
-    Line(points = {{-51, 10}, {42, 10}, {42, 7.6}, {57.6, 7.6}}, color = {0, 0, 127}, smooth = Smooth.None));
+  connect(toPmot.u1, tau) annotation (Line(
+      points={{-74,16},{-84,16},{-84,40},{-120,40}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  connect(toPmot.u2, w) annotation (Line(
+      points={{-74,4},{-84,4},{-84,-40},{-120,-40}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  connect(toPmot.y, applyEta.P) annotation (Line(
+      points={{-51,10},{42,10},{42,7.6},{57.6,7.6}},
+      color={0,0,127},
+      smooth=Smooth.None));
   connect(abs1.y, normalizeSpeed.u) annotation (
     Line(points = {{-55, -40}, {-46, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
   connect(normalizeSpeed.y, toEff.u2) annotation (Line(

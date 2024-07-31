@@ -3,8 +3,7 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
  extends Partial.PartialGenset;
   ECUs.GMSoo gms(
     mapsFileName=mapsFileName,
-    throttlePerWerr=0.1,
-    tablesOnFile=true)                                                                    annotation (
+    throttlePerWerr=0.1)                                                                  annotation (
     Placement(visible = true, transformation(extent={{-70,8},{-50,28}},        rotation = 0)));
   Modelica.Blocks.Interfaces.BooleanInput ON "when true engine is ON" annotation (
     Placement(visible = true, transformation(origin={-59,107},   extent = {{15, -15}, {-15, 15}}, rotation = 90), iconTransformation(origin = {-60, 116}, extent = {{15, -15}, {-15, 15}}, rotation = 90)));
@@ -19,4 +18,8 @@ equation
           {-49,24}}, color={0,0,127}));
   connect(ON, gms.on) annotation (Line(points={{-59,107},{-59,36},{-76,36},{-76,
           24},{-71.8,24}}, color={255,0,255}));
+  annotation (Documentation(info="<html>
+<p>For the general comments see info of Genset.</p>
+<p>Here we have the ON-OFF input to command switching the ICE ON and OFF.</p>
+</html>"));
 end GensetOO;
