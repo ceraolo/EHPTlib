@@ -8,11 +8,10 @@ IceT01
 OneFlangeFVCT
 OneFlangeCTCT
 OneFlangeCTLF
+OneFlangeFVCTconn
 TwoFlange
 TwoFlangeConn
 Genset
 GensetOO
-OneFlangeFVCTconn
-OneFlangeConnOLD
 Partial
 ECUs

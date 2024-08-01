@@ -349,7 +349,7 @@ package TestingModels
   model TestOneFlangeConn
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
       Placement(transformation(extent = {{38, 0}, {58, 20}})));
-    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -50, w_nominal = 400) annotation (
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal=-60.0, w_nominal = 400) annotation (
       Placement(transformation(extent = {{92, 0}, {72, 20}})));
     Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
@@ -359,7 +359,7 @@ package TestingModels
       Placement(transformation(extent = {{12, 0}, {32, 20}})));
     Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation (
       Placement(transformation(extent = {{-52, 14}, {-32, 34}})));
-    OneFlangeConnOLD oneFlangeConn(
+    OneFlangeFVCTconn oneFlangeConn(
       powMax=10000,
       tauMax=50,
       J=0.5,
@@ -369,7 +369,7 @@ package TestingModels
       annotation (Placement(transformation(extent={{-16,0},{4,20}})));
     SupportModels.ConnectorRelated.ToConnGenTauRef toConnGenTauNorm annotation (
       Placement(transformation(extent = {{-16, -34}, {-4, -22}})));
-    Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 50, offset = 20) annotation (
+    Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude=30.0, offset = 20) annotation (
       Placement(transformation(extent = {{-48, -38}, {-28, -18}})));
   equation
     connect(inertia.flange_b, loadTorque.flange) annotation (
@@ -385,11 +385,11 @@ package TestingModels
     connect(powMech.flange_a, oneFlangeConn.flange_a) annotation (
       Line(points = {{12, 10}, {4, 10}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(oneFlangeConn.pin_p, powElec.nc) annotation (
-      Line(points={{-16,14},{-24,14},{-24,24},{-32,24}},         color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-16,15},{-24,15},{-24,24},{-32,24}},         color = {0, 0, 255}, smooth = Smooth.None));
     connect(oneFlangeConn.pin_n, gen.n) annotation (
-      Line(points={{-16,6},{-24,6},{-24,0},{-64,0}},              color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-16,5},{-24,5},{-24,0},{-64,0}},              color = {0, 0, 255}, smooth = Smooth.None));
     connect(toConnGenTauNorm.conn, oneFlangeConn.conn) annotation (
-      Line(points={{-4.2,-28},{3,-28},{3,2.2}},        color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
+      Line(points={{-4.2,-28},{3,-28},{3,0.25}},       color = {255, 204, 51}, thickness = 0.5, smooth = Smooth.None));
     connect(powElec.nv, gen.n) annotation (
       Line(points = {{-42, 14}, {-42, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(toConnGenTauNorm.u, tauRef.y) annotation (
