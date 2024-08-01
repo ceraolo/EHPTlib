@@ -77,10 +77,11 @@ initial equation
 
 
 equation
-  connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-36,
-          30},{-36,60},{-18,60}}, color={0,0,127}));
-  connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{-36,
-          30},{-36,-8},{-6,-8},{-6,-24},{-14,-24}}, color={0,0,127}));
+  connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
+          30},{-40,60},{-18,60}}, color={0,0,127}));
+  connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{
+          -40,30},{-40,-8},{-6,-8},{-6,-24},{-14,-24}},
+                                                    color={0,0,127}));
   connect(wSensor.w, toElePow.w)
     annotation (Line(points={{84,35.2},{84,-32},{-14,-32}}, color={0,0,127}));
   connect(fromPuTorque1.u, limTau.yL)

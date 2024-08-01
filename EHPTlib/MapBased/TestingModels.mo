@@ -359,8 +359,14 @@ package TestingModels
       Placement(transformation(extent = {{12, 0}, {32, 20}})));
     Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation (
       Placement(transformation(extent = {{-52, 14}, {-32, 34}})));
-    OneFlangeConn oneFlangeConn(powMax = 10000, tauMax = 50, J = 0.5, wMax = 300, mapsFileName = "EVmaps.txt", effTableName = "effTable") annotation (
-      Placement(transformation(extent = {{-16, 0}, {4, 20}})));
+    OneFlangeConnOLD oneFlangeConn(
+      powMax=10000,
+      tauMax=50,
+      J=0.5,
+      wMax=300,
+      mapsFileName="EVmaps.txt",
+      effTableName="effTable")
+      annotation (Placement(transformation(extent={{-16,0},{4,20}})));
     SupportModels.ConnectorRelated.ToConnGenTauRef toConnGenTauNorm annotation (
       Placement(transformation(extent = {{-16, -34}, {-4, -22}})));
     Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 50, offset = 20) annotation (

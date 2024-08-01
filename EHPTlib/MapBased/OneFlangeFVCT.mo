@@ -11,7 +11,7 @@ model OneFlangeFVCT "Simple map-based model of an electric drive"
     Dialog(group = "Combi-table related parameters",enable = effMapOnFile, loadSelector(filter = "Text files (*.txt)",
     caption = "Open file in which required tables are")));
 
-   parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
+  parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
     Dialog(enable = effMapOnFile,group = "Combi-table related parameters"));
   parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both p.u. of max" annotation (
     Dialog(enable = not effMapOnFile,group = "Combi-table related parameters"));
