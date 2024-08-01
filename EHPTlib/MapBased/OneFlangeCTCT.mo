@@ -2,6 +2,8 @@ within EHPTlib.MapBased;
 model OneFlangeCTCT "Simple map-based model of an electric drive"
   extends Partial.PartialOneFlange;
 
+  parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
+    annotation (Dialog(enable=not limitsOnFile,group = "General parameters"));
   //Parameters related to torque limits combi table:
   parameter Boolean normalisedInput = false "= true, input torque limits has speed and torque between 0 and 1 (will be multiplied by wMax and tauMax).
   Note: efficiency table is always assumed to have input torque and speed normalised."
@@ -75,8 +77,6 @@ initial equation
 
 
 equation
-  connect(toElePow.elePow, gain.u) annotation (Line(points={{-36.6,-28},{-50,-28},
-          {-50,0},{-62,0}}, color={0,0,127}));
   connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-36,
           30},{-36,60},{-18,60}}, color={0,0,127}));
   connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{-36,
@@ -95,6 +95,8 @@ equation
     annotation (Line(points={{52,26},{61.4,26}}, color={0,0,127}));
   connect(toPuSpeed.u, wSensor.w)
     annotation (Line(points={{75.2,26},{84,26},{84,35.2}}, color={0,0,127}));
+  connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-36.6,-28},{-64,
+          -28},{-64,0},{-79.8,0}}, color={0,0,127}));
   annotation (
     Documentation(info="<html>
 <p>This is a model that models an electric drive: electronic converter + electric machine.</p>

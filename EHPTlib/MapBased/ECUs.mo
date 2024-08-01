@@ -274,7 +274,7 @@ package ECUs
   end EMS;
 
   package Partial
-    model PartialGMS "Genset Management System (simplified)"
+    partial model PartialGMS "Genset Management System (simplified)"
       parameter Real throttlePerWerr = 0.01 "speed controller gain (throttle per rad/s)";
       parameter String mapsFileName = "maps.txt" "File name where optimal speed is stored";
       import Modelica.Constants.pi;

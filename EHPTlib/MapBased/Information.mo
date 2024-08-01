@@ -10,6 +10,5 @@ class Information
 <p>Note that usage of expandable connectors requires to give special names to the connector&apos;s variables, and therefore the models are more specific than their Modelica.Blocks.Connectors counterparts. Therefore here the models have receives specifi names such as &QUOT;PsdGenConn&QUOT; as a replacement of OneFlange: this is aone flance component to which we added a connector and spfcific signal names.</p>
 <p><br><u>Names and meaning </u>of the pre-defined quantities circulating through the connection bus in the model versions having &QUOT;Conn&QUOT; in their names.</p>
 <p>The detailed meaning of different quantities are to be read in the corresponding Table in the accompanying document &QUOT;webBookCeraolo&QUOT; in its section PSD-HEV.</p>
-</html>"),
-    uses(Modelica(version = "3.2.1")));
+</html>"));
 end Information;
