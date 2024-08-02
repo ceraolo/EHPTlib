@@ -62,7 +62,7 @@ equation
   connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-20},{-60,-20},
           {-60,0},{-79.8,0}},      color={0,0,127}));
   annotation (Icon(graphics={
-                  Text(origin={-2.6552,27.7},
+                  Text(origin={-2.6552,25.7},
                      extent={{-65.3448,-29.7},{74.6551,-51.7}},
           textColor={238,46,47},
           textStyle={TextStyle.Italic},

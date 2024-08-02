@@ -108,8 +108,8 @@ equation
 <p>Improvement onto OneFlange: now the user can implement max and minimum torque as a function of the angular speed, through curves supplied via an array taken from an input file: CTCT in the name means that both the maxiomum torque and the efficiency evaluation are CombiTable based.</p>
 <p>This model is not parameter-compatible with OneFlange. This has caused this new model to be introduced. </p>
 </html>"),
-    Diagram(coordinateSystem(extent={{-100,-80},{100,80}},        preserveAspectRatio = false, initialScale = 0.1)),
-    Icon(coordinateSystem(extent={{-100,-80},{100,80}},       preserveAspectRatio = false, initialScale = 0.1),
+    Diagram(coordinateSystem(                                     preserveAspectRatio=false)),
+    Icon(coordinateSystem(                                    preserveAspectRatio=false),
         graphics={Text(origin={-2.52219,25.7},
                      extent={{-63.4778,-29.7},{72.5222,-51.7}},
           textColor={238,46,47},

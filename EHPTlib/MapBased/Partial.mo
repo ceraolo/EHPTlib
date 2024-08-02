@@ -780,7 +780,7 @@ reference \nand computes consumption")}));
 </html>"),
       Diagram(coordinateSystem(extent={{-100,-80},{100,80}},        preserveAspectRatio = false, initialScale = 0.1)),
       Icon(coordinateSystem(extent={{-100,-80},{100,80}},       preserveAspectRatio = false, initialScale = 0.1),
-          graphics={Text(origin={-2.52219,25.7},
+          graphics={Text(origin={-6.52219,25.7},
                        extent={{-63.4778,-29.7},{72.5222,-51.7}},
             textColor={238,46,47},
             textStyle={TextStyle.Italic},
@@ -853,8 +853,8 @@ reference \nand computes consumption")}));
                 11.476},                                                                                                                                                                                                        textColor = {0, 0, 255}, extent={{
                 -82.3527,82.524},{117.641,50.524}},                                                                                                                                                                                                        textString = "%name"), Rectangle(fillColor = {192, 192, 192},
               fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent={{-80,54},
-                {84,-54}}),Rectangle(fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, extent={{-72,32},{78,-30}}),                                                                                                                                                       Text(origin={-1.9876,
+                {80,-54}}),Rectangle(fillColor = {255, 255, 255},
+              fillPattern =  FillPattern.Solid, extent={{-74,32},{72,-30}}),                                                                                                                                                       Text(origin={-5.9876,
                 53.7},                                                                                                                                                                                                      extent={{
                 -70.0124,-29.7},{79.9876,-51.7}},                                                                                                                                                                                                    textString = "J=%J")}),
       Documentation(info="<html>
