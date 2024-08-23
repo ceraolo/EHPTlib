@@ -1,4 +1,4 @@
-within EHPTlib.SupportModels.MapBasedRelated;
+﻿within EHPTlib.SupportModels.MapBasedRelated;
 block LimTorqueCT "Defines torque limits based on values from a CombiTable"
   Modelica.Blocks.Interfaces.RealInput w annotation (
     Placement(transformation(extent = {{-140, -20}, {-100, 20}}), iconTransformation(extent = {{-140, -20}, {-100, 20}})));

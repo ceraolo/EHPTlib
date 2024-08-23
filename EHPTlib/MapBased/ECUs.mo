@@ -1,6 +1,7 @@
-within EHPTlib.MapBased;
+﻿within EHPTlib.MapBased;
 package ECUs
-  model Ecu1 "Power Split hybrid power train controller, not using ON/OFF strategy"
+  model PsdEcu1
+    "Power Split hybrid power train controller, not using ON/OFF strategy"
    extends Partial.PartialEcu;
 
   equation
@@ -14,9 +15,10 @@ package ECUs
         horizontalAlignment=TextAlignment.Right));
     annotation (Icon(graphics={                                             Text(extent={{-100,86},
                 {100,56}},                                                                                         textString = "PSD-ecu1")}));
-  end Ecu1;
+  end PsdEcu1;
 
-  model Ecu2 "Power Split hybrid power train controller, with SOC control, without ON/OFF"
+  model PsdEcu2
+    "Power Split hybrid power train controller, with SOC control, without ON/OFF"
    extends Partial.PartialEcu;
     parameter Real socRef = 0.6 "Target value of SOC";
     parameter Modelica.Units.SI.Power socLoopGain=10000 "soc loop gain";
@@ -58,9 +60,10 @@ package ECUs
                 {100,58}},
             textString="PSD-ecu2",
             textColor={0,0,0})}));
-  end Ecu2;
+  end PsdEcu2;
 
-  model Ecu3 "Power Split hybrid power train controller, using ON/OFF strategy"
+  model PsdEcu3
+    "Power Split hybrid power train controller, using ON/OFF strategy"
     extends Partial.PartialEcu;
     parameter Real socRef = 0.6 "Reference soc";
     parameter Real maxTorqueReq = 80 "Maximum torque that can be requested from mot";
@@ -131,37 +134,9 @@ package ECUs
                 {100,56}},
             textString="PSD-ecu3",
             textColor={0,0,0})}));
-  end Ecu3;
+  end PsdEcu3;
 
-  model GMS "Genset Management System (simplified)"
-    extends Partial.PartialGMS;
-
-  equation
-    connect(optiSpeed.y[1], feedback.u1)
-      annotation (Line(points={{-59,-40},{26,-40}}, color={0,0,127}));
-  end GMS;
-
-  model GMSoo "Genset Management System (simplified)"
-     extends Partial.PartialGMS;
-
-    Modelica.Blocks.Interfaces.BooleanInput on annotation (
-      Placement(visible = true, transformation(extent={{-134,60},{-94,100}},     rotation = 0), iconTransformation(extent = {{-138, 40}, {-98, 80}}, rotation = 0)));
-    Modelica.Blocks.Logical.Switch switch1 annotation (
-      Placement(visible = true, transformation(extent={{-38,-50},{-18,-30}},    rotation = 0)));
-    Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
-      Placement(visible = true, transformation(extent={{-80,-80},{-60,-60}},      rotation = 0)));
-  equation
-    connect(switch1.u3, zero.y) annotation (Line(points={{-40,-48},{-50,-48},{
-            -50,-70},{-59,-70}}, color={0,0,127}));
-    connect(switch1.u1, optiSpeed.y[1]) annotation (Line(points={{-40,-32},{-56,
-            -32},{-56,-40},{-59,-40}}, color={0,0,127}));
-    connect(switch1.u2, on) annotation (Line(points={{-40,-40},{-50,-40},{-50,
-            80},{-114,80}}, color={255,0,255}));
-    connect(switch1.y, feedback.u1)
-      annotation (Line(points={{-17,-40},{26,-40}}, color={0,0,127}));
-  end GMSoo;
-
-  model EMS "Ice, Generator, DriveTrain, all map-based"
+  model ShevEMS "Ice, Generator, DriveTrain, all map-based"
     //€
     parameter Real tauPowFilt = 300 "power filter time constant";
     parameter Real powLow = 3000 "hysteresis control lower limit";
@@ -271,7 +246,35 @@ package ECUs
 <p>- further ON/OFF control to switch OFF the engine when the average power is too low to permit efficient operation</p>
 </html>"),
       __OpenModelica_commandLineOptions = "");
-  end EMS;
+  end ShevEMS;
+
+  model GMS "Genset Management System (simplified)"
+    extends Partial.PartialGMS;
+
+  equation
+    connect(optiSpeed.y[1], feedback.u1)
+      annotation (Line(points={{-59,-40},{26,-40}}, color={0,0,127}));
+  end GMS;
+
+  model GMSoo "Genset Management System (simplified)"
+     extends Partial.PartialGMS;
+
+    Modelica.Blocks.Interfaces.BooleanInput on annotation (
+      Placement(visible = true, transformation(extent={{-134,60},{-94,100}},     rotation = 0), iconTransformation(extent = {{-138, 40}, {-98, 80}}, rotation = 0)));
+    Modelica.Blocks.Logical.Switch switch1 annotation (
+      Placement(visible = true, transformation(extent={{-38,-50},{-18,-30}},    rotation = 0)));
+    Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
+      Placement(visible = true, transformation(extent={{-80,-80},{-60,-60}},      rotation = 0)));
+  equation
+    connect(switch1.u3, zero.y) annotation (Line(points={{-40,-48},{-50,-48},{
+            -50,-70},{-59,-70}}, color={0,0,127}));
+    connect(switch1.u1, optiSpeed.y[1]) annotation (Line(points={{-40,-32},{-56,
+            -32},{-56,-40},{-59,-40}}, color={0,0,127}));
+    connect(switch1.u2, on) annotation (Line(points={{-40,-40},{-50,-40},{-50,
+            80},{-114,80}}, color={255,0,255}));
+    connect(switch1.y, feedback.u1)
+      annotation (Line(points={{-17,-40},{26,-40}}, color={0,0,127}));
+  end GMSoo;
 
   package Partial
     partial model PartialGMS "Genset Management System (simplified)"

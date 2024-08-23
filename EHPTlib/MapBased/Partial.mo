@@ -605,7 +605,7 @@ reference \nand computes consumption")}));
     connect(gain.y, gen.tauRef) annotation (
       Line(points={{7,40},{76,40},{76,8},{68.2,8},{68.2,8}},                                color = {0, 0, 127}));
     connect(gen.pin_n, pin_p) annotation (
-      Line(points={{68,13},{80,13},{80,60},{100,60}},                    color = {0, 0, 255}));
+      Line(points={{68,12},{80,12},{80,60},{100,60}},                    color = {0, 0, 255}));
     connect(IcePow.flange_b, gen.flange_a) annotation (
       Line(points={{42,9},{46,9},{46,8},{48,8}}));
     connect(gain1.u, speedSensor.w) annotation (
@@ -620,7 +620,7 @@ reference \nand computes consumption")}));
       annotation (Line(points={{0,9},{-14,9}}, color={0,0,0}));
     connect(idealGear.flange_b, IcePow.flange_a) annotation (
       Line(points={{18,9},{24,9}},                          color = {0, 0, 0}));
-    connect(gen.pin_p, pin_n) annotation (Line(points={{68,3},{68,-20},{100,-20}},
+    connect(gen.pin_p, pin_n) annotation (Line(points={{68,4},{68,-20},{100,-20}},
                    color={0,0,255}));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 100}})),
