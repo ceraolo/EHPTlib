@@ -237,7 +237,10 @@ package ECUs
         fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
         fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
         fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
-        fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(origin = {-6.08518, -4.3529}, lineColor = {0, 0, 255}, extent = {{-91.9148, 98.3529}, {100.085, 60.353}}, textString = "%name", fontName = "Helvetica")}),
+        fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(origin = {-6.08518, -4.3529}, lineColor={0,0,255},     extent = {{-91.9148, 98.3529}, {100.085, 60.353}},                       fontName=
+                "Helvetica",
+            textString="Shev Ems"),                      Text(lineColor = {0, 0, 255}, extent={{-102,
+                -102},{98,-140}},                                                                                            textString = "%name")}),
       experimentSetupOutput(derivatives = false),
       Documentation(info = "<html>
 <p>SHEV logic. Contains:</p>

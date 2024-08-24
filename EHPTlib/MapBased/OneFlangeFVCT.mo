@@ -25,7 +25,7 @@ model OneFlangeFVCT "Simple map-based model of an electric drive"
     mapsFileName=mapsFileName,
     effTableName=effTableName,
     effTable=effTable)
-    annotation (Placement(transformation(extent={{-24,-30},{-44,-10}})));
+    annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
   SupportModels.MapBasedRelated.LimTorqueFV limTau(
     tauMax=tauMax,
     wMax=wMax,
@@ -34,10 +34,11 @@ model OneFlangeFVCT "Simple map-based model of an electric drive"
 equation
   connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
           30},{-40,60},{-18,60}}, color={0,0,127}));
-  connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{-40,
-          30},{-40,8},{-10,8},{-10,-16},{-22,-16}}, color={0,0,127}));
+  connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{
+          -40,30},{-40,-26},{-8,-26},{-8,-38},{-22,-38}},
+                                                    color={0,0,127}));
   connect(wSensor.w, toElePow.w)
-    annotation (Line(points={{84,35.2},{84,-24},{-22,-24}}, color={0,0,127}));
+    annotation (Line(points={{84,35.2},{84,-46},{-22,-46}}, color={0,0,127}));
   connect(variableLimiter.limit2, limTau.yL)
     annotation (Line(points={{-14,22},{-14,22.8},{27,22.8}},
                                                            color={0,0,127}));
@@ -46,8 +47,8 @@ equation
                                                            color={0,0,127}));
   connect(limTau.w, wSensor.w)
     annotation (Line(points={{50,30},{84,30},{84,35.2}}, color={0,0,127}));
-  connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-20},{-60,-20},
-          {-60,0},{-79.8,0}},      color={0,0,127}));
+  connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{-60,
+          -42},{-60,0},{-79.8,0}}, color={0,0,127}));
   annotation (
     Documentation(info="<html>
 <p>This is a model that models an electric drive: electronic converter + electric machine.</p>

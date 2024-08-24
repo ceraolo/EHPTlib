@@ -48,7 +48,7 @@ model OneFlangeCTCT "Simple map-based model of an electric drive"
     mapsFileName=effMapFileName,
     effTableName=effTableName,
     effTable=effTable)
-    annotation (Placement(transformation(extent={{-16,-38},{-36,-18}})));
+    annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
   Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
         visible=true, transformation(
         origin={15,37},
@@ -56,7 +56,7 @@ model OneFlangeCTCT "Simple map-based model of an electric drive"
         rotation=180)));
   Modelica.Blocks.Math.Gain fromPuTorque1(k=nomTorque)      annotation (Placement(
         visible=true, transformation(
-        origin={17,19},
+        origin={15,19},
         extent={{-5,-5},{5,5}},
         rotation=180)));
   Modelica.Blocks.Math.Gain toPuSpeed(k=1/nomSpeed)    annotation (Placement(visible
@@ -74,30 +74,28 @@ initial equation
     nomSpeed=1;
   end if;
 
-
-
 equation
   connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
           30},{-40,60},{-18,60}}, color={0,0,127}));
   connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{
-          -40,30},{-40,-8},{-6,-8},{-6,-24},{-14,-24}},
+          -40,30},{-40,-26},{-8,-26},{-8,-38},{-22,-38}},
                                                     color={0,0,127}));
   connect(wSensor.w, toElePow.w)
-    annotation (Line(points={{84,35.2},{84,-32},{-14,-32}}, color={0,0,127}));
+    annotation (Line(points={{84,35.2},{84,-46},{-22,-46}}, color={0,0,127}));
   connect(fromPuTorque1.u, limTau.yL)
-    annotation (Line(points={{23,19},{24,18.8},{29,18.8}}, color={0,0,127}));
+    annotation (Line(points={{21,19},{24,18.8},{29,18.8}}, color={0,0,127}));
   connect(fromPuTorque.u, limTau.yH) annotation (Line(points={{21,37},{26,37},{26,
           33.2},{29,33.2}}, color={0,0,127}));
   connect(variableLimiter.limit1, fromPuTorque.y) annotation (Line(points={{-14,
           38},{4,38},{4,37},{9.5,37}}, color={0,0,127}));
-  connect(variableLimiter.limit2, fromPuTorque1.y) annotation (Line(points={{-14,
-          22},{6,22},{6,19},{11.5,19}}, color={0,0,127}));
+  connect(variableLimiter.limit2, fromPuTorque1.y) annotation (Line(points={{-14,22},
+          {6,22},{6,19},{9.5,19}},      color={0,0,127}));
   connect(limTau.w, toPuSpeed.y)
     annotation (Line(points={{52,26},{61.4,26}}, color={0,0,127}));
   connect(toPuSpeed.u, wSensor.w)
     annotation (Line(points={{75.2,26},{84,26},{84,35.2}}, color={0,0,127}));
-  connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-36.6,-28},{-64,
-          -28},{-64,0},{-79.8,0}}, color={0,0,127}));
+  connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{-60,
+          -42},{-60,0},{-79.8,0}}, color={0,0,127}));
   annotation (
     Documentation(info="<html>
 <p>This is a model that models an electric drive: electronic converter + electric machine.</p>
