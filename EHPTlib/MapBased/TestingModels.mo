@@ -248,7 +248,7 @@ package TestingModels
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{58,0},{72,0}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(tauRef.y, oneFlange.tauRef) annotation (
-      Line(points={{-39,-28},{-32,-28},{-32,-8},{-23.8,-8},{-23.8,-7}},               color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-39,-28},{-32,-28},{-32,0},{-23.4,0}},                            color = {0, 0, 127}, smooth = Smooth.None));
     connect(ground.p, gen.n) annotation (
       Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(oneFlange.flange_a, powMech.flange_a) annotation (
@@ -256,15 +256,15 @@ package TestingModels
     connect(inertia.flange_a, powMech.flange_b) annotation (
       Line(points={{38,0},{32,0}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(powElec.nc, oneFlange.pin_p) annotation (
-      Line(points={{-28,30},{-22,30},{-22,4}},       color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-28,30},{-22,30},{-22,5}},       color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.pc, gen.p) annotation (
       Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.pv, powElec.nc) annotation (
       Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(gen.n, oneFlange.pin_n) annotation (
-      Line(points={{-64,0},{-64,-4},{-22,-4}},                    color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-64,0},{-64,-5},{-22,-5}},                    color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.nv, oneFlange.pin_n) annotation (
-      Line(points={{-38,20},{-38,-4},{-22,-4}},
+      Line(points={{-38,20},{-38,-5},{-22,-5}},
                                               color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics),
@@ -319,7 +319,7 @@ package TestingModels
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{58,8},{72,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(tauRef.y, oneFlange.tauRef) annotation (
-      Line(points={{-39,-28},{-32,-28},{-32,8},{-22.2,8},{-22.2,10}},                 color = {0, 0, 127}, smooth = Smooth.None));
+      Line(points={{-39,-28},{-32,-28},{-32,10},{-23.8,10}},                          color = {0, 0, 127}, smooth = Smooth.None));
     connect(ground.p, gen.n) annotation (
       Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(oneFlange.flange_a, powMech.flange_a) annotation (
@@ -327,15 +327,15 @@ package TestingModels
     connect(inertia.flange_a, powMech.flange_b) annotation (
       Line(points={{38,8},{32,8}},        color = {0, 0, 0}, smooth = Smooth.None));
     connect(powElec.nc, oneFlange.pin_p) annotation (
-      Line(points={{-28,30},{-22,30},{-22,15}},      color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-28,30},{-22,30},{-22,14}},      color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.pc, gen.p) annotation (
       Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.pv, powElec.nc) annotation (
       Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(gen.n, oneFlange.pin_n) annotation (
-      Line(points={{-64,0},{-38,0},{-38,5},{-22,5}},              color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-64,0},{-38,0},{-38,6},{-22,6}},              color = {0, 0, 255}, smooth = Smooth.None));
     connect(powElec.nv, oneFlange.pin_n) annotation (
-      Line(points={{-38,20},{-38,5},{-22,5}}, color = {0, 0, 255}, smooth = Smooth.None));
+      Line(points={{-38,20},{-38,6},{-22,6}}, color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics),
       experiment(StopTime = 50),

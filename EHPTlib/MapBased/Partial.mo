@@ -422,112 +422,6 @@ package Partial
 reference \nand computes consumption")}));
   end PartialIceP;
 
-  partial model PartialOneFlangeFVCTold
-    "Partial map-based one-Flange electric drive model"
-    parameter Modelica.Units.SI.Power powMax=22000
-      "Maximum mechnical power";
-    parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque";
-    parameter Modelica.Units.SI.Voltage uDcNom=100 "nominal DC voltage";
-    parameter Modelica.Units.SI.AngularVelocity wMax= 3000 "Maximum drive speed";
-    parameter Modelica.Units.SI.MomentOfInertia J=0.25
-      "Rotor's moment of inertia";
-    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
-    parameter String mapsFileName = "noName" "File where efficiency table matrix is stored" annotation (
-      Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
-    parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
-      Dialog(enable = mapsOnFile));
-    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both p.u. of max" annotation (
-      Dialog(enable = not mapsOnFile));
-    Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a "Left flange of shaft" annotation (
-      Placement(transformation(extent = {{88, 50}, {108, 70}}, rotation = 0), iconTransformation(extent = {{90, -10}, {110, 10}})));
-    Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation (
-      Placement(transformation(extent = {{8, -8}, {-8, 8}}, rotation = 90, origin = {78, 44})));
-    SupportModels.MapBasedRelated.LimTorqueFV limTau(
-      tauMax=tauMax,
-      wMax=wMax,
-      powMax=powMax)
-      annotation (Placement(transformation(extent={{40,18},{20,42}})));
-    SupportModels.MapBasedRelated.EfficiencyCT toElePow(
-      mapsOnFile=mapsOnFile,
-      tauMax=tauMax,
-      powMax=powMax,
-      wMax=wMax,
-      mapsFileName=mapsFileName,
-      effTableName=effTableName,
-      effTable=effTable)
-      annotation (Placement(transformation(extent={{-14,-28},{-34,-8}})));
-    Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
-      Placement(transformation(extent = {{-110, 30}, {-90, 50}}), iconTransformation(extent = {{-110, 30}, {-90, 50}})));
-    Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
-      Placement(transformation(extent = {{-110, -50}, {-90, -30}}), iconTransformation(extent = {{-110, -50}, {-90, -30}})));
-    SupportModels.MapBasedRelated.ConstPg constPDC(vNom = uDcNom) annotation (
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-100, 0})));
-    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = J) annotation (
-      Placement(transformation(extent={{48,50},{68,70}})));
-    Modelica.Mechanics.Rotational.Sources.Torque torque annotation (
-      Placement(transformation(extent = {{-16, 50}, {4, 70}})));
-    Modelica.Blocks.Math.Gain gain(k = 1) annotation (
-      Placement(transformation(extent = {{-64, -10}, {-84, 10}})));
-    Modelica.Mechanics.Rotational.Sensors.PowerSensor powSensor annotation (
-      Placement(transformation(extent={{18,50},{38,70}})));
-    Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation (
-      Placement(transformation(extent = {{-4, 20}, {-24, 40}})));
-  equation
-  //  assert(wMax >= powMax / tauMax, "\n****  " + "wMax=" + String(wMax)+
-  //       ";  powMax=" + String(powMax)+";  tauMax="+String(tauMax)+"  ***\n");
-    connect(toElePow.w, wSensor.w) annotation (
-      Line(points={{-12,-22},{78,-22},{78,35.2}},       color = {0, 0, 127}, smooth = Smooth.None));
-    connect(pin_p, constPDC.pin_p) annotation (
-      Line(points = {{-100, 40}, {-100, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
-    connect(pin_n, constPDC.pin_n) annotation (
-      Line(points = {{-100, -40}, {-100, -9.8}}, color = {0, 0, 255}, smooth = Smooth.None));
-    connect(constPDC.Pref, gain.y) annotation (
-      Line(points = {{-91.8, 0}, {-85, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(wSensor.flange, flange_a) annotation (
-      Line(points = {{78, 52}, {78, 60}, {98, 60}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(toElePow.elePow, gain.u) annotation (
-      Line(points={{-34.6,-18},{-48,-18},{-48,0},{-62,0}},          color = {0, 0, 127}, smooth = Smooth.None));
-    connect(variableLimiter.limit1, limTau.yH) annotation (
-      Line(points = {{-2, 38}, {19, 38}, {19, 37.2}}, color = {0, 0, 127}));
-    connect(variableLimiter.limit2, limTau.yL) annotation (
-      Line(points = {{-2, 22}, {10, 22}, {10, 22.8}, {19, 22.8}}, color = {0, 0, 127}));
-    connect(variableLimiter.y, torque.tau) annotation (
-      Line(points = {{-25, 30}, {-36, 30}, {-36, 60}, {-18, 60}}, color = {0, 0, 127}));
-    connect(toElePow.tau, torque.tau) annotation (
-      Line(points={{-12,-14},{0,-14},{0,10},{-36,10},{-36,60},{-18,60}},             color = {0, 0, 127}));
-    connect(limTau.w, wSensor.w) annotation (
-      Line(points = {{42, 30}, {78, 30}, {78, 35.2}}, color = {0, 0, 127}));
-    connect(torque.flange, powSensor.flange_a)
-      annotation (Line(points={{4,60},{18,60}}, color={0,0,0}));
-    connect(powSensor.flange_b, inertia.flange_a)
-      annotation (Line(points={{38,60},{48,60}}, color={0,0,0}));
-    connect(inertia.flange_b, flange_a)
-      annotation (Line(points={{68,60},{98,60}}, color={0,0,0}));
-    annotation (
-      Diagram(coordinateSystem(extent={{-100,-60},{100,80}},      preserveAspectRatio=false)),
-      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics={                                                                                        Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}), Line(points = {{-98, 40}, {-70, 40}}, color = {0, 0, 255}), Line(points = {{-92, -40}, {-70, -40}}, color = {0, 0, 255}), Text(origin={-17.6473,
-                11.476},                                                                                                                                                                                                        textColor = {0, 0, 255}, extent={{
-                -82.3527,82.524},{117.641,50.524}},                                                                                                                                                                                                        textString = "%name"), Rectangle(fillColor = {192, 192, 192},
-              fillPattern =                                                                                                                                                                                                        FillPattern.HorizontalCylinder, extent={{-80,54},
-                {84,-54}}),Rectangle(fillColor = {255, 255, 255},
-              fillPattern =  FillPattern.Solid, extent={{-72,32},{78,-30}}),
-                    Text(origin={-1.3226,25.7},
-                       extent={{-60.6773,-29.7},{69.3226,-51.7}},
-            textColor={238,46,47},
-            textStyle={TextStyle.Italic},
-            textString="FV-CT"),                                                                                                                                                                                                   Text(origin={-1.9876,
-                53.7},                                                                                                                                                                                                      extent={{
-                -70.0124,-29.7},{79.9876,-51.7}},                                                                                                                                                                                                    textString = "J=%J")}),
-      Documentation(info="<html>
-<p>Partial model for one-flange components (version 1).</p>
-</html>", revisions="<html>
-<p>Partial one-flange electric drive, with </p>
-<p>- torque limits from a Fixed Values of torque and power (FV in the name)</p>
-<p>- efficiency computed from a Combi table (CT in the name)</p>
-</html>"));
-  end PartialOneFlangeFVCTold;
-
   partial model PartialGenset "GenSet GMS+GEN+SEngine"
     import Modelica.Constants.inf;
     import Modelica.Constants.pi;
@@ -636,84 +530,24 @@ reference \nand computes consumption")}));
 </html>"));
   end PartialGenset;
 
-  partial model PartialOneFlange
+  partial model PartialOneFlangeConn
     "Partial map-based one-Flange electric drive model"
      extends Partial.PartialOneFlangeBase;
-    Modelica.Blocks.Interfaces.RealInput tauRef
-      annotation (Placement(transformation(extent={{-138,-90},{-98,-50}})));
+    SupportModels.ConnectorRelated.Conn conn annotation (
+      Placement(visible = true, transformation(extent={{-112,-74},{-72,-114}},    rotation = 0), iconTransformation(extent={{70,-58},
+              {110,-98}},                                                                                                                             rotation = 0)));
+    SupportModels.ConnectorRelated.Conn conn1
+                                             annotation (
+      Placement(visible = true, transformation(extent={{-20,-60},{20,-100}},      rotation = 0), iconTransformation(extent={{70,-58},
+              {110,-98}},                                                                                                                             rotation = 0)));
   equation
-    connect(variableLimiter.u, tauRef) annotation (Line(points={{-14,30},{0,30},
-            {0,-70},{-118,-70}}, color={0,0,127}));
-  end PartialOneFlange;
-
-  model PartialOneFlangeFVCT  "Simple map-based model of an electric drive"
-    extends Partial.PartialOneFlangeBase;
-
-    //Parameters related to both combi tables:
-    parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
-      annotation (Dialog(group = "General parameters"));
-    parameter Boolean effMapOnFile = false "= true, if tables are taken from a txt file"  annotation (
-      Dialog(group = "Combi-table related parameters"));
-    parameter String mapsFileName = "noName" "File where efficiency table matrix is stored" annotation (
-      Dialog(group = "Combi-table related parameters",enable = effMapOnFile, loadSelector(filter = "Text files (*.txt)",
-      caption = "Open file in which required tables are")));
-
-    parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
-      Dialog(enable = effMapOnFile,group = "Combi-table related parameters"));
-    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both p.u. of max" annotation (
-      Dialog(enable = not effMapOnFile,group = "Combi-table related parameters"));
-
-    SupportModels.MapBasedRelated.EfficiencyCT toElePow(
-      mapsOnFile=effMapOnFile,
-      tauMax=tauMax,
-      powMax=powMax,
-      wMax=wMax,
-      mapsFileName=mapsFileName,
-      effTableName=effTableName,
-      effTable=effTable)
-      annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
-    SupportModels.MapBasedRelated.LimTorqueFV limTau(
-      tauMax=tauMax,
-      wMax=wMax,
-      powMax=powMax)
-      annotation (Placement(transformation(extent={{48,18},{28,42}})));
-  equation
-    connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
-            30},{-40,60},{-18,60}}, color={0,0,127}));
-    connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},
-            {-40,30},{-40,-26},{-8,-26},{-8,-38},{-22,-38}},
-                                                      color={0,0,127}));
-    connect(wSensor.w, toElePow.w)
-      annotation (Line(points={{84,35.2},{84,-46},{-22,-46}}, color={0,0,127}));
-    connect(variableLimiter.limit2, limTau.yL)
-      annotation (Line(points={{-14,22},{-14,22.8},{27,22.8}},
-                                                             color={0,0,127}));
-    connect(variableLimiter.limit1, limTau.yH)
-      annotation (Line(points={{-14,38},{-14,37.2},{27,37.2}},
-                                                             color={0,0,127}));
-    connect(limTau.w, wSensor.w)
-      annotation (Line(points={{50,30},{84,30},{84,35.2}}, color={0,0,127}));
-    connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{
-            -60,-42},{-60,0},{-79.8,0}},
-                                     color={0,0,127}));
-    annotation (
-      Documentation(info="<html>
-<p>This is a model that models an electric drive: electronic converter + electric machine.</p>
-<p>The only model dynamics is its inertia. </p>
-<p>The input signal is a torque request (Nm), which is applied to a mechanical inertia. </p>
-<p>The maximum available torque is internally computed considering a direct torque maximum (tauMax) and a power maximum (powMax); the model then computes the inner losses and absorbs the total power from the DC input.</p>
-<p>Note that to evaluate the inner losses the model uses an efficiency map (i.e. a table), in which torques are ratios of actual torques to tauMax and speeds are ratios of w to wMax. Because of this wMax must be supplied as a parameter.</p>
-<p>Improvement onto OneFlange: now the user can implement max and minimum torque as a function of the angular speed, through curves supplied via an array taken from an input file: CTCT in the name means that both the maxiomum torque and the efficiency evaluation are CombiTable based.</p>
-<p>This model is not parameter-compatible with OneFlange. This has caused this new model to be introduced. </p>
-</html>"),
-      Diagram(coordinateSystem(extent={{-100,-80},{100,80}},        preserveAspectRatio = false, initialScale = 0.1)),
-      Icon(coordinateSystem(extent={{-100,-80},{100,80}},       preserveAspectRatio = false, initialScale = 0.1),
-          graphics={Text(origin={-6.52219,25.7},
-                       extent={{-63.4778,-29.7},{72.5222,-51.7}},
-            textColor={238,46,47},
-            textStyle={TextStyle.Italic},
-            textString="FV-CT")}));
-  end PartialOneFlangeFVCT;
+    connect(variableLimiter.u, conn1.genTauRef) annotation (Line(points={{-14,
+            30},{0,30},{0,-80}}, color={0,0,127}), Text(
+        string="%second",
+        index=1,
+        extent={{6,3},{6,3}},
+        horizontalAlignment=TextAlignment.Left));
+  end PartialOneFlangeConn;
 
   partial model PartialOneFlangeBase
     "Partial map-based one-Flange electric drive model"
@@ -793,4 +627,294 @@ reference \nand computes consumption")}));
 <p>- efficiency computed from a Combi table (CT in the name)</p>
 </html>"));
   end PartialOneFlangeBase;
+
+  model PartialOneFlangeFVCT  "Simple map-based model of an electric drive"
+    extends Partial.PartialOneFlangeBase;
+
+    //Parameters related to both combi tables:
+    parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
+      annotation (Dialog(group = "General parameters"));
+    parameter Boolean effMapOnFile = false "= true, if tables are taken from a txt file"  annotation (
+      Dialog(group = "Combi-table related parameters"));
+    parameter String mapsFileName = "noName" "File where efficiency table matrix is stored" annotation (
+      Dialog(group = "Combi-table related parameters",enable = effMapOnFile, loadSelector(filter = "Text files (*.txt)",
+      caption = "Open file in which required tables are")));
+
+    parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
+      Dialog(enable = effMapOnFile,group = "Combi-table related parameters"));
+    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both p.u. of max" annotation (
+      Dialog(enable = not effMapOnFile,group = "Combi-table related parameters"));
+
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(
+      mapsOnFile=effMapOnFile,
+      tauMax=tauMax,
+      powMax=powMax,
+      wMax=wMax,
+      mapsFileName=mapsFileName,
+      effTableName=effTableName,
+      effTable=effTable)
+      annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
+    SupportModels.MapBasedRelated.LimTorqueFV limTau(
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax)
+      annotation (Placement(transformation(extent={{48,18},{28,42}})));
+  equation
+    connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
+            30},{-40,60},{-18,60}}, color={0,0,127}));
+    connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},
+            {-40,30},{-40,-26},{-8,-26},{-8,-38},{-22,-38}},
+                                                      color={0,0,127}));
+    connect(wSensor.w, toElePow.w)
+      annotation (Line(points={{84,35.2},{84,-46},{-22,-46}}, color={0,0,127}));
+    connect(variableLimiter.limit2, limTau.yL)
+      annotation (Line(points={{-14,22},{-14,22.8},{27,22.8}},
+                                                             color={0,0,127}));
+    connect(variableLimiter.limit1, limTau.yH)
+      annotation (Line(points={{-14,38},{-14,37.2},{27,37.2}},
+                                                             color={0,0,127}));
+    connect(limTau.w, wSensor.w)
+      annotation (Line(points={{50,30},{84,30},{84,35.2}}, color={0,0,127}));
+    connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{
+            -60,-42},{-60,0},{-79.8,0}},
+                                     color={0,0,127}));
+    annotation (
+      Documentation(info="<html>
+<p>This is a model that models an electric drive: electronic converter + electric machine.</p>
+<p>The only model dynamics is its inertia. </p>
+<p>The input signal is a torque request (Nm), which is applied to a mechanical inertia. </p>
+<p>The maximum available torque is internally computed considering a direct torque maximum (tauMax) and a power maximum (powMax); the model then computes the inner losses and absorbs the total power from the DC input.</p>
+<p>Note that to evaluate the inner losses the model uses an efficiency map (i.e. a table), in which torques are ratios of actual torques to tauMax and speeds are ratios of w to wMax. Because of this wMax must be supplied as a parameter.</p>
+<p>Improvement onto OneFlange: now the user can implement max and minimum torque as a function of the angular speed, through curves supplied via an array taken from an input file: CTCT in the name means that both the maxiomum torque and the efficiency evaluation are CombiTable based.</p>
+<p>This model is not parameter-compatible with OneFlange. This has caused this new model to be introduced. </p>
+</html>"),
+      Diagram(coordinateSystem(extent={{-100,-80},{100,80}},        preserveAspectRatio = false, initialScale = 0.1)),
+      Icon(coordinateSystem(extent={{-100,-80},{100,80}},       preserveAspectRatio = false, initialScale = 0.1),
+          graphics={Text(origin={-6.52219,25.7},
+                       extent={{-63.4778,-29.7},{72.5222,-51.7}},
+            textColor={238,46,47},
+            textStyle={TextStyle.Italic},
+            textString="FV-CT")}));
+  end PartialOneFlangeFVCT;
+
+  model PartialOneFlangeCTCT
+    "Simple map-based model of an electric drive"
+    extends Partial.PartialOneFlangeBase;
+
+    parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
+      annotation (Dialog(enable=not limitsOnFile,group = "General parameters"));
+    //Parameters related to torque limits combi table:
+    parameter Boolean normalisedInput = false "= true, input torque limits has speed and torque between 0 and 1 (will be multiplied by wMax and tauMax).
+  Note: efficiency table is always assumed to have input torque and speed normalised."
+    annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Combi-table related parameters"));
+    parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file" annotation (Dialog(group = "Combi-table related parameters"));
+    parameter String limitsFileName = "noName" "File where efficiency table matrix is stored" annotation (
+      Dialog(group = "Combi-table related parameters",enable = limitsOnFile, loadSelector(filter = "Text files (*.txt)",
+      caption = "Open file in which required tables are")));
+    parameter String maxTorqueTableName = "noName" "Name of the on-file upper torque limit" annotation (
+      Dialog(enable = limitsOnFile,group = "Combi-table related parameters"));
+    parameter String minTorqueTableName = "noName" "Name of the on-file lower torque limit" annotation (
+      Dialog(enable = limitsOnFile,group = "Combi-table related parameters"));
+
+    //Parameters related to efficiency combi table:
+    parameter Boolean effMapOnFile = false "= true, if tables are taken from a txt file"  annotation (
+      Dialog(group = "Combi-table related parameters"));
+    parameter String effMapFileName = "noName" "File where efficiency table matrix is stored" annotation (
+      Dialog(group = "Combi-table related parameters",enable = effMapOnFile, loadSelector(filter = "Text files (*.txt)",
+      caption = "Open file in which required tables are")));
+    parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
+      Dialog(enable = effMapOnFile,group = "Combi-table related parameters"));
+    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both p.u. of max" annotation (
+      Dialog(enable = not effMapOnFile,group = "Combi-table related parameters"));
+
+    final parameter Modelica.Units.SI.Torque nomTorque(fixed=false);  //actual Max torque value for consumption map (which in file is between 0 and 1)
+    final parameter Modelica.Units.SI.AngularVelocity nomSpeed(fixed=false); //actual Max speed value for consumption map (which in file is between 0 and 1)
+
+    SupportModels.MapBasedRelated.LimTorqueCT limTau(
+      limitsOnFile=limitsOnFile,
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax,
+      limitsFileName=limitsFileName,
+      maxTorqueTableName=maxTorqueTableName,
+      minTorqueTableName=minTorqueTableName)
+      annotation (Placement(transformation(extent={{50,14},{30,38}})));
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(
+      mapsOnFile=effMapOnFile,
+      tauMax=tauMax,
+      powMax=powMax,
+      wMax=wMax,
+      mapsFileName=effMapFileName,
+      effTableName=effTableName,
+      effTable=effTable)
+      annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
+    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+          visible=true, transformation(
+          origin={15,37},
+          extent={{-5,-5},{5,5}},
+          rotation=180)));
+    Modelica.Blocks.Math.Gain fromPuTorque1(k=nomTorque)      annotation (Placement(
+          visible=true, transformation(
+          origin={15,19},
+          extent={{-5,-5},{5,5}},
+          rotation=180)));
+    Modelica.Blocks.Math.Gain toPuSpeed(k=1/nomSpeed)    annotation (Placement(visible
+          =true, transformation(
+          origin={68,26},
+          extent={{-6,-6},{6,6}},
+          rotation=180)));
+
+  initial equation
+    if normalisedInput then
+      nomTorque=tauMax;
+      nomSpeed=wMax;
+    else
+      nomTorque=1;
+      nomSpeed=1;
+    end if;
+
+  equation
+    connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
+            30},{-40,60},{-18,60}}, color={0,0,127}));
+    connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{
+            -40,30},{-40,-26},{-8,-26},{-8,-38},{-22,-38}},
+                                                      color={0,0,127}));
+    connect(wSensor.w, toElePow.w)
+      annotation (Line(points={{84,35.2},{84,-46},{-22,-46}}, color={0,0,127}));
+    connect(fromPuTorque1.u, limTau.yL)
+      annotation (Line(points={{21,19},{24,18.8},{29,18.8}}, color={0,0,127}));
+    connect(fromPuTorque.u, limTau.yH) annotation (Line(points={{21,37},{26,37},{26,
+            33.2},{29,33.2}}, color={0,0,127}));
+    connect(variableLimiter.limit1, fromPuTorque.y) annotation (Line(points={{-14,
+            38},{4,38},{4,37},{9.5,37}}, color={0,0,127}));
+    connect(variableLimiter.limit2, fromPuTorque1.y) annotation (Line(points={{-14,22},
+            {6,22},{6,19},{9.5,19}},      color={0,0,127}));
+    connect(limTau.w, toPuSpeed.y)
+      annotation (Line(points={{52,26},{61.4,26}}, color={0,0,127}));
+    connect(toPuSpeed.u, wSensor.w)
+      annotation (Line(points={{75.2,26},{84,26},{84,35.2}}, color={0,0,127}));
+    connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{-60,
+            -42},{-60,0},{-79.8,0}}, color={0,0,127}));
+    annotation (
+      Documentation(info="<html>
+<p>This is a model that models an electric drive: electronic converter + electric machine.</p>
+<p>The only model dynamics is its inertia. </p>
+<p>The input signal is a torque request (Nm), which is applied to a mechanical inertia. </p>
+<p>The maximum available torque is internally computed considering a direct torque maximum (tauMax) and a power maximum (powMax); the model then computes the inner losses and absorbs the total power from the DC input.</p>
+<p>Note that to evaluate the inner losses the model uses an efficiency map (i.e. a table), in which torques are ratios of actual torques to tauMax and speeds are ratios of w to wMax. Because of this wMax must be supplied as a parameter.</p>
+<p>Improvement onto OneFlange: now the user can implement max and minimum torque as a function of the angular speed, through curves supplied via an array taken from an input file: CTCT in the name means that both the maxiomum torque and the efficiency evaluation are CombiTable based.</p>
+<p>This model is not parameter-compatible with OneFlange. This has caused this new model to be introduced. </p>
+</html>"),
+      Diagram(coordinateSystem(                                     preserveAspectRatio=false)),
+      Icon(coordinateSystem(                                    preserveAspectRatio=false),
+          graphics={Text(origin={-2.52219,25.7},
+                       extent={{-63.4778,-29.7},{72.5222,-51.7}},
+            textColor={238,46,47},
+            textStyle={TextStyle.Italic},
+            textString="CT-CT")}));
+  end PartialOneFlangeCTCT;
+
+  model PartialOneFlangeCTLF
+    "Simple map-based model of an electric drive"
+    extends Partial.PartialOneFlangeBase;
+
+    parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
+      annotation (Dialog(enable=not limitsOnFile,group = "General parameters"));
+
+   //Parameters related to the torque limits Combi-table:
+    parameter Boolean normalisedInput = false "= true, input torque limits has speed and torque between 0 and 1 (will be multiplied by wMax and tauMax).
+  Note: efficiency table is always assumed to have input torque and speed normalised."
+    annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Combi-table related parameters"));
+    parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file" annotation (Dialog(group = "Combi-table related parameters"));
+    parameter String limitsFileName = "noName" "File where limit matrices are stored" annotation (
+      Dialog(group="Combi-table related parameters", enable = limitsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+    parameter String maxTorqueTableName = "noName" "Name of the on-file upper torque limit" annotation (
+      Dialog(enable = limitsOnFile,group = "Combi-table related parameters"));
+    parameter String minTorqueTableName = "noName" "Name of the on-file lower torque limit" annotation (
+      Dialog(enable = limitsOnFile,group = "Combi-table related parameters"));
+
+    //Parameters related to the loss-formula:
+    parameter Real A = 0.006 "fixed losses" annotation (
+      Dialog(group = "Loss-formula parameters"));
+    parameter Real bT = 0.05 "torque losses coefficient"
+                                                        annotation (
+      Dialog(group = "Loss-formula parameters"));
+    parameter Real bW = 0.02 "speed losses coefficient"
+                                                       annotation (
+      Dialog(group = "Loss-formula parameters"));
+    parameter Real bP = 0.05 "power losses coefficient"
+                                                       annotation (
+      Dialog(group = "Loss-formula parameters"));
+
+    final parameter Modelica.Units.SI.Torque nomTorque(fixed=false);  //actual Max torque value for consumption map (which in file is between 0 and 1)
+    final parameter Modelica.Units.SI.AngularVelocity nomSpeed(fixed=false); //actual Max speed value for consumption map (which in file is between 0 and 1)
+
+    SupportModels.MapBasedRelated.LimTorqueCT limTau(
+      limitsOnFile=limitsOnFile,
+      tauMax=tauMax,
+      wMax=wMax,
+      powMax=powMax,
+      limitsFileName=limitsFileName,
+      maxTorqueTableName=maxTorqueTableName,
+      minTorqueTableName=minTorqueTableName)
+      annotation (Placement(transformation(extent={{50,14},{30,38}})));
+    SupportModels.MapBasedRelated.EfficiencyLF toElePow(
+        A=A,
+        bT=bT,
+        bW=bW,
+        bP=bP,
+        tauMax=tauMax,
+        powMax=powMax,
+        wMax=wMax)
+      annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
+    Modelica.Blocks.Math.Gain fromPuTorque1(k=nomTorque)      annotation (Placement(
+          visible=true, transformation(
+          origin={15,19},
+          extent={{-5,-5},{5,5}},
+          rotation=180)));
+    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+          visible=true, transformation(
+          origin={15,37},
+          extent={{-5,-5},{5,5}},
+          rotation=180)));
+    Modelica.Blocks.Math.Gain toPuSpeed(k=1/nomSpeed)    annotation (Placement(visible
+          =true, transformation(
+          origin={68,26},
+          extent={{-6,-6},{6,6}},
+          rotation=180)));
+  initial equation
+    if normalisedInput then
+      nomTorque=tauMax;
+      nomSpeed=wMax;
+    else
+      nomTorque=1;
+      nomSpeed=1;
+    end if;
+
+  equation
+    connect(toElePow.tau, variableLimiter.y) annotation (Line(points={{-22,-38},{-8,
+            -38},{-8,-26},{-40,-26},{-40,30},{-37,30}},color={0,0,127}));
+    connect(toElePow.w, wSensor.w)
+      annotation (Line(points={{-22,-46},{84,-46},{84,35.2}}, color={0,0,127}));
+    connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{-60,-42},
+            {-60,0},{-79.8,0}},      color={0,0,127}));
+    connect(limTau.w, toPuSpeed.y)
+      annotation (Line(points={{52,26},{61.4,26}}, color={0,0,127}));
+    connect(toPuSpeed.u, wSensor.w)
+      annotation (Line(points={{75.2,26},{84,26},{84,35.2}}, color={0,0,127}));
+    connect(limTau.yH, fromPuTorque.u) annotation (Line(points={{29,33.2},{26,33.2},
+            {26,37},{21,37}}, color={0,0,127}));
+    connect(fromPuTorque.y, variableLimiter.limit1)
+      annotation (Line(points={{9.5,37},{8,38},{-14,38}}, color={0,0,127}));
+    connect(fromPuTorque1.y, variableLimiter.limit2) annotation (Line(points={{9.5,
+            19},{6,19},{6,22},{-14,22}}, color={0,0,127}));
+    connect(fromPuTorque1.u, limTau.yL)
+      annotation (Line(points={{21,19},{22,18.8},{29,18.8}}, color={0,0,127}));
+    annotation (Icon(graphics={
+                    Text(origin={-2.6552,25.7},
+                       extent={{-65.3448,-29.7},{74.6551,-51.7}},
+            textColor={238,46,47},
+            textStyle={TextStyle.Italic},
+            textString="CT-LF")}));
+  end PartialOneFlangeCTLF;
 end Partial;

@@ -1,4 +1,4 @@
-﻿within EHPTlib.ElectricDrives.SMArelated;
+within EHPTlib.ElectricDrives.SMArelated;
 model MTPAi "MTPA logic for an isotropic machine"
   // Non-Ascii Symbol to cause UTF-8 saving by Dymola: €
   //Implements block 1 of figure 11.28 of FEPE book

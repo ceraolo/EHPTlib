@@ -1,4 +1,4 @@
-﻿within EHPTlib.ElectricDrives.ASMArelated;
+within EHPTlib.ElectricDrives.ASMArelated;
 model TorqueToDW "Torque to Delta Omega"
   parameter Modelica.Units.SI.Resistance Rr
     "Rotor resistance in stato units";

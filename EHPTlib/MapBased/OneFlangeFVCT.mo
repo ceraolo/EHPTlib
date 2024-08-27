@@ -1,54 +1,10 @@
 within EHPTlib.MapBased;
 model OneFlangeFVCT "Simple map-based model of an electric drive"
-  extends Partial.PartialOneFlange;
+  extends Partial.PartialOneFlangeFVCT;
 
-  //Parameters related to both combi tables:
-  parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
-    annotation (Dialog(group = "General parameters"));
-  parameter Boolean effMapOnFile = false "= true, if tables are taken from a txt file"  annotation (
-    Dialog(group = "Combi-table related parameters"));
-  parameter String mapsFileName = "noName" "File where efficiency table matrix is stored" annotation (
-    Dialog(group = "Combi-table related parameters",enable = effMapOnFile, loadSelector(filter = "Text files (*.txt)",
-    caption = "Open file in which required tables are")));
-
-  parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation (
-    Dialog(enable = effMapOnFile,group = "Combi-table related parameters"));
-  parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both p.u. of max" annotation (
-    Dialog(enable = not effMapOnFile,group = "Combi-table related parameters"));
-
-
-  SupportModels.MapBasedRelated.EfficiencyCT toElePow(
-    mapsOnFile=effMapOnFile,
-    tauMax=tauMax,
-    powMax=powMax,
-    wMax=wMax,
-    mapsFileName=mapsFileName,
-    effTableName=effTableName,
-    effTable=effTable)
-    annotation (Placement(transformation(extent={{-24,-52},{-44,-32}})));
-  SupportModels.MapBasedRelated.LimTorqueFV limTau(
-    tauMax=tauMax,
-    wMax=wMax,
-    powMax=powMax)
-    annotation (Placement(transformation(extent={{48,18},{28,42}})));
-equation
-  connect(variableLimiter.y, torque.tau) annotation (Line(points={{-37,30},{-40,
-          30},{-40,60},{-18,60}}, color={0,0,127}));
-  connect(variableLimiter.y, toElePow.tau) annotation (Line(points={{-37,30},{
-          -40,30},{-40,-26},{-8,-26},{-8,-38},{-22,-38}},
-                                                    color={0,0,127}));
-  connect(wSensor.w, toElePow.w)
-    annotation (Line(points={{84,35.2},{84,-46},{-22,-46}}, color={0,0,127}));
-  connect(variableLimiter.limit2, limTau.yL)
-    annotation (Line(points={{-14,22},{-14,22.8},{27,22.8}},
-                                                           color={0,0,127}));
-  connect(variableLimiter.limit1, limTau.yH)
-    annotation (Line(points={{-14,38},{-14,37.2},{27,37.2}},
-                                                           color={0,0,127}));
-  connect(limTau.w, wSensor.w)
-    annotation (Line(points={{50,30},{84,30},{84,35.2}}, color={0,0,127}));
-  connect(toElePow.elePow, pDC.Pref) annotation (Line(points={{-44.6,-42},{-60,
-          -42},{-60,0},{-79.8,0}}, color={0,0,127}));
+  Modelica.Blocks.Interfaces.RealInput tauRef annotation (Placement(
+        transformation(extent={{-138,-90},{-98,-50}}), iconTransformation(
+          extent={{-134,-20},{-94,20}})));
   annotation (
     Documentation(info="<html>
 <p>This is a model that models an electric drive: electronic converter + electric machine.</p>
@@ -60,10 +16,5 @@ equation
 <p>This model is not parameter-compatible with OneFlange. This has caused this new model to be introduced. </p>
 </html>"),
     Diagram(coordinateSystem(extent={{-100,-80},{100,80}},        preserveAspectRatio = false, initialScale = 0.1)),
-    Icon(coordinateSystem(                                    preserveAspectRatio=false),
-        graphics={Text(origin={-2.52219,25.7},
-                     extent={{-63.4778,-29.7},{72.5222,-51.7}},
-          textColor={238,46,47},
-          textStyle={TextStyle.Italic},
-          textString="FV-CT")}));
+    Icon(coordinateSystem(                                    preserveAspectRatio=false)));
 end OneFlangeFVCT;
