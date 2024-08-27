@@ -37,3 +37,27 @@ double maxTorque(9,2)
     15182  473
 	18686  381
 	23357  296
+
+# first column: speed (pu); second torque (pu)
+double nMinTorque(9,2)
+	0.0 	-1
+	0.25	-1
+	0.3 	-0.9055
+	0.35	-0.7879
+	0.4 	-0.6915
+	0.475	-0.5838
+	0.65	-0.4216
+	0.8 	-0.3396
+	1		-0.2638
+
+# first column: speed (pu); second torque (pu)
+double nMaxTorque(9,2)
+	0.0 	1
+	0.25	1
+	0.3 	0.9055
+	0.35	0.7879
+	0.4 	0.6915
+	0.475	0.5838
+	0.65	0.4216
+	0.8 	0.3396
+	1		0.2638

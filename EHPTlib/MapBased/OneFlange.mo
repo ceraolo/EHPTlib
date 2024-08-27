@@ -1,10 +1,13 @@
 within EHPTlib.MapBased;
-model OneFlangeFVCT "Simple map-based model of an electric drive"
-  extends Partial.PartialOneFlangeFVCT;
+model OneFlange "Simple map-based model of an electric drive"
+  extends Partial.PartialOneFlange;
 
   Modelica.Blocks.Interfaces.RealInput tauRef annotation (Placement(
         transformation(extent={{-138,-90},{-98,-50}}), iconTransformation(
           extent={{-134,-20},{-94,20}})));
+equation
+  connect(variableLimiter.u, tauRef) annotation (Line(points={{-26,30},{-12,30},
+          {-12,-70},{-118,-70}}, color={0,0,127}));
   annotation (
     Documentation(info="<html>
 <p>This is a model that models an electric drive: electronic converter + electric machine.</p>
@@ -17,4 +20,4 @@ model OneFlangeFVCT "Simple map-based model of an electric drive"
 </html>"),
     Diagram(coordinateSystem(extent={{-100,-80},{100,80}},        preserveAspectRatio = false, initialScale = 0.1)),
     Icon(coordinateSystem(                                    preserveAspectRatio=false)));
-end OneFlangeFVCT;
+end OneFlange;
