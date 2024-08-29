@@ -24,7 +24,7 @@ package Partial
     //Parameters related to torque limits:
     parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file, otherwise limits are tauMax and powMax"
      annotation (Dialog(group = "Torque limitation related parameters"));
-    parameter Boolean normalisedTorqueInput = false "when true, input torque limits are normalised (will be multiplied by wMax and tauMax)"
+    parameter Boolean normalisedTorqueInput = false "when true, input torque limits are normalised (will be multiplied by wMax and tauMax). Applies only when limitsOnFile=true"
      annotation(Dialog(enable = limitsOnFile,group = "Torque limitation related parameters"));
     parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
       annotation (Dialog(group = "Torque limitation related parameters"));
@@ -137,7 +137,7 @@ package Partial
       annotation (Placement(transformation(extent={{-38,-56},{-58,-36}})));
 
   initial equation
-    if normalisedTorqueInput then
+    if limitsOnFile and normalisedTorqueInput then
       nomTorque=tauMax;
       nomSpeed=wMax;
     else

@@ -24,7 +24,7 @@ equation
 <p>2. specificCons containing the specific consumption of ICE (g/kWh)</p>
 <p>3. optiSpeed containing the optimal speed for the maximum efficiency at any ICE mechanical power </p>
 <p>It also needs the following generator-related matrix:</p>
-<p>1. genEffTable containing the efficiency of the electric generator connected to the ICE output </p>
+<p>1. gensetDriveEffTable containing the efficiency of the electric generator connected to the ICE output </p>
 <p>As a target, the library should allow all the matrices to be expressed with inputs with their dimensions (Nm for torques, rad/s for speeds) or in per unit (0-1 values)</p>
 <p>At the current stage of development, however: the generator-related map is always p.u, while the ICE-related ones are made depending on the boolean variable useNormalisedIceMaps:</p>
 <ul>
