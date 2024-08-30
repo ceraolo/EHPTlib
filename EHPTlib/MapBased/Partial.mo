@@ -24,7 +24,7 @@ package Partial
     //Parameters related to torque limits:
     parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file, otherwise limits are tauMax and powMax"
      annotation (Dialog(group = "Torque limitation related parameters"));
-    parameter Boolean normalisedTorqueInput = false "when true, input torque limits are normalised (will be multiplied by wMax and tauMax). Applies only when limitsOnFile=true"
+    parameter Boolean normalisedInTauLimits = false "when true, input torque limits are normalised (will be multiplied by wMax and tauMax). Applies only when limitsOnFile=true"
      annotation(Dialog(enable = limitsOnFile,group = "Torque limitation related parameters"));
     parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
       annotation (Dialog(group = "Torque limitation related parameters"));
@@ -93,7 +93,7 @@ package Partial
       Placement(transformation(extent={{-28,20},{-48,40}})));
 
     SupportModels.MapBasedRelated.LimTorque limTau(
-      normalisedInput=normalisedTorqueInput,
+      normalisedInput=normalisedInTauLimits,
       limitsOnFile=limitsOnFile,
       tauMax=tauMax,
       wMax=wMax,
@@ -137,7 +137,7 @@ package Partial
       annotation (Placement(transformation(extent={{-38,-56},{-58,-36}})));
 
   initial equation
-    if limitsOnFile and normalisedTorqueInput then
+    if limitsOnFile and normalisedInTauLimits then
       nomTorque=tauMax;
       nomSpeed=wMax;
     else
@@ -658,7 +658,7 @@ reference \nand computes consumption")}));
     parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6
       "Max generator angular speed";
 
-    parameter Boolean useNormalisedIceMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm"
+    parameter Boolean useNormalisedFuelMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm"
     annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Input map parameters"));
     parameter Modelica.Units.SI.Torque maxTau=200
       "Max mechanical torque between internal ICE and generator";
@@ -715,7 +715,7 @@ reference \nand computes consumption")}));
       Placement(transformation(extent={{90,-30},{110,-10}}), iconTransformation(
             extent={{92,-70},{112,-50}})));
   initial equation
-    if useNormalisedIceMaps then
+    if useNormalisedFuelMaps then
       actualTauMax=maxTauNorm;
       actualSpeedMax=maxSpeedNorm;
     else

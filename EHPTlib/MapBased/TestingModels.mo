@@ -269,7 +269,7 @@ package TestingModels
                                               color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics={Text(
-            extent={{0,-30},{34,-40}},
+            extent={{0,-30},{46,-40}},
             textColor={238,46,47},
             textString="- Fixed torque limits 
 - Loss formula",
@@ -348,7 +348,7 @@ package TestingModels
                                               color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics={Text(
-            extent={{0,-30},{70,-40}},
+            extent={{0,-28},{78,-42}},
             textColor={238,46,47},
             horizontalAlignment=TextAlignment.Left,
             textString="- Torque limits from file (un-normalised)
@@ -375,7 +375,7 @@ package TestingModels
     OneFlange oneFlange(
       powMax=1.e06,
       limitsOnFile=true,
-      normalisedTorqueInput=true,
+      normalisedInTauLimits=true,
       tauMax=1122,
       J=0.5,
       wMax(displayUnit="rpm") = 2445.9393203299,
@@ -431,6 +431,78 @@ package TestingModels
 <p>Similar to TestOneFlange2, but torque limits taken from the file are normalised. results are  the same (except for the consequences of some rounding on the input tables).</p>
 </html>"));
   end TestOneFlange3;
+
+  model TestOneFlange4
+    "Tests OneFlange with torque limits (un-normalised) and efficiency from file "
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
+      Placement(transformation(extent={{38,-10},{58,10}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -50, w_nominal = 400) annotation (
+      Placement(transformation(extent={{92,-10},{72,10}})));
+    Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude=500.0,offset=150.0)
+                                                                                                                                               annotation (
+      Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
+    OneFlange oneFlange(
+      powMax=1.e06,
+      limitsOnFile=true,
+      normalisedInTauLimits=false,
+      tauMax=1122,
+      J=0.5,
+      wMax(displayUnit="rpm") = 2445.9393203299,
+      limitsFileName=Modelica.Utilities.Files.loadResource(
+          "modelica://EHPTlib/Resources/EVmapsNew.txt"),
+      maxTorqueTableName="maxTorque",
+      minTorqueTableName="minTorque",
+      effMapOnFile=true,
+      effMapFileName=Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"),
+      effTableName="effTable")
+                annotation (Placement(transformation(extent={{-22,-10},{-2,10}})));
+
+    Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation (
+      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
+    Modelica.Electrical.Analog.Basic.Ground ground annotation (
+      Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech annotation (
+      Placement(transformation(extent={{12,-10},{32,10}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation (
+      Placement(transformation(extent = {{-48, 20}, {-28, 40}})));
+  equation
+    connect(inertia.flange_b, loadTorque.flange) annotation (
+      Line(points={{58,0},{72,0}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(tauRef.y, oneFlange.tauRef) annotation (
+      Line(points={{-39,-28},{-32,-28},{-32,0},{-23.4,0}},                            color = {0, 0, 127}, smooth = Smooth.None));
+    connect(ground.p, gen.n) annotation (
+      Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(oneFlange.flange_a, powMech.flange_a) annotation (
+      Line(points={{-2,0},{12,0}},                                    color = {0, 0, 0}, smooth = Smooth.None));
+    connect(inertia.flange_a, powMech.flange_b) annotation (
+      Line(points={{38,0},{32,0}},        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(powElec.nc, oneFlange.pin_p) annotation (
+      Line(points={{-28,30},{-22,30},{-22,4}},       color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.pc, gen.p) annotation (
+      Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.pv, powElec.nc) annotation (
+      Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(gen.n, oneFlange.pin_n) annotation (
+      Line(points={{-64,0},{-64,-4},{-22,-4}},                    color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.nv, oneFlange.pin_n) annotation (
+      Line(points={{-38,20},{-38,-4},{-22,-4}},
+                                              color = {0, 0, 255}, smooth = Smooth.None));
+    annotation (
+      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}),
+          graphics={                                                                                      Text(
+            extent={{0,-30},{76,-40}},
+            textColor={238,46,47},
+            horizontalAlignment=TextAlignment.Left,
+            textString="- Torque limits from file (un-normalised)
+- Efficiency from file (normalised)")}),
+      experiment(StopTime = 50),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}})),
+      Documentation(info="<html>
+<p>Thirs simple test of model OneFlange.</p>
+<p>Similar to TestOneFlange2, but torque limits taken from the file are normalised. results are  the same (except for the consequences of some rounding on the input tables).</p>
+</html>"));
+  end TestOneFlange4;
 
   model TestOneFlangeConn
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation (
