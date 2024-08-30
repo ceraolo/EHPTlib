@@ -25,13 +25,12 @@ equation
 <p>3. optiSpeed containing the optimal speed for the maximum efficiency at any ICE mechanical power </p>
 <p>It also needs the following generator-related matrix:</p>
 <p>1. gensetDriveEffTable containing the efficiency of the electric generator connected to the ICE output </p>
-<p>As a target, the library should allow all the matrices to be expressed with inputs with their dimensions (Nm for torques, rad/s for speeds) or in per unit (0-1 values)</p>
-<p>At the current stage of development, however: the generator-related map is always p.u, while the ICE-related ones are made depending on the boolean variable useNormalisedIceMaps:</p>
+<p>As a target, the library should allow all the matrices read from files to be expressed with inputs with their dimensions (Nm for torques, rad/s for speeds) or in per unit (0-1 values)</p>
+<p>At the current stage of development, however:</p>
 <ul>
-<li>in case useNormalisedIceMaps=true, maxTau and maxGenW are also used as max values for the fuel consumption map. This way, larger or smaller engines can be simulated just changing them: leaving the consumption map invaried will keep that maps&apos;s shape unchanged.</li>
-<li>In case useNormalisedIceMaps=true, when maxTorque and/or maxPower and/or maxGenW are changed, the fuel consumption map must be changed accordingly.</li>
+<li>in case useNormalisedFuelMaps=true, maxTauNorm, and maxSpeedNorm are used as max values for the fuel consumption map. This way, larger or smaller engines can be simulated just changing them: leaving the consumption map invaried will keep that maps&apos;s shape unchanged.</li>
+<li>In case useNormalisedfuelMaps=false, when maxTorque and/or maxPower and/or maxGenW are changed, the fuel consumption map must be changed accordingly.</li>
 </ul>
-<h4><span style=\"color: #ee2e2f\">Important note</span></h4>
-<p><span style=\"color: #ee2e2f;\">in reality, normalisation of optiSpeed is still NOT DONE!</span></p>
+<h4>Other matrices different from ICE fuel are not normalised (yet).</h4>
 </html>"));
 end Genset;
