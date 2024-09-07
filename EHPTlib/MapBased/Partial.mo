@@ -102,17 +102,17 @@ package Partial
       maxTorqueTableName=maxTorqueTableName,
       minTorqueTableName=minTorqueTableName)
       annotation (Placement(transformation(extent={{50,-2},{30,22}})));
-    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+    SupportModels.Miscellaneous.Gain fromPuTorque(k=nomTorque) annotation (Placement(
           visible=true, transformation(
           origin={14,30},
           extent={{-6,-6},{6,6}},
           rotation=180)));
-    Modelica.Blocks.Math.Gain fromPuTorque1(k=nomTorque)      annotation (Placement(
+    SupportModels.Miscellaneous.Gain fromPuTorque1(k=nomTorque)      annotation (Placement(
           visible=true, transformation(
           origin={14,2},
           extent={{-6,-6},{6,6}},
           rotation=180)));
-    Modelica.Blocks.Math.Gain toPuSpeed(k=1/nomSpeed)    annotation (Placement(visible
+    SupportModels.Miscellaneous.Gain toPuSpeed(k=1/nomSpeed)    annotation (Placement(visible
           =true, transformation(
           origin={68,10},
           extent={{-8,-8},{8,8}},
@@ -496,13 +496,13 @@ false")}),
     Modelica.Blocks.Math.Min min1
                                  annotation (
       Placement(transformation(extent={{-34,68},{-14,88}})));
-    Modelica.Blocks.Math.Gain toPuSpeed1(k=1/nomSpeed)
+    SupportModels.Miscellaneous.Gain toPuSpeed1(k=1/nomSpeed)
                                                     annotation (Placement(visible
           =true, transformation(
           origin={-76,20},
           extent={{6,-6},{-6,6}},
           rotation=-90)));
-    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+    SupportModels.Miscellaneous.Gain fromPuTorque(k=nomTorque) annotation (Placement(
           visible=true, transformation(
           origin={-48,72},
           extent={{6,-6},{-6,6}},
@@ -570,12 +570,12 @@ false")}),
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-60,-24})));
     Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation (
       Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102}),    iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102})));
-    Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+    SupportModels.Miscellaneous.Gain fromPuTorque(k=nomTorque) annotation (Placement(
           visible=true, transformation(
           origin={-48,84},
           extent={{6,-6},{-6,6}},
           rotation=180)));
-    Modelica.Blocks.Math.Gain toPuSpeed1(k=1/nomSpeed)
+    SupportModels.Miscellaneous.Gain toPuSpeed1(k=1/nomSpeed)
                                                     annotation (Placement(visible
           =true, transformation(
           origin={-88,58},

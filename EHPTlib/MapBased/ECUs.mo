@@ -307,7 +307,7 @@ package ECUs
         Placement(transformation(extent = {{100, -70}, {120, -50}}), iconTransformation(extent = {{100, -70}, {120, -50}})));
       Modelica.Blocks.Math.Feedback feedback annotation (
         Placement(transformation(extent = {{24, -50}, {44, -30}})));
-      Modelica.Blocks.Math.Gain gain(k=throttlePerWerr)
+      SupportModels.Miscellaneous.Gain gain(k=throttlePerWerr)
                                                annotation (
         Placement(transformation(extent = {{66, -50}, {86, -30}})));
       Modelica.Blocks.Math.UnitConversions.To_rpm to_rpm annotation (
@@ -326,12 +326,12 @@ package ECUs
         Placement(transformation(extent={{-8,-8},{8,8}},
             rotation=90,
             origin={52,40})));
-      Modelica.Blocks.Math.Gain fromPuTorque(k=nomTorque) annotation (Placement(
+      SupportModels.Miscellaneous.Gain fromPuTorque(k=nomTorque) annotation (Placement(
             visible=true, transformation(
             origin={25,77},
             extent={{7,-7},{-7,7}},
             rotation=180)));
-      Modelica.Blocks.Math.Gain toPuSpeed(k=1/nomSpeed)
+      SupportModels.Miscellaneous.Gain toPuSpeed(k=1/nomSpeed)
                                                       annotation (Placement(visible
             =true, transformation(
             origin={-23,33},
