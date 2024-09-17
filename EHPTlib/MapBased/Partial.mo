@@ -16,16 +16,12 @@ package Partial
       "Maximum mechnical power (used for efficiency and normalised torque limitation evaluation)"
        annotation (
       Dialog(group = "General parameters"));
-    parameter Boolean efficiencyFromTable=true
-      "=true if efficiency if from a table (either online or from a file); otherwise use a the built-in loss formula"
-        annotation (
-      Dialog(group = "General parameters"));
 
     //Parameters related to torque limits:
     parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file, otherwise limits are tauMax and powMax"
-     annotation (Dialog(group = "Torque limitation related parameters"));
+     annotation (choices(checkBox=true),Dialog(group = "Torque limitation related parameters"));
     parameter Boolean normalisedInTauLimits = false "when true, input torque limits are normalised (will be multiplied by wMax and tauMax). Applies only when limitsOnFile=true"
-     annotation(Dialog(enable = limitsOnFile,group = "Torque limitation related parameters"));
+     annotation(choices(checkBox=true),Dialog(enable = limitsOnFile,group = "Torque limitation related parameters"));
     parameter Modelica.Units.SI.Torque tauMax=80 "Maximum torque"
       annotation (Dialog(group = "Torque limitation related parameters"));
 
@@ -41,8 +37,12 @@ package Partial
       Dialog(enable = limitsOnFile,group = "Torque limitation related parameters"));
 
     //Parameters related to efficiency combi table:
+    parameter Boolean efficiencyFromTable=true
+      "=true if efficiency if from a table (either online or from a file); otherwise use a the built-in loss formula"
+        annotation (choices(checkBox=true),
+      Dialog(group = "Efficiency related parameters"));
     parameter Boolean effMapOnFile = false "= true, if tables are taken from a txt file"
-     annotation (
+     annotation (choices(checkBox=true),
       Dialog(enable = efficiencyFromTable,group = "Efficiency related parameters"));
     parameter String effMapFileName = "noName" "File where efficiency table matrix is stored"
      annotation (
@@ -329,7 +329,6 @@ false")}),
 
   partial model PartialIceBase "Partial map-based ice model"
     import Modelica.Constants.*;
-    parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
     parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
@@ -540,7 +539,6 @@ false")}),
   partial model PartialIceT01 "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
-    parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
     // rad/s
@@ -575,8 +573,7 @@ false")}),
           origin={-48,84},
           extent={{6,-6},{-6,6}},
           rotation=180)));
-    SupportModels.Miscellaneous.Gain toPuSpeed1(k=1/nomSpeed)
-                                                    annotation (Placement(visible
+    SupportModels.Miscellaneous.Gain toPuSpeed1(k=1/nomSpeed) annotation (Placement(visible
           =true, transformation(
           origin={-88,58},
           extent={{6,-6},{-6,6}},

@@ -98,7 +98,7 @@ package TestingModels
   equation
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{48,8},{56,8}},        color = {0, 0, 0}, smooth = Smooth.None));
-  //    experiment(StopTime = 50),
+//    experiment(StopTime = 50),
     connect(iceP.powRef, trapezoid.y)
       annotation (Line(points={{-18,-4},{-18,-20},{-31,-20}}, color={0,0,127}));
     connect(iceP.flange_a, pow.flange_a)
@@ -269,8 +269,8 @@ package TestingModels
                                               color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics={Text(
-            extent={{0,-30},{46,-40}},
-            textColor={238,46,47},
+            origin = {0, 6},
+            textColor={238,46,47}, extent = {{0, -36}, {46, -48}},
             textString="- Fixed torque limits 
 - Loss formula",
             horizontalAlignment=TextAlignment.Left)}),
@@ -446,15 +446,14 @@ package TestingModels
       limitsOnFile=true,
       normalisedInTauLimits=false,
       tauMax=1122,
-      J=0.5,
-      wMax(displayUnit="rpm") = 2445.9393203299,
+      J=0.5, wMax(displayUnit = "rpm") = 2445.9393203298937,
       limitsFileName=Modelica.Utilities.Files.loadResource(
           "modelica://EHPTlib/Resources/EVmapsNew.txt"),
       maxTorqueTableName="maxTorque",
       minTorqueTableName="minTorque",
       effMapOnFile=true,
       effMapFileName=Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"),
-      effTableName="effTable")
+      effTableName="effTable", efficiencyFromTable = true)
                 annotation (Placement(transformation(extent={{-22,-10},{-2,10}})));
 
     Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation (
@@ -489,12 +488,8 @@ package TestingModels
                                               color = {0, 0, 255}, smooth = Smooth.None));
     annotation (
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}),
-          graphics={                                                                                      Text(
-            extent={{0,-30},{76,-40}},
-            textColor={238,46,47},
-            horizontalAlignment=TextAlignment.Left,
-            textString="- Torque limits from file (un-normalised)
-- Efficiency from file (normalised)")}),
+          graphics={Text(textColor = {238, 46, 47}, extent = {{0, -30}, {76, -40}}, textString = "- Torque limits from file (un-normalised)
+- Efficiency from file", horizontalAlignment = TextAlignment.Left)}),
       experiment(StopTime = 50),
       __Dymola_experimentSetupOutput,
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}})),

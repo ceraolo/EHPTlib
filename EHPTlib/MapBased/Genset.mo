@@ -4,7 +4,7 @@ model Genset "GenSet GMS+GEN+SEngine"
   ECUs.GMS myGMS(
     mapsFileName=mapsFileName,
     nomTorque=actualTauMax,
-    nomSpeed=actualSpeedMax)                  annotation (
+    nomSpeed=actualSpeedMax) annotation (
     Placement(transformation(extent={{-70,12},{-50,32}})));
 equation
   connect(myGMS.Wmecc, gain1.y) annotation (Line(points={{-59.9,10.5},{-60,10},
