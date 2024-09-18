@@ -98,7 +98,7 @@ package TestingModels
   equation
     connect(inertia.flange_b, loadTorque.flange) annotation (
       Line(points={{48,8},{56,8}},        color = {0, 0, 0}, smooth = Smooth.None));
-//    experiment(StopTime = 50),
+    //    experiment(StopTime = 50),
     connect(iceP.powRef, trapezoid.y)
       annotation (Line(points={{-18,-4},{-18,-20},{-31,-20}}, color={0,0,127}));
     connect(iceP.flange_a, pow.flange_a)

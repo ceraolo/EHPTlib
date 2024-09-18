@@ -329,17 +329,19 @@ false")}),
 
   partial model PartialIceBase "Partial map-based ice model"
     import Modelica.Constants.*;
-    parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
-    parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
-    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
+    parameter Modelica.Units.SI.AngularVelocity wIceStart = 167    annotation (Dialog(group = "General parameters"));
+    parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia"
+      annotation (Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.Torque nomTorque=1 "Torque multiplier for efficiency map torques"
-           annotation (Dialog(enable = mapsOnFile));
+           annotation (Dialog(enable = mapsOnFile,group = "General parameters"));
     parameter Modelica.Units.SI.AngularVelocity nomSpeed=1 "Speed multiplier for efficiency map speeds"
-          annotation (Dialog(enable = mapsOnFile));
+          annotation (Dialog(enable = mapsOnFile, group = "General parameters"));
+    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file"
+         annotation (choices(checkBox=true),Dialog(group = "Map related parameters"));
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
-      Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+      Dialog(group = "Map related parameters", enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
-      Dialog(enable = mapsOnFile));
+      Dialog(enable = mapsOnFile,group = "Map related parameters"));
     parameter Real maxIceTau[:,2](each unit = "N.m")=   [
         100, 80;
         200, 85;
@@ -347,7 +349,7 @@ false")}),
         350, 98;
         400, 98]    "Maximum ICE generated torque"
                                                   annotation (
-      Dialog(enable = not mapsOnFile));
+      Dialog(enable = not mapsOnFile,group = "Map related parameters"));
     parameter Real specificCons[:, :](each unit = "g/(kW.h)") =
           [0.0, 100, 200, 300, 400, 500;
            10, 630, 580, 550, 580, 630;
@@ -360,7 +362,7 @@ false")}),
            80, 245, 230, 233, 237, 240;
            90, 235, 230, 228, 233, 235]
        "ICE specific consumption map. First column torque, first row speed" annotation (
-      Dialog(enable = not mapsOnFile));
+      Dialog(enable = not mapsOnFile,group = "Map related parameters"));
 
     Modelica.Units.SI.Torque tauGenerated=iceTau.tau;
     Modelica.Units.SI.Torque tauMechanical=-flange_a.tau;
@@ -470,9 +472,9 @@ false")}),
   partial model PartialIceTNm "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
-    parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain";
+    parameter Real contrGain(unit="N.m/W") = 0.1 "Proportional controller gain" annotation(Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
-    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
+
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
@@ -492,11 +494,10 @@ false")}),
           extent={{-10,-10},{10,10}},
           rotation=90,
           origin={-76,-8})));
-    Modelica.Blocks.Math.Min min1
-                                 annotation (
+    Modelica.Blocks.Math.Min min1   annotation (
       Placement(transformation(extent={{-34,68},{-14,88}})));
     SupportModels.Miscellaneous.Gain toPuSpeed1(k=1/nomSpeed)
-                                                    annotation (Placement(visible
+              annotation (Placement(visible
           =true, transformation(
           origin={-76,20},
           extent={{6,-6},{-6,6}},
@@ -539,10 +540,8 @@ false")}),
   partial model PartialIceT01 "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
-    parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia";
     // rad/s
-    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation (
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation (
