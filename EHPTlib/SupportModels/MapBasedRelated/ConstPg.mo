@@ -1,6 +1,6 @@
 within EHPTlib.SupportModels.MapBasedRelated;
 model ConstPg "Constant Power DC Load"
-  parameter Real vNom = 100;
+  parameter Modelica.Units.SI.Voltage vNom = 100 "Actual DC voltage should have the same order-of-magnitude of this parameter";
   parameter Modelica.Units.SI.Time Ti=0.01
     "inner PI follower integral time constant";
   Real v "DC voltage";
@@ -41,8 +41,6 @@ equation
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics),
     Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Line(points = {{-4, 0}, {70, 0}}, color = {0, 0, 0}, smooth = Smooth.None), Line(points = {{0, 94}, {0, -88}, {-2, -90}}, color = {0, 0, 255}, smooth = Smooth.None), Rectangle(extent = {{-28, 68}, {28, -52}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{42, 58}, {78, 22}}, lineColor = {255, 0, 0}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, textString = "P")}),
-    Documentation(info = "<html>
-    <p>Questo componente simula, mediante inseguimento di un riferimento esterno, un carico a potenza costante.</p>
-    <p>I parametri k e T sono i parametri del regolatore PI che insegue l&apos;input. TIpicamente si potr&agrave; utilizzare k=1 e T di un ordine di grandezza pi&ugrave; piccolo delle costanti di tempo del segnale di ingresso di potenza</p>
-    </html>"));
+    Documentation(info = "<html><head></head><body><p>This model simulates, following an external reference, a constant-power load.</p><p>It uses a simple integral controller.&nbsp;</p><p>There is no need to state precisely the value of vNom: it only determines the dynamic of the controller. In case the actual DC voltage is exatly equal to vNom, &nbsp;the controller has a dynamics exactly equal to that of a system having as transfer funcrtion G(s)=1 fed by a pure integral controller with time constant equal to Ti.</p><p><br></p>
+    </body></html>"));
 end ConstPg;

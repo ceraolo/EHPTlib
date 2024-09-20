@@ -4,10 +4,10 @@ package Partial
     "Partial map-based one-Flange electric drive model"
     parameter Modelica.Units.SI.MomentOfInertia J=0.25
       "Rotor's moment of inertia"
-                                 annotation (
+         annotation (
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.Voltage uDcNom=100 "Nominal DC voltage"
-                                                                       annotation (
+        annotation (
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.AngularVelocity wMax= 3000 "Maximum drive speed (used for efficiency and normalised torque limitation evaluation)"
      annotation (
@@ -51,7 +51,7 @@ package Partial
     parameter String effTableName = "noName" "Name of the on-file efficiency matrix"
      annotation (
       Dialog(enable = effMapOnFile and efficiencyFromTable,group = "Efficiency related parameters"));
-    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both of wMax abd tauMax"
+    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both PU of wMax and tauMax"
      annotation (
       Dialog(enable = not effMapOnFile and efficiencyFromTable,group = "Efficiency related parameters"));
     //Parameters related to the loss-formula:
@@ -565,8 +565,6 @@ false")}),
       annotation (Placement(transformation(extent={{-34,68},{-14,88}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMin=0, uMax=1)     annotation (
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-60,-24})));
-    Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation (
-      Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102}),    iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-102})));
     SupportModels.Miscellaneous.Gain fromPuTorque(k=nomTorque) annotation (Placement(
           visible=true, transformation(
           origin={-48,84},
@@ -577,13 +575,15 @@ false")}),
           origin={-88,58},
           extent={{6,-6},{-6,6}},
           rotation=-90)));
+    Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation (
+      Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-98}),     iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin={-60,-120})));
   equation
     connect(product.y, iceTau.tau)
       annotation (Line(points={{-13,78},{2,78}}, color={0,0,127}));
     connect(product.u2, limiter.y)
       annotation (Line(points={{-36,72},{-60,72},{-60,-13}}, color={0,0,127}));
     connect(limiter.u, nTauRef)
-      annotation (Line(points={{-60,-36},{-60,-102}}, color={0,0,127}));
+      annotation (Line(points={{-60,-36},{-60,-98}},  color={0,0,127}));
     connect(toLimTau.y[1], fromPuTorque.u)
       annotation (Line(points={{-61,84},{-55.2,84}}, color={0,0,127}));
     connect(fromPuTorque.y, product.u1)
@@ -647,48 +647,61 @@ reference \nand computes consumption")}));
   partial model PartialGenset "GenSet GMS+GEN+SEngine"
     import Modelica.Constants.inf;
     import Modelica.Constants.pi;
-    parameter Modelica.Units.SI.MomentOfInertia jIce=0.1 "ICE moment of inertia";
-    parameter Modelica.Units.SI.MomentOfInertia jGen=0.1 "Generator moment of inertia";
-    parameter Real gsRatio = 2 "IdealGear speed reduction factor";
-    parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)" annotation(Dialog(group = "Input map parameters"));
-    parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6
-      "Max generator angular speed";
+    // General parameters:
+    parameter Real gsRatio = 1 "IdealGear speed reduction factor";
+    parameter Real throttlePerWerr=10/maxGenW "internal throttle controller proportional gain";
 
-    parameter Boolean useNormalisedFuelMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm"
-    annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Input map parameters"));
+    // Parameters related to input maps:
+
+    // ICE related parameters:
+    parameter Modelica.Units.SI.MomentOfInertia jIce=0.1 "ICE moment of inertia" annotation (
+      Dialog(group = "ICE parameters"));
+    parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)" annotation(Dialog(group = "Input map parameters"));
+    parameter Boolean useNormalisedFuelMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm";
+    parameter Modelica.Units.SI.AngularVelocity wIceStart=167
+       annotation (
+      Dialog(group = "ICE parameters"));
+
+    // generator related parameters:
+    parameter Modelica.Units.SI.MomentOfInertia jGen=0.1 "Generator moment of inertia"
+                                                                                      annotation (
+      Dialog(group = "Generator parameters"));
+    parameter Modelica.Units.SI.AngularVelocity maxGenW=1e6
+      "Max generator angular speed" annotation (
+      Dialog(group = "Generator parameters"));
+    parameter Modelica.Units.SI.Power maxGenPow=100e3
+      "Max mechanical power of the internal generator" annotation (
+      Dialog(group = "Generator parameters"));
+
     parameter Modelica.Units.SI.Torque maxTau=200
       "Max mechanical torque between internal ICE and generator";
     parameter Modelica.Units.SI.Torque maxTauNorm=maxTau
-      "Max torque for normalised maps"   annotation(Dialog(group = "Input map parameters"));
+      "Max torque for normalised maps"   annotation(Dialog(group = "Input map (ICE and Gen) parameters"));
     parameter Modelica.Units.SI.AngularVelocity maxSpeedNorm
-      "Max mechanical speed for normalised maps" annotation(Dialog(group = "Input map parameters"));
-    parameter Modelica.Units.SI.Power maxPow=100e3
-      "Max mechanical power of the internal generator";
-    parameter Modelica.Units.SI.AngularVelocity wIceStart=167;
+      "Max mechanical speed for normalised maps" annotation(Dialog(group = "Input map (ICE and Gen) parameters"));
     final parameter Modelica.Units.SI.Torque actualTauMax(fixed=false);  //actual Max torque value for consumption map (which in file is between 0 and 1)
     final parameter Modelica.Units.SI.AngularVelocity actualSpeedMax(fixed=false); //actual Max speed value for consumption map (which in file is between 0 and 1)
 
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
-      Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin = {-24, -20})));
+      Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin={-24,-36})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor IcePow annotation (
-      Placement(transformation(extent={{24,0},{42,18}})));
-    Modelica.Blocks.Interfaces.RealInput powRef(unit = "W") "Reference genset power" annotation (
-      Placement(transformation(extent = {{15, -15}, {-15, 15}}, rotation = 90, origin = {61, 115})));
+      Placement(transformation(extent={{24,-16},{42,2}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
-      Placement(transformation(extent = {{90, 50}, {110, 70}})));
+      Placement(transformation(extent={{90,50},{110,70}}), iconTransformation(
+            extent={{90,50},{110,70}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMax = inf, uMin = 0) annotation (
-      Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 54})));
+      Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin={-80,48})));
     EHPTlib.MapBased.OneFlange gen(
       wMax=maxGenW,
       J=jGen,
       limitsFileName=mapsFileName,
       effMapOnFile=true,
-      powMax=maxPow,
+      powMax=maxGenPow,
       tauMax=maxTau,
       effMapFileName=mapsFileName,
       effTableName="gensetDriveEffTable")
         annotation (Placement(visible=true,
-          transformation(extent={{68,18},{48,-2}}, rotation=0)));
+          transformation(extent={{68,2},{48,-18}}, rotation=0)));
     IceT01 iceT(
       iceJ=jIce,
       mapsOnFile=true,
@@ -697,19 +710,25 @@ reference \nand computes consumption")}));
       mapsFileName=mapsFileName,
       wIceStart=wIceStart,
       specConsName="specificCons")
-      annotation (Placement(transformation(extent={{-34,-2},{-14,20}})));
-    Modelica.Blocks.Math.Gain gain(k=-0.9*gsRatio)
+      annotation (Placement(transformation(extent={{-34,-18},{-14,4}})));
+    Modelica.Blocks.Math.Gain gain(k=-gsRatio)
                                            annotation (
-      Placement(transformation(extent = {{-14, 30}, {6, 50}})));
+      Placement(transformation(extent={{-14,14},{6,34}})));
     Modelica.Blocks.Math.Gain gain1(k = 1) annotation (
-      Placement(visible = true, transformation(origin = {-60, -8}, extent = {{-6, -6}, {6, 6}}, rotation = 90)));
+      Placement(visible = true, transformation(origin={-60,-24},   extent = {{-6, -6}, {6, 6}}, rotation = 90)));
     Modelica.Blocks.Continuous.Integrator toFuelGrams(k=1/3600)
-      annotation (Placement(transformation(extent={{18,-42},{38,-22}})));
+      annotation (Placement(transformation(extent={{20,-52},{40,-32}})));
     Modelica.Mechanics.Rotational.Components.IdealGear idealGear(ratio = gsRatio) annotation (
-      Placement(visible = true, transformation(extent={{0,0},{18,18}},      rotation = 0)));
+      Placement(visible = true, transformation(extent={{0,-16},{18,2}},     rotation = 0)));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
-      Placement(transformation(extent={{90,-30},{110,-10}}), iconTransformation(
+      Placement(transformation(extent={{90,-46},{110,-26}}), iconTransformation(
             extent={{92,-70},{112,-50}})));
+    Modelica.Blocks.Interfaces.RealInput powRef(unit="W")   "Reference genset power" annotation (
+      Placement(transformation(extent={{10,-10},{-10,10}},      rotation = 90, origin={60,82}),
+          iconTransformation(
+          extent={{15,-15},{-15,15}},
+          rotation=90,
+          origin={57,115})));
   initial equation
     if useNormalisedFuelMaps then
       actualTauMax=maxTauNorm;
@@ -721,27 +740,30 @@ reference \nand computes consumption")}));
 
   equation
     connect(gain.y, gen.tauRef) annotation (
-      Line(points={{7,40},{76,40},{76,8},{69.4,8},{69.4,8}},                                color = {0, 0, 127}));
+      Line(points={{7,24},{76,24},{76,-8},{69.4,-8}},                                       color = {0, 0, 127}));
     connect(gen.pin_n, pin_p) annotation (
-      Line(points={{68,12},{80,12},{80,60},{100,60}},                    color = {0, 0, 255}));
+      Line(points={{68,-4},{80,-4},{80,60},{100,60}},                    color = {0, 0, 255}));
     connect(IcePow.flange_b, gen.flange_a) annotation (
-      Line(points={{42,9},{46,9},{46,8},{48,8}}));
+      Line(points={{42,-7},{46,-7},{46,-8},{48,-8}}));
     connect(gain1.u, speedSensor.w) annotation (
-      Line(points = {{-60, -15.2}, {-60, -20}, {-32.8, -20}}, color = {0, 0, 127}));
+      Line(points={{-60,-31.2},{-60,-36},{-32.8,-36}},        color = {0, 0, 127}));
     connect(limiter.u, powRef) annotation (
-      Line(points = {{-80, 66}, {-80, 80}, {61, 80}, {61, 115}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(speedSensor.flange, iceT.flange_a) annotation (Line(points={{-16,-20},
-            {-6,-20},{-6,9},{-14,9}}, color={0,0,0}));
-    connect(toFuelGrams.u, iceT.fuelCons) annotation (Line(points={{16,-32},{8,-32},
-            {8,-10},{-18,-10},{-18,-1.78}}, color={0,0,127}));
+      Line(points={{-80,60},{-80,68},{60,68},{60,82}},           color = {0, 0, 127}, smooth = Smooth.None));
+    connect(speedSensor.flange, iceT.flange_a) annotation (Line(points={{-16,-36},
+            {-6,-36},{-6,-7},{-14,-7}},
+                                      color={0,0,0}));
+    connect(toFuelGrams.u, iceT.fuelCons) annotation (Line(points={{18,-42},{8,-42},
+            {8,-26},{-18,-26},{-18,-19.1}}, color={0,0,127}));
     connect(idealGear.flange_a, iceT.flange_a)
-      annotation (Line(points={{0,9},{-14,9}}, color={0,0,0}));
+      annotation (Line(points={{0,-7},{-14,-7}},
+                                               color={0,0,0}));
     connect(idealGear.flange_b, IcePow.flange_a) annotation (
-      Line(points={{18,9},{24,9}},                          color = {0, 0, 0}));
-    connect(gen.pin_p, pin_n) annotation (Line(points={{68,4},{68,-20},{100,-20}},
+      Line(points={{18,-7},{24,-7}},                        color = {0, 0, 0}));
+    connect(gen.pin_p, pin_n) annotation (Line(points={{68,-12},{68,-36},{100,-36}},
                    color={0,0,255}));
-    annotation (
-      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 100}})),
+    annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Input map (ICE and Gen) parameters"),
+      Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-60},{100,
+              80}})),
       Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
               fillPattern = FillPattern.Solid), Text(extent = {{-98, 94}, {78, 68}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
               fillPattern = FillPattern.Solid, textString = "%name"), Rectangle(fillColor = {192, 192, 192},

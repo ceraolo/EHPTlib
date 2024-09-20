@@ -4,14 +4,14 @@ model IceT01 "Simple  map-based ice model with connector"
   extends Partial.PartialIceT01(toLimTau(table = maxIceTau, tableOnFile = mapsOnFile,
       tableName = "maxIceTau", fileName = mapsFileName), toGramsPerkWh(tableOnFile = mapsOnFile,
       fileName = mapsFileName, tableName = specConsName));
+  Modelica.Blocks.Sources.BooleanConstant onSignal
+    annotation (Placement(transformation(extent={{-46,-60},{-30,-44}})));
   Modelica.Blocks.Interfaces.RealOutput fuelCons "Fuel consumption (g/h)" annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={60,-98}),
         iconTransformation(
         extent={{-10,-10},{10,10}},
         rotation=-90,
-        origin={60,-98})));
-  Modelica.Blocks.Sources.BooleanConstant onSignal
-    annotation (Placement(transformation(extent={{-46,-60},{-30,-44}})));
+        origin={60,-110})));
 equation
   connect(toG_perHour.y, fuelCons) annotation (
     Line(points={{38,-51},{38,-56},{60,-56},{60,-98}},                                           color = {0, 0, 127}, smooth = Smooth.None));

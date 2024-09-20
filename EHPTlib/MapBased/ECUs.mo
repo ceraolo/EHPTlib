@@ -237,8 +237,8 @@ package ECUs
         fillPattern =  FillPattern.Solid, points = {{-68, 2}, {-48, -8}, {-56, -14}, {-76, -4}, {-68, 2}}), Polygon(lineColor = {95, 95, 95}, fillColor = {75, 75, 75},
         fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {-4, -62}, {-64, -30}, {-64, -8}}), Polygon(lineColor = {95, 95, 95}, fillColor = {160, 160, 164},
         fillPattern =  FillPattern.Solid, points = {{-64, -8}, {-4, -40}, {74, 16}, {14, 48}, {-64, -8}}), Rectangle(fillColor = {255, 255, 255}, pattern = LinePattern.None,
-        fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(origin = {-6.08518, -4.3529}, lineColor={0,0,255},     extent = {{-91.9148, 98.3529}, {100.085, 60.353}},                       fontName=
-                "Helvetica",
+        fillPattern =  FillPattern.Solid, extent = {{-98, 92}, {98, 62}}), Text(origin = {-6.08518, -4.3529}, lineColor={0,0,255},     extent = {{-91.9148, 98.3529}, {100.085, 60.353}},                       fontName
+              = "Helvetica",
             textString="Shev Ems"),                      Text(lineColor = {0, 0, 255}, extent={{-102,
                 -102},{98,-140}},                                                                                            textString = "%name")}),
       experimentSetupOutput(derivatives = false),
@@ -256,7 +256,8 @@ package ECUs
 
   equation
     connect(optiSpeed.y[1], feedback.u1)
-      annotation (Line(points={{-59,-40},{26,-40}}, color={0,0,127}));
+      annotation (Line(points={{-59,-30},{-16,-30},{-16,-30},{26,-30}},
+                                                    color={0,0,127}));
   end GMS;
 
   model GMSoo "Genset Management System (simplified)"
@@ -265,18 +266,19 @@ package ECUs
     Modelica.Blocks.Interfaces.BooleanInput on annotation (
       Placement(visible = true, transformation(extent={{-134,60},{-94,100}},     rotation = 0), iconTransformation(extent = {{-138, 40}, {-98, 80}}, rotation = 0)));
     Modelica.Blocks.Logical.Switch switch1 annotation (
-      Placement(visible = true, transformation(extent={{-38,-50},{-18,-30}},    rotation = 0)));
+      Placement(visible = true, transformation(extent={{-38,-48},{-18,-28}},    rotation = 0)));
     Modelica.Blocks.Sources.Constant zero(k=0)   annotation (
-      Placement(visible = true, transformation(extent={{-80,-80},{-60,-60}},      rotation = 0)));
+      Placement(visible = true, transformation(extent={{-80,-72},{-60,-52}},      rotation = 0)));
   equation
-    connect(switch1.u3, zero.y) annotation (Line(points={{-40,-48},{-50,-48},{
-            -50,-70},{-59,-70}}, color={0,0,127}));
-    connect(switch1.u1, optiSpeed.y[1]) annotation (Line(points={{-40,-32},{-56,
-            -32},{-56,-40},{-59,-40}}, color={0,0,127}));
-    connect(switch1.u2, on) annotation (Line(points={{-40,-40},{-50,-40},{-50,
+    connect(switch1.u3, zero.y) annotation (Line(points={{-40,-46},{-50,-46},{
+            -50,-62},{-59,-62}}, color={0,0,127}));
+    connect(switch1.u1, optiSpeed.y[1]) annotation (Line(points={{-40,-30},{-59,
+            -30}},                     color={0,0,127}));
+    connect(switch1.u2, on) annotation (Line(points={{-40,-38},{-50,-38},{-50,
             80},{-114,80}}, color={255,0,255}));
     connect(switch1.y, feedback.u1)
-      annotation (Line(points={{-17,-40},{26,-40}}, color={0,0,127}));
+      annotation (Line(points={{-17,-38},{4,-38},{4,-30},{26,-30}},
+                                                    color={0,0,127}));
   end GMSoo;
 
   package Partial
@@ -294,24 +296,20 @@ package ECUs
         fileName=mapsFileName,
         extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
         "gives the optimal speed as a function of requested power"
-        annotation (Placement(transformation(extent={{-80,-50},{-60,-30}})));
+        annotation (Placement(transformation(extent={{-80,-40},{-60,-20}})));
       Modelica.Blocks.Math.Division division annotation (
-        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-62,48})));
-      Modelica.Blocks.Interfaces.RealInput Wmecc annotation (
-        Placement(transformation(extent = {{-15, -15}, {15, 15}}, rotation = 90, origin = {1, -115}), iconTransformation(extent = {{-15, -15}, {15, 15}}, rotation = 90, origin = {1, -115})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={-62,44})));
       Modelica.Blocks.Interfaces.RealInput pRef annotation (
         Placement(transformation(extent = {{-134, -20}, {-94, 20}}), iconTransformation(extent = {{-140, -20}, {-100, 20}})));
       Modelica.Blocks.Interfaces.RealOutput tRef "Torque request (positive when ICE delivers power)" annotation (
         Placement(transformation(extent = {{100, 50}, {120, 70}}), iconTransformation(extent = {{100, 50}, {120, 70}})));
-      Modelica.Blocks.Interfaces.RealOutput throttle annotation (
-        Placement(transformation(extent = {{100, -70}, {120, -50}}), iconTransformation(extent = {{100, -70}, {120, -50}})));
       Modelica.Blocks.Math.Feedback feedback annotation (
-        Placement(transformation(extent = {{24, -50}, {44, -30}})));
+        Placement(transformation(extent={{24,-40},{44,-20}})));
       SupportModels.Miscellaneous.Gain gain(k=throttlePerWerr)
                                                annotation (
-        Placement(transformation(extent = {{66, -50}, {86, -30}})));
+        Placement(transformation(extent={{66,-40},{86,-20}})));
       Modelica.Blocks.Math.UnitConversions.To_rpm to_rpm annotation (
-        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {34, -70})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin={34,-60})));
       Modelica.Blocks.Tables.CombiTable1Dv maxTau(
         columns={2},
         extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint,
@@ -337,25 +335,26 @@ package ECUs
             origin={-23,33},
             extent={{7,-7},{-7,7}},
             rotation=-90)));
+      Modelica.Blocks.Interfaces.RealOutput throttle annotation (
+        Placement(transformation(extent={{100,-40},{120,-20}}),      iconTransformation(extent={{100,-70},
+                {120,-50}})));
+      Modelica.Blocks.Interfaces.RealInput Wmecc annotation (
+        Placement(transformation(extent={{-14,-14},{14,14}},      rotation = 90, origin={0,-98}),     iconTransformation(extent = {{-15, -15}, {15, 15}}, rotation = 90, origin={-1,-115})));
     equation
       connect(division.u1, optiSpeed.u[1]) annotation (
-        Line(points={{-68,36},{-68,10},{-82,10},{-82,-40}},                    color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points={{-68,32},{-68,10},{-86,10},{-86,-30},{-82,-30}},          color = {0, 0, 127}, smooth = Smooth.None));
       connect(optiSpeed.u[1], pRef) annotation (
-        Line(points={{-82,-40},{-82,0},{-114,0}},                    color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points={{-82,-30},{-86,-30},{-86,0},{-114,0}},          color = {0, 0, 127}, smooth = Smooth.None));
       connect(throttle, gain.y) annotation (
-        Line(points = {{110, -60}, {98, -60}, {98, -40}, {87, -40}}, color = {0, 0, 127}));
+        Line(points={{110,-30},{87,-30}},                            color = {0, 0, 127}));
       connect(feedback.y, gain.u) annotation (
-        Line(points = {{43, -40}, {64, -40}}, color = {0, 0, 127}));
+        Line(points={{43,-30},{64,-30}},      color = {0, 0, 127}));
       connect(to_rpm.y, feedback.u2) annotation (
-        Line(points = {{34, -59}, {34, -59}, {34, -48}}, color = {0, 0, 127}));
-      connect(to_rpm.u, Wmecc) annotation (
-        Line(points = {{34, -82}, {34, -94}, {1, -94}, {1, -115}}, color = {0, 0, 127}));
-      connect(division.u2, Wmecc) annotation (
-        Line(points={{-56,36},{-56,0},{-6,0},{-6,-96},{1,-96},{1,-115}},              color = {0, 0, 127}));
+        Line(points={{34,-49},{34,-38}},                 color = {0, 0, 127}));
       connect(tauLimiter.y, tRef) annotation (
         Line(points={{83,60},{110,60}},                color = {0, 0, 127}));
       connect(division.y, tauLimiter.u) annotation (
-        Line(points={{-62,59},{-62,60},{60,60}},                   color = {0, 0, 127}));
+        Line(points={{-62,55},{-62,60},{60,60}},                   color = {0, 0, 127}));
       connect(gain1.y, tauLimiter.limit2) annotation (
         Line(points={{52,48.8},{52,52},{60,52}},                            color = {0, 0, 127}));
       connect(tauLimiter.limit1, fromPuTorque.y) annotation (Line(points={{60,68},
@@ -365,13 +364,17 @@ package ECUs
         annotation (Line(points={{16.6,77},{16.6,78},{9,78}},  color={0,0,127}));
       connect(maxTau.u[1], toPuSpeed.y)
         annotation (Line(points={{-14,78},{-23,78},{-23,40.7}}, color={0,0,127}));
-      connect(toPuSpeed.u, Wmecc) annotation (Line(points={{-23,24.6},{-23,14},{0,
-              14},{0,-98},{1,-98},{1,-115}},
-                                         color={0,0,127}));
+      connect(toPuSpeed.u, Wmecc) annotation (Line(points={{-23,24.6},{-23,14},
+              {0,14},{0,-98}},           color={0,0,127}));
       connect(gain1.u, fromPuTorque.y) annotation (Line(points={{52,30.4},{52,26},
               {34,26},{34,77},{32.7,77}}, color={0,0,127}));
+      connect(division.u2, Wmecc) annotation (Line(points={{-56,32},{-56,0},{0,
+              0},{0,-98}}, color={0,0,127}));
+      connect(to_rpm.u, Wmecc) annotation (Line(points={{34,-72},{34,-78},{0,
+              -78},{0,-98}}, color={0,0,127}));
       annotation (
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
+        Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-90},
+                {100,100}})),
         experimentSetupOutput,
         Icon(coordinateSystem(initialScale = 0.1), graphics={  Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
           fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}),
