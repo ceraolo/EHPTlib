@@ -683,9 +683,9 @@ reference \nand computes consumption")}));
     final parameter Modelica.Units.SI.AngularVelocity actualSpeedMax(fixed=false); //actual Max speed value for consumption map (which in file is between 0 and 1)
 
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation (
-      Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin={-24,-36})));
-    Modelica.Mechanics.Rotational.Sensors.PowerSensor IcePow annotation (
-      Placement(transformation(extent={{24,-16},{42,2}})));
+      Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin={-20,-40})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor icePow annotation (
+      Placement(transformation(extent={{28,-16},{46,2}})));
     Modelica.Electrical.Analog.Interfaces.PositivePin pin_p annotation (
       Placement(transformation(extent={{90,50},{110,70}}), iconTransformation(
             extent={{90,50},{110,70}})));
@@ -701,7 +701,7 @@ reference \nand computes consumption")}));
       effMapFileName=mapsFileName,
       effTableName="gensetDriveEffTable")
         annotation (Placement(visible=true,
-          transformation(extent={{68,2},{48,-18}}, rotation=0)));
+          transformation(extent={{74,2},{54,-18}}, rotation=0)));
     IceT01 iceT(
       iceJ=jIce,
       mapsOnFile=true,
@@ -710,16 +710,16 @@ reference \nand computes consumption")}));
       mapsFileName=mapsFileName,
       wIceStart=wIceStart,
       specConsName="specificCons")
-      annotation (Placement(transformation(extent={{-34,-18},{-14,4}})));
+      annotation (Placement(transformation(extent={{-28,-18},{-8,4}})));
     Modelica.Blocks.Math.Gain gain(k=-gsRatio)
                                            annotation (
-      Placement(transformation(extent={{-14,14},{6,34}})));
+      Placement(transformation(extent={{14,24},{34,44}})));
     Modelica.Blocks.Math.Gain gain1(k = 1) annotation (
-      Placement(visible = true, transformation(origin={-60,-24},   extent = {{-6, -6}, {6, 6}}, rotation = 90)));
+      Placement(visible = true, transformation(origin={-80,-24},   extent = {{-6, -6}, {6, 6}}, rotation = 90)));
     Modelica.Blocks.Continuous.Integrator toFuelGrams(k=1/3600)
-      annotation (Placement(transformation(extent={{20,-52},{40,-32}})));
+      annotation (Placement(transformation(extent={{24,-52},{44,-32}})));
     Modelica.Mechanics.Rotational.Components.IdealGear idealGear(ratio = gsRatio) annotation (
-      Placement(visible = true, transformation(extent={{0,-16},{18,2}},     rotation = 0)));
+      Placement(visible = true, transformation(extent={{4,-16},{22,2}},     rotation = 0)));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation (
       Placement(transformation(extent={{90,-46},{110,-26}}), iconTransformation(
             extent={{92,-70},{112,-50}})));
@@ -740,32 +740,31 @@ reference \nand computes consumption")}));
 
   equation
     connect(gain.y, gen.tauRef) annotation (
-      Line(points={{7,24},{76,24},{76,-8},{69.4,-8}},                                       color = {0, 0, 127}));
+      Line(points={{35,34},{80,34},{80,-8},{75.4,-8}},                                      color = {0, 0, 127}));
     connect(gen.pin_n, pin_p) annotation (
-      Line(points={{68,-4},{80,-4},{80,60},{100,60}},                    color = {0, 0, 255}));
-    connect(IcePow.flange_b, gen.flange_a) annotation (
-      Line(points={{42,-7},{46,-7},{46,-8},{48,-8}}));
+      Line(points={{74,-4},{84,-4},{84,60},{100,60}},                    color = {0, 0, 255}));
+    connect(icePow.flange_b, gen.flange_a) annotation (
+      Line(points={{46,-7},{50,-7},{50,-8},{54,-8}}));
     connect(gain1.u, speedSensor.w) annotation (
-      Line(points={{-60,-31.2},{-60,-36},{-32.8,-36}},        color = {0, 0, 127}));
+      Line(points={{-80,-31.2},{-80,-40},{-28.8,-40}},        color = {0, 0, 127}));
     connect(limiter.u, powRef) annotation (
       Line(points={{-80,60},{-80,68},{60,68},{60,82}},           color = {0, 0, 127}, smooth = Smooth.None));
-    connect(speedSensor.flange, iceT.flange_a) annotation (Line(points={{-16,-36},
-            {-6,-36},{-6,-7},{-14,-7}},
-                                      color={0,0,0}));
-    connect(toFuelGrams.u, iceT.fuelCons) annotation (Line(points={{18,-42},{8,-42},
-            {8,-26},{-18,-26},{-18,-19.1}}, color={0,0,127}));
+    connect(speedSensor.flange, iceT.flange_a) annotation (Line(points={{-12,-40},
+            {-2,-40},{-2,-7},{-8,-7}},color={0,0,0}));
+    connect(toFuelGrams.u, iceT.fuelCons) annotation (Line(points={{22,-42},{12,
+            -42},{12,-26},{-12,-26},{-12,-19.1}},
+                                            color={0,0,127}));
     connect(idealGear.flange_a, iceT.flange_a)
-      annotation (Line(points={{0,-7},{-14,-7}},
-                                               color={0,0,0}));
-    connect(idealGear.flange_b, IcePow.flange_a) annotation (
-      Line(points={{18,-7},{24,-7}},                        color = {0, 0, 0}));
-    connect(gen.pin_p, pin_n) annotation (Line(points={{68,-12},{68,-36},{100,-36}},
-                   color={0,0,255}));
+      annotation (Line(points={{4,-7},{-8,-7}},color={0,0,0}));
+    connect(idealGear.flange_b,icePow. flange_a) annotation (
+      Line(points={{22,-7},{28,-7}},                        color = {0, 0, 0}));
+    connect(gen.pin_p, pin_n) annotation (Line(points={{74,-12},{74,-36},{100,
+            -36}}, color={0,0,255}));
     annotation(Evaluate=true, HideResult=true, choices(checkBox=true), Dialog(group = "Input map (ICE and Gen) parameters"),
       Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-60},{100,
               80}})),
       Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
-              fillPattern = FillPattern.Solid), Text(extent = {{-98, 94}, {78, 68}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
+              fillPattern = FillPattern.Solid), Text(extent={{-98,94},{82,68}},      lineColor = {0, 0, 255}, fillColor = {255, 255, 255},
               fillPattern = FillPattern.Solid, textString = "%name"), Rectangle(fillColor = {192, 192, 192},
               fillPattern = FillPattern.HorizontalCylinder, extent = {{-20, 0}, {26, -14}}), Rectangle(fillColor = {192, 192, 192},
               fillPattern = FillPattern.HorizontalCylinder, extent = {{-44, 30}, {-14, -44}}), Line(points = {{-72, 30}, {-72, 6}}), Polygon(points = {{-72, -2}, {-78, 8}, {-66, 8}, {-72, -2}}), Rectangle(extent = {{-96, 38}, {-50, -48}}), Rectangle(fillColor = {95, 95, 95},

@@ -1,21 +1,20 @@
 within EHPTlib.MapBased;
 model Genset "GenSet GMS+GEN+SEngine"
   extends Partial.PartialGenset(gen(effMapOnFile=true));
-  ECUs.GMS myGMS(
+  ECUs.GMS gms(
     throttlePerWerr=throttlePerWerr,
     mapsFileName=mapsFileName,
     nomTorque=actualTauMax,
-    nomSpeed=actualSpeedMax) annotation (
-    Placement(transformation(extent={{-70,12},{-50,32}})));
+    nomSpeed=actualSpeedMax)
+    annotation (Placement(transformation(extent={{-70,12},{-50,32}})));
 equation
-  connect(myGMS.Wmecc, gain1.y) annotation (Line(points={{-60.1,10.5},{-60,10},
-          {-60,-17.4}},color={0,0,127}));
-  connect(myGMS.tRef, gain.u) annotation (Line(points={{-49,28},{-38,28},{-38,
-          24},{-16,24}}, color={0,0,127}));
-  connect(myGMS.throttle, iceT.nTauRef) annotation (Line(points={{-49,16},{-44,
-          16},{-44,-24},{-30,-24},{-30,-20.2}},
-                                              color={0,0,127}));
-  connect(myGMS.pRef, limiter.y)
+  connect(gms.Wmecc, gain1.y) annotation (Line(points={{-60.1,10.5},{-60,10.5},
+          {-60,0},{-80,0},{-80,-17.4}}, color={0,0,127}));
+  connect(gms.tRef, gain.u) annotation (Line(points={{-49,28},{-38,28},{-38,34},
+          {12,34}}, color={0,0,127}));
+  connect(gms.throttle, iceT.nTauRef) annotation (Line(points={{-49,16},{-44,16},
+          {-44,-24},{-24,-24},{-24,-20.2}}, color={0,0,127}));
+  connect(gms.pRef, limiter.y)
     annotation (Line(points={{-72,22},{-80,22},{-80,37}}, color={0,0,127}));
   annotation (Documentation(info="<html>
 <p>Generator set containing Internal Combustion Engine (ICE), electric generator (with DC output), and the related control.</p>
