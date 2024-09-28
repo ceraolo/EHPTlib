@@ -2,22 +2,23 @@ within EHPTlib.MapBased;
 
 package Partial
   partial model PartialOneFlange "Partial map-based one-Flange electric drive model"
+    Boolean limitingTorque;
     parameter Modelica.Units.SI.MomentOfInertia J = 0.25 "Rotor's moment of inertia" annotation(
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.Voltage uDcNom = 100 "Nominal DC voltage" annotation(
       Dialog(group = "General parameters"));
-    parameter Modelica.Units.SI.AngularVelocity wMax = 3000 "Maximum drive speed (used for efficiency and normalised torque limitation evaluation)" annotation(
+    parameter Modelica.Units.SI.AngularVelocity wMax = 3000 "Maximum speed (for efficiency and torque limitation when limitsOnFile=false and to normalise input when normalisedInLimits=true)" annotation(
       Dialog(group = "General parameters"));
-    parameter Modelica.Units.SI.Power powMax = 22000 "Maximum mechnical power (used for efficiency and normalised torque limitation evaluation)" annotation(
+    parameter Modelica.Units.SI.Power powMax = 22000 "Maximum mechanical power (used for efficiency and torque limitation when limitsOnFile=false)" annotation(
       Dialog(group = "General parameters"));
     //Parameters related to torque limits:
-    parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file, otherwise limits are tauMax and powMax" annotation(
+    parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file, otherwise limits are tauMax and wMax" annotation(
       choices(checkBox = true),
       Dialog(group = "Torque limitation related parameters"));
-    parameter Boolean normalisedInTauLimits = false "when true, input torque limits are normalised (will be multiplied by wMax and tauMax). Applies only when limitsOnFile=true" annotation(
+    parameter Boolean normalisedInLimits = false "when true and torques and speeds are read from file, they are normalised (will be multiplied by wMax and tauMax)" annotation(
       choices(checkBox = true),
-      Dialog(enable = limitsOnFile, group = "Torque limitation related parameters"));
-    parameter Modelica.Units.SI.Torque tauMax = 80 "Maximum torque" annotation(
+      Dialog(group = "General parameters", enable = limitsOnFile or effMapOnFile));
+    parameter Modelica.Units.SI.Torque tauMax = 80 "Maximum torque when limits are not from an un-normalised file" annotation(
       Dialog(group = "Torque limitation related parameters"));
     parameter String limitsFileName = "noName" "File where efficiency table matrix is stored" annotation(
       Dialog(group = "Torque limitation related parameters", enable = limitsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
@@ -69,7 +70,7 @@ package Partial
       Placement(transformation(extent = {{18, 50}, {38, 70}})));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation(
       Placement(transformation(extent = {{-28, 20}, {-48, 40}})));
-    SupportModels.MapBasedRelated.LimTorque limTau(normalisedInput = normalisedInTauLimits, limitsOnFile = limitsOnFile, tauMax = tauMax, wMax = wMax, powMax = powMax, limitsFileName = limitsFileName, maxTorqueTableName = maxTorqueTableName, minTorqueTableName = minTorqueTableName) annotation(
+    SupportModels.MapBasedRelated.LimTorque limTau(normalisedInput = normalisedInLimits, limitsOnFile = limitsOnFile, tauMax = tauMax, wMax = wMax, powMax = powMax, limitsFileName = limitsFileName, maxTorqueTableName = maxTorqueTableName, minTorqueTableName = minTorqueTableName) annotation(
       Placement(transformation(extent = {{50, -2}, {30, 22}})));
     SupportModels.Miscellaneous.Gain fromPuTorque(k = nomTorque) annotation(
       Placement(visible = true, transformation(origin = {14, 30}, extent = {{-6, -6}, {6, 6}}, rotation = 180)));
@@ -82,7 +83,7 @@ package Partial
     SupportModels.MapBasedRelated.EfficiencyLF toElePow1(A = A, bT = bT, bW = bW, bP = bP, tauMax = tauMax, powMax = powMax, wMax = wMax) if not efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -56}, {-58, -36}})));
   initial equation
-    if limitsOnFile and normalisedInTauLimits then
+    if limitsOnFile and normalisedInLimits then
       nomTorque = tauMax;
       nomSpeed = wMax;
     else
@@ -90,8 +91,12 @@ package Partial
       nomSpeed = 1;
     end if;
   equation
-//  assert(wMax >= powMax / tauMax, "\n****  " + "wMax=" + String(wMax)+
-//       ";  powMax=" + String(powMax)+";  tauMax="+String(tauMax)+"  ***\n");
+  if abs(variableLimiter.y-variableLimiter.u)> 1e-15 then
+      limitingTorque=true;
+    else
+      limitingTorque=false;
+    end if;
+  
     connect(pin_p, pDC.pin_p) annotation(
       Line(points = {{-100, 40}, {-100, 24}, {-88, 24}, {-88, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(pin_n, pDC.pin_n) annotation(
@@ -131,21 +136,16 @@ package Partial
     connect(toElePow1.w, wSensor.w) annotation(
       Line(points = {{-36, -50}, {84, -50}, {84, 35.2}}, color = {0, 0, 127}));
     annotation(
-      Diagram(coordinateSystem(extent = {{-100, -80}, {100, 80}}, preserveAspectRatio = false), graphics = {Text(extent = {{12, -36}, {54, -40}}, textColor = {238, 46, 47}, textString = "efficiencyFromTable"), Text(extent = {{30, -30}, {72, -46}}, textColor = {238, 46, 47}, textString = "true
+      Diagram(coordinateSystem(extent = {{-100, -60}, {100, 80}}, preserveAspectRatio = false), graphics = {Text(textColor = {238, 46, 47}, extent = {{12, -36}, {54, -40}}, textString = "efficiencyFromTable"), Text(textColor = {238, 46, 47}, extent = {{30, -30}, {72, -46}}, textString = "true
 
 false")}),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}), graphics = {Line(points = {{62, -7}, {82, -7}}), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{52, 10}, {100, -10}}), Line(points = {{-98, 40}, {-70, 40}}, color = {0, 0, 255}), Line(points = {{-92, -40}, {-70, -40}}, color = {0, 0, 255}), Text(origin = {-17.6473, 11.476}, textColor = {0, 0, 255}, extent = {{-82.3527, 82.524}, {117.641, 50.524}}, textString = "%name"), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{-80, 54}, {80, -54}}), Rectangle(fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-74, 26}, {72, -26}}), Text(origin = {-5.9876, 35}, extent = {{-70.0124, -27}, {79.9876, -47}}, textString = "J=%J")}),
-      Documentation(info = "<html>
-<p>Partial model for one-flange components.</p>
+      Documentation(info = "<html><head></head><body><p>Partial model for one-flange components.</p>
 <p>It contains the large majority of features: inherited components just add the input torque, either from a real input (OneFlange) or an expandable connector (OneFlangeConn).</p>
 <p>It has several options:</p>
 <p>- torque limits can be fixed values or be taken from a file, depending on <span style=\"font-family: Courier New;\">limitsOnFile</span> parameter. When limits are from a file, the latter can be written in SI units or with normalised torque and speed (will be multiplied by tauMax and wMax)</p>
-<p>- efficiency can be defined through a loss formula or a matrix; the latter can, in turn be taken from a file or set online</p>
-</html>", revisions = "<html>
-<p>Partial one-flange electric drive, with </p>
-<p>- torque limits from a Fixed Values of torque and power (FV in the name)</p>
-<p>- efficiency computed from a Combi table (CT in the name)</p>
-</html>"));
+<p>- efficiency can be defined through a loss formula or a matrix; the latter can, in turn be taken from a file or set online.</p><p><br></p><p>The model does not include the initial speed in the mask, since it is assumed it is set from the outside, e.g. from a connected intertia .</p>
+</body></html>", revisions = "<html><head></head><body></body></html>"));
   end PartialOneFlange;
 
   partial model PartialTwoFlange "Simple map-based two-flange electric drive model"
@@ -454,7 +454,8 @@ reference \nand computes consumption")}));
     // ICE related parameters:
     parameter Modelica.Units.SI.MomentOfInertia jIce = 0.1 "ICE moment of inertia" annotation(
       Dialog(group = "ICE parameters"));
-    parameter Boolean useNormalisedFuelMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm"annotation(choices(checkBox = true));
+    parameter Boolean useNormalisedFuelMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm" annotation(
+      choices(checkBox = true));
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
       Dialog(group = "ICE parameters"));
     // generator related parameters:
