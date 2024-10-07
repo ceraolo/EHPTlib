@@ -194,9 +194,9 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
         Placement(transformation(extent = {{92, -10}, {72, 10}})));
       Modelica.Blocks.Sources.Trapezoid tauRef(rising = 5, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 450, offset = 10) annotation(
         Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
-      OneFlange oneFlange(powMax = 70e3, limitsOnFile = true, normalisedInLimits = false, tauMax = 785, J = 0.2, wMax(displayUnit = "rpm") = 244.5206282044056, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), maxTorqueTableName = "maxTorque", minTorqueTableName = "minTorque", effMapOnFile = true, effMapFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), effTableName = "effTable", efficiencyFromTable = true, uDcNom = 400) annotation(
+      OneFlange oneFlange(powMax = 70e3, limitsOnFile = true, normalisedInLimits = false, tauMax = 700, J = 0.2, wMax(displayUnit = "rpm") = 256.5634000431665, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), maxTorqueTableName = "maxTorque", minTorqueTableName = "minTorque", effMapOnFile = true, effMapFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), effTableName = "effTable", efficiencyFromTable = true, uDcNom = 400) annotation(
         Placement(transformation(extent = {{-22, -10}, {-2, 10}})));
-      Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation(
+      Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 400) annotation(
         Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
       Modelica.Electrical.Analog.Basic.Ground ground annotation(
         Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
@@ -226,9 +226,10 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
       connect(powElec.nv, oneFlange.pin_n) annotation(
         Line(points = {{-38, 20}, {-38, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics = {Text(origin = {0, 20}, textColor = {238, 46, 47}, extent = {{0, -48}, {48, -64}}, textString = "- Torque limits from file
-    - Efficiency from file
-    both un-normalised", horizontalAlignment = TextAlignment.Left)}),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics = {Text(origin = {0, 20}, textColor = {238, 46, 47}, extent = {{0, -48}, {48, -64}}, textString = "- around 70 kW, Max 700 Nm
+- Torque limits from file
+ - Efficiency from file
+ both un-normalised", horizontalAlignment = TextAlignment.Left)}),
         experiment(StopTime = 50),
         __Dymola_experimentSetupOutput,
         Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}})),

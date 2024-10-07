@@ -50,6 +50,8 @@ package Partial
       Dialog(enable = not efficiencyFromTable, group = "Loss-formula parameters"));
     final parameter Modelica.Units.SI.Torque nomTorque(fixed = false);
     //actual Max torque value for consumption map (which in file is between 0 and 1)
+    final parameter Real nomSpeedEff(fixed = false);
+    //Similar to nomSpeed, but with rad/s to rpm conversion when needed for Efficiency table
     final parameter Modelica.Units.SI.AngularVelocity nomSpeed(fixed = false);
     //actual Max speed value for consumption map (which in file is between 0 and 1)
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a "Left flange of shaft" annotation(
@@ -78,7 +80,7 @@ package Partial
       Placement(visible = true, transformation(origin = {14, 2}, extent = {{-6, -6}, {6, 6}}, rotation = 180)));
     SupportModels.Miscellaneous.Gain toPuSpeed(k = 1/nomSpeed) annotation(
       Placement(visible = true, transformation(origin = {68, 10}, extent = {{-8, -8}, {8, 8}}, rotation = 180)));
-    SupportModels.MapBasedRelated.EfficiencyCT toElePow(mapsOnFile = effMapOnFile, tauMax = tauMax, powMax = powMax, wMax = wMax, mapsFileName = effMapFileName, effTableName = effTableName, effTable = effTable) if efficiencyFromTable annotation(
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(mapsOnFile = effMapOnFile, tauMax = nomTorque, wMax = nomSpeedEff, mapsFileName = effMapFileName, effTableName = effTableName, effTable = effTable) if efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -34}, {-58, -14}})));
     SupportModels.MapBasedRelated.EfficiencyLF toElePow1(A = A, bT = bT, bW = bW, bP = bP, tauMax = tauMax, powMax = powMax, wMax = wMax) if not efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -56}, {-58, -36}})));
@@ -86,9 +88,16 @@ package Partial
     if limitsOnFile and normalisedInLimits then
       nomTorque = tauMax;
       nomSpeed = wMax;
+      nomSpeedEff = wMax;
     else
       nomTorque = 1;
       nomSpeed = 1;
+      /* EfficiencyCT internally divides inputs by nomTorque and nomSpeed, to use normalised maps.
+         In case maps are un-normalised, torque must be divided by one. 
+         As regards speed, the dividing quotient depends on the unit of measure in which speeds are written 
+         on txt file. In EHPTlib it has been decided, for user's convenience, to input speeds in rpm, so 
+         in case of un-normalised maps we must consider the corresponding conversion factor */
+      nomSpeedEff = (2*Modelica.Constants.pi)/60;   
     end if;
   equation
   if abs(variableLimiter.y-variableLimiter.u)> 1e-15 then
@@ -166,7 +175,7 @@ false")}),
       Placement(transformation(extent = {{8, 40}, {28, 60}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedRing annotation(
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-80, 40})));
-    SupportModels.MapBasedRelated.EfficiencyCT effMap(tauMax = tauMax, wMax = wMax, powMax = powMax, mapsOnFile = mapsOnFile, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation(
+    SupportModels.MapBasedRelated.EfficiencyCT effMap(tauMax = tauMax, wMax = wMax, mapsOnFile = mapsOnFile, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation(
       Placement(transformation(extent = {{20, -46}, {40, -26}})));
     SupportModels.MapBasedRelated.ConstPg constPDC annotation(
       Placement(transformation(extent = {{-10, 10}, {10, -10}}, rotation = -90, origin = {0, 100})));

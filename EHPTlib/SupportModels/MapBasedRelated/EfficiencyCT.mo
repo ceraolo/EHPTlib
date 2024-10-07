@@ -4,8 +4,6 @@ block EfficiencyCT
   parameter Boolean mapsOnFile = false;
   parameter Modelica.Units.SI.Torque tauMax(start=400)
     "Maximum machine torque";
-  parameter Modelica.Units.SI.Power powMax(start=22000)
-    "Maximum drive power";
   parameter Modelica.Units.SI.AngularVelocity wMax(start=650)
     "Maximum machine speed";
   parameter String mapsFileName = "NoName" "File where matrix is stored" annotation (
