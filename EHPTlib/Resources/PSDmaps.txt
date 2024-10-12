@@ -30,7 +30,7 @@ double maxIceTau (5 2)
 400 98
 
 
-# First row: (from column 2) speed  
+# First row: (from column 2) speed (rad/s) 
 # First column (from row 2): torque  
 # body: spec. consumption.
 double iceSpecificCons(10 6)
@@ -44,7 +44,6 @@ double iceSpecificCons(10 6)
  70   245  237  238  243  246
  80   245  230  233  237  240
  90   235  230  228  233  235
-
 
 # optispeed
 # First column Power (W)  second column optimal speed (rpm)

@@ -365,7 +365,7 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
         Placement(transformation(extent = {{68, -2}, {48, 18}})));
       Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 50.0, amplitude = 35.0) annotation(
         Placement(transformation(extent = {{-46, -32}, {-26, -12}})));
-      IceT iceT(wIceStart = 78.0, mapsOnFile = false, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons") annotation(
+      IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1) annotation(
         Placement(transformation(extent = {{-16, -2}, {4, 18}})));
     equation
       connect(iceT.flange_a, inertia.flange_a) annotation(
@@ -378,19 +378,17 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 40}})),
         __Dymola_experimentSetupOutput,
         Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
-        Documentation(info = "<html>
-    <p>This is a simple test of model IceT.</p>
+        Documentation(info = "<html><head></head><body><p>This is a simple test of model IceT.</p>
     <p>It shows that the generated torque follows the torque request as long as the maximum allowed is not overcome; otherwise this maximum is generated.</p>
     <p>It shows also the fuel consumption output.</p>
-    <p>The user could compare the torque request tauRef with the torque generated and at the ICE flange (with this transient the inertia torques are very small and can be neglected). The user could also have a look at the rotational speeds and fuel consumption. </p>
-    <p>The user can also use it with mapsOnFile=true and mapsOnFile=false, and check iceT.tokgFuel.</p>
-    <p>They can change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
-    </html>"),
+    <p>The user can compare the torque request tauRef with the torque generated and at the ICE flange (in this transient the inertia torques are very small and can be neglected). The user could also have a look at the rotational speeds and fuel consumption. </p>
+    <p>Fuel consumption (iceT.tokgFuel) can be evaluated mapsOnFile=true and mapsOnFile=false.&nbsp;</p><p>Variables torqueMultiplier, speedMultiplier and consMultiplier can be used to process read fuel consumption: this allows normalised tables to be used for several engines: changing these three variables scales the input map according to will. An example is in #####</p><p>Users are prompted to change some values on iceSpecificCons in file with maps (default PSDmaps.txt) and see the effects on iceT.tokgFuel.</p>
+    </body></html>"),
         experiment(StopTime = 60, __Dymola_Algorithm = "Dassl"));
     end TestIceT;
 
     model TestIceT01 "Test IceT01"
-      IceT01 iceT(wIceStart = 70.0, mapsOnFile = true, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons") annotation(
+      IceT01 iceT(wIceStart = 70.0,  mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons") annotation(
         Placement(transformation(extent = {{-16, -2}, {4, 18}})));
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 5.0, phi(start = 0, fixed = true)) annotation(
         Placement(transformation(extent = {{14, -2}, {34, 18}})));
@@ -421,7 +419,7 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
     end TestIceT01;
 
     model TestIceP "Test IceP"
-      IceP iceP(contrGain = 1, wIceStart = 90, mapsOnFile = false, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons") annotation(
+      IceP iceP(contrGain = 1, wIceStart = 80, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons") annotation(
         Placement(transformation(extent = {{-22, -2}, {-2, 18}})));
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation(
         Placement(transformation(extent = {{28, -2}, {48, 18}})));
@@ -498,7 +496,7 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
         Placement(transformation(extent = {{-14, 0}, {6, 20}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation(
         Placement(transformation(extent = {{64, 0}, {44, 20}})));
-      IceConnPOO ice(contrGain = 0.5, wIceStart = 90, mapsFileName = "PSDmaps.txt") annotation(
+      IceConnPOO ice(contrGain = 0.5, wIceStart = 90, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt")) annotation(
         Placement(transformation(extent = {{-42, 0}, {-22, 20}})));
       SupportModels.ConnectorRelated.ToConnIcePowRef toConnIceTauRef annotation(
         Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 90, origin = {-32, -18})));
@@ -543,6 +541,43 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
     <p>It addition to testIceConn, it shows also that the model responds properly to On/Off requests.</p>
     </html>"));
     end TestIceConnOO;
+    
+    model TestIceTmultipliers "Test IceT"
+      Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation(
+        Placement(transformation(origin = {-2, 16}, extent = {{14, -2}, {34, 18}})));
+      Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation(
+        Placement(transformation(origin = {0, 16}, extent = {{68, -2}, {48, 18}})));
+      Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 50.0, amplitude = 35.0) annotation(
+        Placement(transformation(origin = {-8, 22}, extent = {{-46, -32}, {-26, -12}})));
+      IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1) annotation(
+        Placement(transformation(origin = {-2, 16}, extent = {{-16, -2}, {4, 18}})));
+  Modelica.Mechanics.Rotational.Components.Inertia inertia1(J = 0.5, phi(fixed = true, start = 0)) annotation(
+        Placement(transformation(origin = {0, -28}, extent = {{14, -2}, {34, 18}})));
+  IceT iceT1(mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), scMapOnFile = true, scSpeedFactor = 1, specConsName = "iceSpecificCons", tlMapOnFile = true, tlSpeedFactor = 1, wIceStart = 78.0, scTorqueFactor = 1, tlTorqueFactor = 0.8, scConsFactor = 1.5) annotation(
+        Placement(transformation(origin = {2, -28}, extent = {{-16, -2}, {4, 18}})));
+  Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque1(tau_nominal = -80, w_nominal = 100) annotation(
+        Placement(transformation(origin = {0, -28}, extent = {{68, -2}, {48, 18}})));
+    equation
+      connect(iceT.flange_a, inertia.flange_a) annotation(
+        Line(points = {{2, 24}, {12, 24}}));
+      connect(iceT.tauRef, tauRef.y) annotation(
+        Line(points = {{-14, 12.2}, {-14, 0}, {-33, 0}}, color = {0, 0, 127}));
+  connect(iceT1.flange_a, inertia1.flange_a) annotation(
+        Line(points = {{6, -20}, {14, -20}}));
+  connect(iceT1.tauRef, tauRef.y) annotation(
+        Line(points = {{-10, -32}, {-10, -34}, {-20, -34}, {-20, 0}, {-33, 0}}, color = {0, 0, 127}));
+  connect(inertia1.flange_b, loadTorque1.flange) annotation(
+        Line(points = {{34, -20}, {48, -20}}));
+  connect(loadTorque.flange, inertia.flange_b) annotation(
+        Line(points = {{48, 24}, {32, 24}}));
+      annotation(
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 40}})),
+        __Dymola_experimentSetupOutput,
+        Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
+        Documentation(info = "<html><head></head><body><p>This model shows some effect of map multipliers.&nbsp;</p><p>In the powerline below, max torque multiplied by 0.8, and therefore more torque limitation occurs. Moreover, specific consumption is multiplied by 1.5.</p><p>It is suggested to check obtained torque vs max torque in the above and below powerlines, and to compare toG_perkWh of the two power lines.&nbsp;</p>
+    </body></html>"),
+        experiment(StopTime = 60, __Dymola_Algorithm = "Dassl"));
+    end TestIceTmultipliers;
   end TestICE;
 
   model TestLimTorque

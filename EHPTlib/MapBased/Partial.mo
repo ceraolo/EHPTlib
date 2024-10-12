@@ -1,5 +1,4 @@
 within EHPTlib.MapBased;
-
 package Partial
   partial model PartialOneFlange "Partial map-based one-Flange electric drive model"
     Boolean limitingTorque;
@@ -97,15 +96,14 @@ package Partial
          As regards speed, the dividing quotient depends on the unit of measure in which speeds are written 
          on txt file. In EHPTlib it has been decided, for user's convenience, to input speeds in rpm, so 
          in case of un-normalised maps we must consider the corresponding conversion factor */
-      nomSpeedEff = (2*Modelica.Constants.pi)/60;   
+      nomSpeedEff = (2*Modelica.Constants.pi)/60;
     end if;
   equation
-  if abs(variableLimiter.y-variableLimiter.u)> 1e-15 then
-      limitingTorque=true;
+    if abs(variableLimiter.y - variableLimiter.u) > 1e-15 then
+      limitingTorque = true;
     else
-      limitingTorque=false;
+      limitingTorque = false;
     end if;
-  
     connect(pin_p, pDC.pin_p) annotation(
       Line(points = {{-100, 40}, {-100, 24}, {-88, 24}, {-88, 10}}, color = {0, 0, 255}, smooth = Smooth.None));
     connect(pin_n, pDC.pin_n) annotation(
@@ -242,24 +240,34 @@ false")}),
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia" annotation(
       Dialog(group = "General parameters"));
-    parameter Modelica.Units.SI.Torque nomTorque = 1 "Torque multiplier for efficiency map torques" annotation(
-      Dialog(enable = mapsOnFile, group = "General parameters"));
-    parameter Modelica.Units.SI.AngularVelocity nomSpeed = 1 "Speed multiplier for efficiency map speeds" annotation(
-      Dialog(enable = mapsOnFile, group = "General parameters"));
-    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file" annotation(
+    parameter Boolean scMapOnFile = false "= true, if tables are taken from a txt file" annotation(
       choices(checkBox = true),
-      Dialog(group = "Map related parameters"));
+      Dialog(group = "Consumption map related parameters"));
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation(
-      Dialog(group = "Map related parameters", enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
-    parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation(
-      Dialog(enable = mapsOnFile, group = "Map related parameters"));
+      Dialog(group = "General parameters", loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+    parameter String specConsName = "NoName" "Name of the on-file specific consumption variable" annotation(
+      Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
+    parameter Real scTorqueFactor = 1 "Torque multiplier for for specific consumption  map " annotation(
+      Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
+    parameter Real scSpeedFactor = 60/(2*pi) "Speed multiplier for specific consumption  map (see info)" annotation(
+      Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
+    parameter Real scConsFactor = 1 "Output multiplier for specific consumption map" annotation(
+      Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
+    parameter Boolean tlMapOnFile = false "= true, if tables are taken from a txt file" annotation(
+      choices(checkBox = true),
+      Dialog(group = "Torque limit map related parameters"));
+    parameter Real tlTorqueFactor = 1 "Torque multiplier for for torque limit map " annotation(
+      Dialog(enable = tlMapOnFile, group = "Torque limit map related parameters"));
+    parameter Real tlSpeedFactor = 60/(2*pi) "Speed multiplier for torque limit map" annotation(
+      Dialog(enable = tlMapOnFile, group = "Torque limit map related parameters"));
     parameter Real maxIceTau[:, 2](each unit = "N.m") = [100, 80; 200, 85; 300, 92; 350, 98; 400, 98] "Maximum ICE generated torque" annotation(
-      Dialog(enable = not mapsOnFile, group = "Map related parameters"));
+      Dialog(enable = not tlMapOnFile, group = "Torque limit map related parameters"));
     parameter Real specificCons[:, :](each unit = "g/(kW.h)") = [0.0, 100, 200, 300, 400, 500; 10, 630, 580, 550, 580, 630; 20, 430, 420, 400, 400, 450; 30, 320, 325, 330, 340, 350; 40, 285, 285, 288, 290, 300; 50, 270, 265, 265, 270, 275; 60, 255, 248, 250, 255, 258; 70, 245, 237, 238, 243, 246; 80, 245, 230, 233, 237, 240; 90, 235, 230, 228, 233, 235] "ICE specific consumption map. First column torque, first row speed" annotation(
-      Dialog(enable = not mapsOnFile, group = "Map related parameters"));
+      Dialog(enable = not scMapOnFile, group = "Consumption map related parameters"));
     Modelica.Units.SI.Torque tauGenerated = iceTau.tau;
     Modelica.Units.SI.Torque tauMechanical = -flange_a.tau;
     Modelica.Units.SI.AngularVelocity wMechanical = wSensor.w;
+
     Modelica.Mechanics.Rotational.Components.Inertia inertia(w(fixed = true, start = wIceStart, displayUnit = "rpm"), J = iceJ) annotation(
       Placement(visible = true, transformation(extent = {{30, 68}, {50, 88}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Sources.Torque iceTau annotation(
@@ -272,8 +280,8 @@ false")}),
       Placement(visible = true, transformation(origin = {-18, 36}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a annotation(
       Placement(transformation(extent = {{90, -10}, {110, 10}}), iconTransformation(extent = {{90, -10}, {110, 10}})));
-    Modelica.Blocks.Tables.CombiTable2Ds toGramsPerkWh(table = specificCons, tableOnFile = mapsOnFile, tableName = specConsName, fileName = mapsFileName) annotation(
-      Placement(transformation(extent = {{-10, 10}, {10, -10}}, rotation = -90, origin = {44, -2})));
+    Modelica.Blocks.Tables.CombiTable2Ds toGramsPerkWh(table = specificCons, tableOnFile = scMapOnFile, tableName = specConsName, fileName = mapsFileName) annotation(
+      Placement(transformation(origin = {44, 10}, extent = {{-10, 10}, {10, -10}}, rotation = -90)));
     Modelica.Blocks.Math.Gain tokW(k = 0.001) annotation(
       Placement(visible = true, transformation(origin = {-18, 8}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Blocks.Math.Product toG_perHour annotation(
@@ -284,10 +292,44 @@ false")}),
       Placement(visible = true, transformation(origin = {8, -52}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Blocks.Sources.Constant zero(k = 0) annotation(
       Placement(visible = true, transformation(extent = {{-34, -82}, {-14, -62}}, rotation = 0)));
-    Modelica.Blocks.Math.Gain toPuTorque(k = 1/nomTorque) annotation(
-      Placement(visible = true, transformation(origin = {25, 29}, extent = {{-7, -7}, {7, 7}}, rotation = -90)));
-    Modelica.Blocks.Math.Gain toPuSpeed(k = 1/nomSpeed) annotation(
-      Placement(visible = true, transformation(origin = {61, 29}, extent = {{-7, -7}, {7, 7}}, rotation = -90)));
+    Modelica.Blocks.Math.Gain toConsMapTorque(k=scTorqueFactor_)  annotation(
+      Placement(transformation(origin = {27, 37}, extent = {{-5, -5}, {5, 5}}, rotation = -90)));
+    Modelica.Blocks.Math.Gain toConsMapSpeed(k=scSpeedFactor_)  annotation(
+      Placement(transformation(origin = {59, 37}, extent = {{-5, -5}, {5, 5}}, rotation = -90)));
+    Modelica.Blocks.Math.Gain toG_perkWh(k=scConsFactor_)  annotation(
+      Placement(transformation(origin = {44, -14}, extent = {{-6, -6}, {6, 6}}, rotation = -90)));
+    Modelica.Blocks.Tables.CombiTable1Dv limTauMap(fileName = mapsFileName, table = maxIceTau, tableName = "maxIceTau", tableOnFile = tlMapOnFile) annotation(
+      Placement(transformation(origin = {-72, 84}, extent = {{10, -10}, {-10, 10}}, rotation = 180)));
+    Modelica.Blocks.Sources.RealExpression rotorW(y = wSensor.w) annotation(
+      Placement(transformation(origin={-88,4},     extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+    EHPTlib.SupportModels.Miscellaneous.Gain fromLimTauMap(k=tlTorqueFactor_)  annotation(
+      Placement(transformation(origin = {-48, 84}, extent = {{6, -6}, {-6, 6}}, rotation = 180)));
+    EHPTlib.SupportModels.Miscellaneous.Gain toLimTauMap(k=tlSpeedFactor_)  annotation(
+      Placement(transformation(origin={-88,34},    extent = {{6, -6}, {-6, 6}}, rotation = -90)));
+
+    final parameter Real scTorqueFactor_( fixed=false);
+    final parameter Real scSpeedFactor_(fixed=false);
+    final parameter Real scConsFactor_(fixed=false);
+    final parameter Real tlTorqueFactor_(fixed=false);
+    final parameter Real tlSpeedFactor_(fixed=false);
+  initial equation
+    if scMapOnFile then
+      scTorqueFactor_=scTorqueFactor;
+      scSpeedFactor_=scSpeedFactor;
+      scConsFactor_=scConsFactor;
+    else
+      scTorqueFactor_=1;
+      scSpeedFactor_=1;
+      scConsFactor_=1;
+    end if;
+    if tlMapOnFile then
+      tlTorqueFactor_=tlTorqueFactor;
+      tlSpeedFactor_=tlTorqueFactor;
+    else
+      tlTorqueFactor_=1;
+      tlSpeedFactor_=1;
+    end if;
+
   equation
     connect(toPowW.y, tokW.u) annotation(
       Line(points = {{-18, 25}, {-18, 20}}, color = {0, 0, 127}));
@@ -303,8 +345,6 @@ false")}),
       Line(points = {{-12, 48}, {-12, 51}, {58, 51}}, color = {0, 0, 127}));
     connect(icePow.flange_b, flange_a) annotation(
       Line(points = {{86, 78}, {94, 78}, {94, 0}, {100, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(toGramsPerkWh.y, toG_perHour.u1) annotation(
-      Line(points = {{44, -13}, {44, -28}}, color = {0, 0, 127}));
     connect(toG_perHour.y, tokgFuel.u) annotation(
       Line(points = {{38, -51}, {38, -62}}, color = {0, 0, 127}));
     connect(zero.y, switch1.u3) annotation(
@@ -313,69 +353,80 @@ false")}),
       Line(points = {{32, -28}, {32, -20}, {22, -20}, {22, -52}, {19, -52}}, color = {0, 0, 127}));
     connect(switch1.u1, tokW.y) annotation(
       Line(points = {{-4, -44}, {-18, -44}, {-18, -3}}, color = {0, 0, 127}));
-    connect(toPuTorque.u, iceTau.tau) annotation(
-      Line(points = {{25, 37.4}, {25, 58}, {-6, 58}, {-6, 78}, {2, 78}}, color = {0, 0, 127}));
-    connect(wSensor.w, toPuSpeed.u) annotation(
-      Line(points = {{58, 51}, {58, 46}, {60, 46}, {60, 37.4}, {61, 37.4}}, color = {0, 0, 127}));
-    connect(toPuSpeed.y, toGramsPerkWh.u2) annotation(
-      Line(points = {{61, 21.3}, {61, 16}, {50, 16}, {50, 10}}, color = {0, 0, 127}));
-    connect(toPuTorque.y, toGramsPerkWh.u1) annotation(
-      Line(points = {{25, 21.3}, {25, 16}, {38, 16}, {38, 10}}, color = {0, 0, 127}));
+    connect(toConsMapTorque.u, iceTau.tau) annotation(
+      Line(points = {{27, 43}, {27, 58}, {-6, 58}, {-6, 78}, {2, 78}}, color = {0, 0, 127}));
+    connect(wSensor.w, toConsMapSpeed.u) annotation(
+      Line(points = {{58, 51}, {58, 46}, {59, 46}, {59, 43}}, color = {0, 0, 127}));
+    connect(toConsMapSpeed.y, toGramsPerkWh.u2) annotation(
+      Line(points = {{59, 31.5}, {59, 26}, {50, 26}, {50, 22}}, color = {0, 0, 127}));
+    connect(toConsMapTorque.y, toGramsPerkWh.u1) annotation(
+      Line(points = {{27, 31.5}, {27, 26}, {38, 26}, {38, 22}}, color = {0, 0, 127}));
+    connect(toGramsPerkWh.y, toG_perkWh.u) annotation(
+      Line(points={{44,-1},{44,-6.8}},   color = {0, 0, 127}));
+    connect(toG_perkWh.y, toG_perHour.u1) annotation(
+      Line(points={{44,-20.6},{44,-28}},    color = {0, 0, 127}));
+    connect(toLimTauMap.u, rotorW.y) annotation(
+      Line(points={{-88,26.8},{-88,15}},    color = {0, 0, 127}));
+    connect(toLimTauMap.y, limTauMap.u[1]) annotation(
+      Line(points={{-88,40.6},{-88,84},{-84,84}},      color = {0, 0, 127}));
+    connect(fromLimTauMap.u, limTauMap.y[1]) annotation(
+      Line(points={{-55.2,84},{-61,84}},      color = {0, 0, 127}));
     annotation(
-      Documentation(info = "<html>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
+      Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceT01 used when ICE must follow a Torque request in per unit of the maximum allowed</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p>
-</html>"),
+<p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p><p><span style=\"font-family: MS Shell Dlg 2;\">------------------------------------------------------------------</span></p><p>When consumption is taken from a file, multipliers are useful to reuse a map for a different vehicle: scSpeeedFactor and scTorqueFactor multiply the computed speed and torque before entering the table, &nbsp;scConsFactor multiplies the table output before further processing.</p><div>Consider for instance the following map:</div><p><span style=\"font-family: 'Courier New';\"># First row: (from column 2) speed (rpm)&nbsp;</span></p><div><span style=\"font-family: 'Courier New';\"><span style=\"font-family: 'Courier New';\">
+# First column (from row 2): torque (Nm)<br>
+# body: spec. consumption (g/kWh).<br>
+double iceSpecificCons(10 6)<br>
+ 0.   100  200  300  400  500<br>
+ 10   630  580  550  580  630<br>
+ 20   430  420  400  400  450<br>
+ 30   320  325  330  340  350<br>
+ 40   285  285  288  290  300<br>
+ 50   270  265  265  270  275<br>
+ 60   255  248  250  255  258<br>
+ 70   245  237  238  243  246<br>
+ 80   245  230  233  237  240<br>
+ 90   235  230  228  233  235<br>
+
+
+
+
+</span></span></div><div><p>If I want to use a map from a file with the same shape as this for a vehicle having max speed=1000 rpm, max torque=200 Nm, max consumption 500g/kWh, I will use:&nbsp;</p><p>scSpeedFactor=60/(2*pi)*500/1000,</p><p>scTorqueFactor=90/200,&nbsp;</p><p>scConsFactor=500/630.</p><p>Note that internally speeds are computed in rad/s; since here in the table here they are in rpm, I must include rad/s to rpm conversion.</p><p>If, instead, I want to use exactly this map, I will use:</p><p>scConsFactor=scTorqueFactor=1, scSpeedFactor=60/(2*pi)</p><p>These three factors are not used when data is not taken from a txt file.</p><p><br></p><p><b>Inherited models</b></p><p>Inherited models PartialIceTNm and PartilIceT01 can also use tables to input torque limits. These tables allow using the same torque and speed multipliers used for fuel consumption: torqueMultiplier and speedMultiplier.</p><div><br></div><p><br></p></div><div><pre style=\"margin-top: 0px; margin-bottom: 0px;\"><!--EndFragment--></pre></div>
+</body></html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Rectangle(fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 62}, {100, -100}}), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(extent = {{-42, -56}, {112, -80}}, textString = "J=%iceJ"), Text(origin = {0, 10}, textColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95}, fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 14}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135}, fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(preserveAspectRatio = false), graphics = {Line(points = {{-20, 78}, {-4, 78}}, color = {238, 46, 47})}));
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,-100},{
+              100,100}}),                                    graphics = {Line(points = {{-20, 78}, {-4, 78}}, color = {238, 46, 47})}));
   end PartialIceBase;
 
   partial model PartialIceTNm "Partial map-based ice model"
     import Modelica.Constants.*;
     extends PartialIceBase;
-    parameter Real contrGain(unit = "N.m/W") = 0.1 "Proportional controller gain" annotation(
-      Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.AngularVelocity wIceStart = 167;
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation(
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation(
       Dialog(enable = mapsOnFile));
-    Modelica.Blocks.Tables.CombiTable1Dv toLimTau(table = maxIceTau, tableOnFile = mapsOnFile, tableName = "maxIceTau", fileName = mapsFileName) annotation(
-      Placement(visible = true, transformation(origin = {-60, 44}, extent = {{10, -10}, {-10, 10}}, rotation = 180)));
-    Modelica.Blocks.Sources.RealExpression rotorW(y = wSensor.w) annotation(
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-76, -8})));
     Modelica.Blocks.Math.Min min1 annotation(
-      Placement(transformation(extent = {{-34, 68}, {-14, 88}})));
-    SupportModels.Miscellaneous.Gain toPuSpeed1(k = 1/nomSpeed) annotation(
-      Placement(visible = true, transformation(origin = {-76, 20}, extent = {{6, -6}, {-6, 6}}, rotation = -90)));
-    SupportModels.Miscellaneous.Gain fromPuTorque(k = nomTorque) annotation(
-      Placement(visible = true, transformation(origin = {-48, 72}, extent = {{6, -6}, {-6, 6}}, rotation = 180)));
+      Placement(transformation(origin = {2, 0}, extent = {{-34, 68}, {-14, 88}})));
   equation
     connect(min1.y, iceTau.tau) annotation(
-      Line(points = {{-13, 78}, {2, 78}}, color = {0, 0, 127}));
-    connect(toPuSpeed1.y, toLimTau.u[1]) annotation(
-      Line(points = {{-76, 26.6}, {-76, 44}, {-72, 44}}, color = {0, 0, 127}));
-    connect(toPuSpeed1.u, rotorW.y) annotation(
-      Line(points = {{-76, 12.8}, {-76, 3}}, color = {0, 0, 127}));
-    connect(fromPuTorque.y, min1.u2) annotation(
-      Line(points = {{-41.4, 72}, {-36, 72}}, color = {0, 0, 127}));
-    connect(fromPuTorque.u, toLimTau.y[1]) annotation(
-      Line(points = {{-55.2, 72}, {-68, 72}, {-68, 58}, {-40, 58}, {-40, 44}, {-49, 44}}, color = {0, 0, 127}));
+      Line(points = {{-11, 78}, {2, 78}}, color = {0, 0, 127}));
+    connect(min1.u1, fromLimTauMap.y)
+      annotation (Line(points={{-34,84},{-41.4,84}}, color={0,0,127}));
     annotation(
-      Documentation(info = "<html>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Models that inherit from this:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- partialIceP that contains an in ternal loop so that the request from the exterior is now in power instead of torque</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request through an expandable connector</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnPOO used when ICE must follow a Power request through an expandable connector, and also ON7Off can be commanded from the outside</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
-<p><span style=\"font-family: Arial;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p>
-</html>"),
+      Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">Models that inherit from this:</span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- partialIceP that contains an in ternal loop so that the request from the exterior is now in power instead of torque</span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request through an expandable connector</span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnPOO used when ICE must follow a Power request through an expandable connector, and also ON/Off can be commanded from the outside</span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
+  <p><span style=\"font-family: Arial;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p><p><span style=\"font-family: Arial;\">---</span></p><p><span style=\"font-family: Arial;\">To make access to torque limit table from file more flexible, the speed measured on the system is first multiplied by tlSpeedFactor; the obtained torque is then multiplied by tlTorqueFactor.&nbsp;</span></p><p><font face=\"Arial\">For instance speeds in the table might be in rpm instead of the SI rad/s. In this case, instead of manuallly multiplying all values in the input table, which might be tedious and error-prone, I can just set:</font></p><p><font face=\"Arial\">tlSpeedFactor=60/(2*pi)</font></p><p><font face=\"Arial\">Another example of usage of factors is when I want to re-use a torque limit map for a different machine, having the same shape but different values, If for instance I have a machine that has limits twice the one present in the table I can use:</font></p><p><font face=\"Arial\">tlTorqueFactor=2.</font></p><p><font face=\"Arial\">Inputted parameters tlTorqueFactor and tlSpeedFactor are not used when torque limit data are not taken from a txt file.</font></p><p><br></p>
+  </body></html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95}, fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135}, fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false), graphics = {Line(points = {{-50, 84}, {-36, 84}}, color = {255, 0, 0})}));
+      Diagram(coordinateSystem(extent={{-120,-100},{100,100}},      preserveAspectRatio=false),   graphics = {Line(origin = {0, -12}, points = {{-50, 84}, {-36, 84}}, color = {255, 0, 0})}));
   end PartialIceTNm;
 
   partial model PartialIceT01 "Partial map-based ice model"
@@ -387,35 +438,21 @@ false")}),
       Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation(
       Dialog(enable = mapsOnFile));
-    Modelica.Blocks.Tables.CombiTable1Dv toLimTau(table = maxIceTau, tableOnFile = mapsOnFile, tableName = "maxIceTau", fileName = mapsFileName) annotation(
-      Placement(visible = true, transformation(origin = {-72, 84}, extent = {{10, -10}, {-10, 10}}, rotation = 180)));
-    Modelica.Blocks.Sources.RealExpression rotorW(y = wSensor.w) annotation(
-      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-88, 28})));
     Modelica.Blocks.Math.Product product annotation(
-      Placement(transformation(extent = {{-34, 68}, {-14, 88}})));
+      Placement(transformation(origin = {2, 0}, extent = {{-34, 68}, {-14, 88}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMin = 0, uMax = 1) annotation(
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-60, -24})));
-    SupportModels.Miscellaneous.Gain fromPuTorque(k = nomTorque) annotation(
-      Placement(visible = true, transformation(origin = {-48, 84}, extent = {{6, -6}, {-6, 6}}, rotation = 180)));
-    SupportModels.Miscellaneous.Gain toPuSpeed1(k = 1/nomSpeed) annotation(
-      Placement(visible = true, transformation(origin = {-88, 58}, extent = {{6, -6}, {-6, 6}}, rotation = -90)));
     Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation(
       Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {-60, -98}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {-60, -120})));
   equation
     connect(product.y, iceTau.tau) annotation(
-      Line(points = {{-13, 78}, {2, 78}}, color = {0, 0, 127}));
+      Line(points = {{-11, 78}, {2, 78}}, color = {0, 0, 127}));
     connect(product.u2, limiter.y) annotation(
-      Line(points = {{-36, 72}, {-60, 72}, {-60, -13}}, color = {0, 0, 127}));
+      Line(points = {{-34, 72}, {-58, 72}, {-60, -13}}, color = {0, 0, 127}));
     connect(limiter.u, nTauRef) annotation(
       Line(points = {{-60, -36}, {-60, -98}}, color = {0, 0, 127}));
-    connect(toLimTau.y[1], fromPuTorque.u) annotation(
-      Line(points = {{-61, 84}, {-55.2, 84}}, color = {0, 0, 127}));
-    connect(fromPuTorque.y, product.u1) annotation(
-      Line(points = {{-41.4, 84}, {-36, 84}}, color = {0, 0, 127}));
-    connect(toLimTau.u[1], toPuSpeed1.y) annotation(
-      Line(points = {{-84, 84}, {-88, 84}, {-88, 64.6}}, color = {0, 0, 127}));
-    connect(toPuSpeed1.u, rotorW.y) annotation(
-      Line(points = {{-88, 50.8}, {-88, 39}}, color = {0, 0, 127}));
+    connect(fromLimTauMap.y, product.u1) annotation(
+      Line(points={{-41.4,84},{-34,84}},    color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in per unit of the maximum torque. Models that inherit from this:</span></p>
@@ -423,22 +460,25 @@ false")}),
 <p>See its documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</p>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95}, fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 12}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135}, fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
-      Diagram(coordinateSystem(preserveAspectRatio = false)));
+      Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,-100},{
+              100,100}})));
   end PartialIceT01;
 
   partial model PartialIceP "Extends PartialIce0 adding power input"
     extends PartialIceTNm;
+    parameter Real contrGain(unit = "N.m/W") = 0.1 "Proportional controller gain" annotation(
+      Dialog(group = "General parameters"));
     Modelica.Blocks.Math.Feedback feedback annotation(
-      Placement(transformation(extent = {{-98, 94}, {-78, 74}})));
+      Placement(transformation(origin={-14,-26},    extent = {{-98, 94}, {-78, 74}})));
     Modelica.Blocks.Math.Gain gain(k = contrGain) annotation(
-      Placement(visible = true, transformation(extent = {{-70, 78}, {-58, 90}}, rotation = 0)));
+      Placement(transformation(origin={6,-26},    extent = {{-70, 78}, {-58, 90}})));
   equation
     connect(gain.u, feedback.y) annotation(
-      Line(points = {{-71.2, 84}, {-79, 84}}, color = {0, 0, 127}));
+      Line(points={{-65.2,58},{-93,58}},                          color = {0, 0, 127}));
     connect(feedback.u2, icePow.power) annotation(
-      Line(points = {{-88, 92}, {-88, 98}, {68, 98}, {68, 89}}, color = {0, 0, 127}, smooth = Smooth.None));
-    connect(min1.u1, gain.y) annotation(
-      Line(points = {{-36, 84}, {-57.4, 84}}, color = {0, 0, 127}));
+      Line(points={{-102,66},{-102,98},{68,98},{68,89}},          color = {0, 0, 127}));
+    connect(gain.y, min1.u2) annotation(
+      Line(points={{-51.4,58},{-50,58},{-50,72},{-34,72}},        color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
@@ -449,8 +489,9 @@ false")}),
 <h4>Inherited models connect torque request to the free input of min() block.</h4>
 </html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Rectangle(extent = {{-100, 62}, {100, -100}}), Text(origin = {0, 10}, textColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135}, fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}}), Text(textColor = {162, 29, 33}, extent = {{-90, -52}, {-36, -84}}, textString = "P", textStyle = {TextStyle.Bold, TextStyle.Italic})}),
-      Diagram(coordinateSystem(extent = {{-140, -100}, {100, 100}}, preserveAspectRatio = false), graphics = {Line(points = {{-110, 84}, {-96, 84}}, color = {255, 0, 0}), Text(extent = {{-98, -64}, {-54, -100}}, textString = "follows the power
-reference \nand computes consumption")}));
+      Diagram(coordinateSystem(extent={{-120,-100},{100,100}},      preserveAspectRatio=false),   graphics = {Text(extent = {{-98, -64}, {-54, -100}}, textString = "follows the power
+reference 
+and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}},      color = {255, 0, 0})}));
   end PartialIceP;
 
   partial model PartialGenset "GenSet GMS+GEN+SEngine"

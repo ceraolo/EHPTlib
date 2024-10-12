@@ -10,7 +10,7 @@ model IceConnP
     annotation (Placement(transformation(extent={{-54,-60},{-38,-44}})));
 equation
   connect(feedback.u1, conn.icePowRef) annotation (
-    Line(points={{-96,84},{-92,84},{-92,-102},{0,-102}},          color = {0, 0, 127}),
+    Line(points={{-110,58},{-118,58},{-118,-94},{0,-94},{0,-102}},color = {0, 0, 127}),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   connect(icePow.power, conn.icePowDel) annotation (Line(points={{68,89},{68,89},
           {68,6},{78,6},{78,-102},{0,-102}}, color={0,0,127}), Text(
