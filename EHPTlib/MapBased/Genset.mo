@@ -3,9 +3,7 @@ model Genset "GenSet GMS+GEN+SEngine"
   extends Partial.PartialGenset(gen(effMapOnFile=true));
   ECUs.GMS gms(
     throttlePerWerr=throttlePerWerr,
-    mapsFileName=mapsFileName,
-    nomTorque=actualTauMax,
-    nomSpeed=actualSpeedMax)
+    mapsFileName=mapsFileName)
     annotation (Placement(transformation(extent={{-70,12},{-50,32}})));
 equation
   connect(gms.Wmecc, gain1.y) annotation (Line(points={{-60.1,10.5},{-60,10.5},

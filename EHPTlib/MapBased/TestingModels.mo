@@ -1,5 +1,4 @@
 within EHPTlib.MapBased;
-
 package TestingModels
   extends Modelica.Icons.ExamplesPackage;
 
@@ -432,7 +431,7 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
     equation
       connect(inertia.flange_b, loadTorque.flange) annotation(
         Line(points = {{48, 8}, {56, 8}}, color = {0, 0, 0}, smooth = Smooth.None));
-//    experiment(StopTime = 50),
+      //    experiment(StopTime = 50),
       connect(iceP.powRef, trapezoid.y) annotation(
         Line(points = {{-18, -4}, {-18, -20}, {-31, -20}}, color = {0, 0, 127}));
       connect(iceP.flange_a, pow.flange_a) annotation(
@@ -541,7 +540,7 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
     <p>It addition to testIceConn, it shows also that the model responds properly to On/Off requests.</p>
     </html>"));
     end TestIceConnOO;
-    
+
     model TestIceTmultipliers "Test IceT"
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation(
         Placement(transformation(origin = {-2, 16}, extent = {{14, -2}, {34, 18}})));
@@ -551,24 +550,44 @@ both normalised", horizontalAlignment = TextAlignment.Left)}),
         Placement(transformation(origin = {-8, 22}, extent = {{-46, -32}, {-26, -12}})));
       IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1) annotation(
         Placement(transformation(origin = {-2, 16}, extent = {{-16, -2}, {4, 18}})));
-  Modelica.Mechanics.Rotational.Components.Inertia inertia1(J = 0.5, phi(fixed = true, start = 0)) annotation(
+      Modelica.Mechanics.Rotational.Components.Inertia inertia1(J=0.5, phi(
+            fixed=true, start=0)) annotation (
         Placement(transformation(origin = {0, -28}, extent = {{14, -2}, {34, 18}})));
-  IceT iceT1(mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), scMapOnFile = true, scSpeedFactor = 1, specConsName = "iceSpecificCons", tlMapOnFile = true, tlSpeedFactor = 1, wIceStart = 78.0, scTorqueFactor = 1, tlTorqueFactor = 0.8, scConsFactor = 1.5) annotation(
+      IceT iceT1(
+        mapsFileName=Modelica.Utilities.Files.loadResource(
+            "modelica://EHPTlib/Resources/PSDmaps.txt"),
+        scMapOnFile=true,
+        scSpeedFactor=1,
+        specConsName="iceSpecificCons",
+        tlMapOnFile=true,
+        tlSpeedFactor=1,
+        wIceStart=78.0,
+        scTorqueFactor=1,
+        tlTorqueFactor=0.8,
+        scConsFactor=1.5) annotation (
         Placement(transformation(origin = {2, -28}, extent = {{-16, -2}, {4, 18}})));
-  Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque1(tau_nominal = -80, w_nominal = 100) annotation(
+      Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque
+        loadTorque1(tau_nominal=-80, w_nominal=100) annotation (
         Placement(transformation(origin = {0, -28}, extent = {{68, -2}, {48, 18}})));
     equation
       connect(iceT.flange_a, inertia.flange_a) annotation(
         Line(points = {{2, 24}, {12, 24}}));
       connect(iceT.tauRef, tauRef.y) annotation(
         Line(points = {{-14, 12.2}, {-14, 0}, {-33, 0}}, color = {0, 0, 127}));
-  connect(iceT1.flange_a, inertia1.flange_a) annotation(
+      connect(
+          iceT1.flange_a, inertia1.flange_a)
+        annotation (
         Line(points = {{6, -20}, {14, -20}}));
-  connect(iceT1.tauRef, tauRef.y) annotation(
+      connect(
+          iceT1.tauRef, tauRef.y) annotation (
         Line(points = {{-10, -32}, {-10, -34}, {-20, -34}, {-20, 0}, {-33, 0}}, color = {0, 0, 127}));
-  connect(inertia1.flange_b, loadTorque1.flange) annotation(
+      connect(
+          inertia1.flange_b, loadTorque1.flange)
+        annotation (
         Line(points = {{34, -20}, {48, -20}}));
-  connect(loadTorque.flange, inertia.flange_b) annotation(
+      connect(
+          loadTorque.flange, inertia.flange_b)
+        annotation (
         Line(points = {{48, 24}, {32, 24}}));
       annotation(
         Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 40}})),

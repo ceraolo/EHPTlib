@@ -536,7 +536,7 @@ and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}}
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 48})));
     EHPTlib.MapBased.OneFlange gen(wMax = maxGenW, J = jGen, limitsFileName = mapsFileName, effMapOnFile = true, powMax = maxGenPow, tauMax = maxTau, effMapFileName = mapsFileName, effTableName = "gensetDriveEffTable") annotation(
       Placement(visible = true, transformation(extent = {{74, 2}, {54, -18}}, rotation = 0)));
-    IceT01 iceT(iceJ = jIce, mapsOnFile = true, nomTorque = actualTauMax, nomSpeed = actualSpeedMax, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = "specificCons") annotation(
+    IceT01 iceT(iceJ = jIce, scMapOnFile = true, tlMapOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = "specificCons") annotation(
       Placement(transformation(extent = {{-28, -18}, {-8, 4}})));
     Modelica.Blocks.Math.Gain gain(k = -gsRatio) annotation(
       Placement(transformation(extent = {{14, 24}, {34, 44}})));
