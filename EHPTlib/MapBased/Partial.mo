@@ -1,29 +1,31 @@
 within EHPTlib.MapBased;
 package Partial
   partial model PartialOneFlange "Partial map-based one-Flange electric drive model"
+    import Modelica.Constants.*;
     Boolean limitingTorque;
     parameter Modelica.Units.SI.MomentOfInertia J = 0.25 "Rotor's moment of inertia" annotation(
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.Voltage uDcNom = 100 "Nominal DC voltage" annotation(
       Dialog(group = "General parameters"));
-    parameter Modelica.Units.SI.AngularVelocity wMax = 3000 "Maximum speed (for efficiency and torque limitation when limitsOnFile=false and to normalise input when normalisedInLimits=true)" annotation(
+    parameter Boolean limitsOnFile = false "= true, if torque and speed limits are taken from a txt file, otherwise they are tauMax and wMax" annotation(
+      choices(checkBox = true),
       Dialog(group = "General parameters"));
+    parameter Modelica.Units.SI.AngularVelocity wMax = 3000 "Maximum speed (for efficiency and torque limitation when limitsOnFile=false)" annotation(
+      Dialog(group = "General parameters", enable=not limitsOnFile));
+    parameter Real tlTorqueFactor=1 "factor applied to input torque for limits they are from file"
+                                                                                                  annotation(
+      Dialog(group = "Torque limitation related parameters", enable=limitsOnFile));
+    parameter Real tlSpeedFactor=60/(2*pi) "factor applied to input speed for limits when they are from file"
+                                                                                                             annotation(
+      Dialog(group = "Torque limitation related parameters", enable=limitsOnFile));
     parameter Modelica.Units.SI.Power powMax = 22000 "Maximum mechanical power (used for efficiency and torque limitation when limitsOnFile=false)" annotation(
-      Dialog(group = "General parameters"));
+      Dialog(group = "General parameters", enable=not limitsOnFile));
     //Parameters related to torque limits:
-    parameter Boolean limitsOnFile = false "= true, if torque limits are taken from a txt file, otherwise limits are tauMax and wMax" annotation(
-      choices(checkBox = true),
-      Dialog(group = "Torque limitation related parameters"));
-    parameter Boolean normalisedInLimits = false "when true and torques and speeds are read from file, they are normalised (will be multiplied by wMax and tauMax)" annotation(
-      choices(checkBox = true),
-      Dialog(group = "General parameters", enable = limitsOnFile or effMapOnFile));
     parameter Modelica.Units.SI.Torque tauMax = 80 "Maximum torque when limits are not from an un-normalised file" annotation(
-      Dialog(group = "Torque limitation related parameters"));
+      Dialog(group = "General parameters", enable= not limitsOnFile));
     parameter String limitsFileName = "noName" "File where efficiency table matrix is stored" annotation(
       Dialog(group = "Torque limitation related parameters", enable = limitsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
-    parameter String maxTorqueTableName = "noName" "Name of the on-file upper torque limit" annotation(
-      Dialog(enable = limitsOnFile, group = "Torque limitation related parameters"));
-    parameter String minTorqueTableName = "noName" "Name of the on-file lower torque limit" annotation(
+    parameter String tauLimitsMapName = "noName" "Name of the on-file lower torque limit" annotation(
       Dialog(enable = limitsOnFile, group = "Torque limitation related parameters"));
     //Parameters related to efficiency combi table:
     parameter Boolean efficiencyFromTable = true "=true if efficiency if from a table (either online or from a file); otherwise use a the built-in loss formula" annotation(
@@ -34,6 +36,12 @@ package Partial
       Dialog(enable = efficiencyFromTable, group = "Efficiency related parameters"));
     parameter String effMapFileName = "noName" "File where efficiency table matrix is stored" annotation(
       Dialog(group = "Efficiency related parameters", enable = effMapOnFile and efficiencyFromTable, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+    parameter Real eTorqueFactor=1 "factor applied to input torque for efficiencies when they are from file"
+                                                                                                            annotation(
+      Dialog(group = "Efficiency related parameters", enable=effMapOnFile));
+    parameter Real eSpeedFactor=60/(2*pi) "factor applied to input speed for efficiencies when they are from file"
+                                                                                                                  annotation(
+      Dialog(group = "Efficiency related parameters", enable=effMapOnFile));
     parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation(
       Dialog(enable = effMapOnFile and efficiencyFromTable, group = "Efficiency related parameters"));
     parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both PU of wMax and tauMax" annotation(
@@ -47,12 +55,7 @@ package Partial
       Dialog(enable = not efficiencyFromTable, group = "Loss-formula parameters"));
     parameter Real bP = 0.05 "power losses coefficient" annotation(
       Dialog(enable = not efficiencyFromTable, group = "Loss-formula parameters"));
-    final parameter Modelica.Units.SI.Torque nomTorque(fixed = false);
-    //actual Max torque value for consumption map (which in file is between 0 and 1)
-    final parameter Real nomSpeedEff(fixed = false);
-    //Similar to nomSpeed, but with rad/s to rpm conversion when needed for Efficiency table
-    final parameter Modelica.Units.SI.AngularVelocity nomSpeed(fixed = false);
-    //actual Max speed value for consumption map (which in file is between 0 and 1)
+
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a "Left flange of shaft" annotation(
       Placement(transformation(extent = {{88, 50}, {108, 70}}, rotation = 0), iconTransformation(extent = {{90, -10}, {110, 10}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation(
@@ -71,32 +74,33 @@ package Partial
       Placement(transformation(extent = {{18, 50}, {38, 70}})));
     Modelica.Blocks.Nonlinear.VariableLimiter variableLimiter annotation(
       Placement(transformation(extent = {{-28, 20}, {-48, 40}})));
-    SupportModels.MapBasedRelated.LimTorque limTau(normalisedInput = normalisedInLimits, limitsOnFile = limitsOnFile, tauMax = tauMax, wMax = wMax, powMax = powMax, limitsFileName = limitsFileName, maxTorqueTableName = maxTorqueTableName, minTorqueTableName = minTorqueTableName) annotation(
+    SupportModels.MapBasedRelated.LimTorque limTau(limitsOnFile = limitsOnFile, tauMax = tauMax, wMax = wMax, powMax = powMax, limitsFileName = limitsFileName, limitsTableName = tauLimitsMapName) annotation(
       Placement(transformation(extent = {{50, -2}, {30, 22}})));
-    SupportModels.Miscellaneous.Gain fromPuTorque(k = nomTorque) annotation(
+    SupportModels.Miscellaneous.Gain fromPuTorque(k = tlTorqueFactor_) annotation(
       Placement(visible = true, transformation(origin = {14, 30}, extent = {{-6, -6}, {6, 6}}, rotation = 180)));
-    SupportModels.Miscellaneous.Gain fromPuTorque1(k = nomTorque) annotation(
+    SupportModels.Miscellaneous.Gain fromPuTorque1(k = tlTorqueFactor_) annotation(
       Placement(visible = true, transformation(origin = {14, 2}, extent = {{-6, -6}, {6, 6}}, rotation = 180)));
-    SupportModels.Miscellaneous.Gain toPuSpeed(k = 1/nomSpeed) annotation(
+    SupportModels.Miscellaneous.Gain toPuSpeed(k = tlSpeedFactor_) annotation(
       Placement(visible = true, transformation(origin = {68, 10}, extent = {{-8, -8}, {8, 8}}, rotation = 180)));
-    SupportModels.MapBasedRelated.EfficiencyCT toElePow(mapsOnFile = effMapOnFile, tauMax = nomTorque, wMax = nomSpeedEff, mapsFileName = effMapFileName, effTableName = effTableName, effTable = effTable) if efficiencyFromTable annotation(
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(mapsOnFile = effMapOnFile, tauFactor=eTorqueFactor, speedFactor=eSpeedFactor, mapsFileName = effMapFileName, effTableName = effTableName, effTable = effTable) if efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -34}, {-58, -14}})));
     SupportModels.MapBasedRelated.EfficiencyLF toElePow1(A = A, bT = bT, bW = bW, bP = bP, tauMax = tauMax, powMax = powMax, wMax = wMax) if not efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -56}, {-58, -36}})));
+    final parameter Real tlTorqueFactor_( fixed=false);
+    final parameter Real tlSpeedFactor_( fixed=false);
+    final parameter Real eTorqueFactor_( fixed=false);
+    final parameter Real eSpeedFactor_( fixed=false);
   initial equation
-    if limitsOnFile and normalisedInLimits then
-      nomTorque = tauMax;
-      nomSpeed = wMax;
-      nomSpeedEff = wMax;
+    if limitsOnFile then
+      tlTorqueFactor_ = tlTorqueFactor;
+      tlSpeedFactor_ = tlSpeedFactor;
+      eTorqueFactor_ = eTorqueFactor;
+      eSpeedFactor_  = eSpeedFactor;
     else
-      nomTorque = 1;
-      nomSpeed = 1;
-      /* EfficiencyCT internally divides inputs by nomTorque and nomSpeed, to use normalised maps.
-         In case maps are un-normalised, torque must be divided by one. 
-         As regards speed, the dividing quotient depends on the unit of measure in which speeds are written 
-         on txt file. In EHPTlib it has been decided, for user's convenience, to input speeds in rpm, so 
-         in case of un-normalised maps we must consider the corresponding conversion factor */
-      nomSpeedEff = (2*Modelica.Constants.pi)/60;
+      tlTorqueFactor_ = 1;
+      tlSpeedFactor_ = 1;
+      eTorqueFactor_ = 1;
+      eSpeedFactor_  = 1;
     end if;
   equation
     if abs(variableLimiter.y - variableLimiter.u) > 1e-15 then

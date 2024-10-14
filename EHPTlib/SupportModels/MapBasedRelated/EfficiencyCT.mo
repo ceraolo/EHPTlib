@@ -1,11 +1,12 @@
 within EHPTlib.SupportModels.MapBasedRelated;
 block EfficiencyCT
   "Determines the electric power from the mechanical from a Combi-Table efficiency map"
-  parameter Boolean mapsOnFile = false;
-  parameter Modelica.Units.SI.Torque tauMax(start=400)
-    "Maximum machine torque";
-  parameter Modelica.Units.SI.AngularVelocity wMax(start=650)
-    "Maximum machine speed";
+
+  parameter Boolean mapsOnFile = false /*annotation(choices(checkBox = true))*/;
+  parameter Real tauFactor=1
+    "Factor before inputting torque into map from txt file"annotation(Dialog(enable=mapsOnFile));
+  parameter Real speedFactor=60/(2*pi)
+    "Factor before inputting speed into map from txt file"annotation(Dialog(enable=mapsOnFile));
   parameter String mapsFileName = "NoName" "File where matrix is stored" annotation (
     Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
   parameter String effTableName = "noName" "name of the on-file efficiency matrix" annotation (
@@ -36,22 +37,32 @@ block EfficiencyCT
     Placement(transformation(extent = {{-76, -50}, {-56, -30}})));
   Modelica.Blocks.Math.Abs abs2 annotation (
     Placement(transformation(extent = {{-80, 40}, {-60, 60}})));
-  Modelica.Blocks.Math.Gain normalizeTau(k = 1 / tauMax) annotation (
+  Modelica.Blocks.Math.Gain toMapTorque(k = tauFactor_) annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-36, 50})));
   SupportModels.MapBasedRelated.Pel applyEta annotation (
     Placement(transformation(extent = {{60, -10}, {84, 12}})));
   Modelica.Blocks.Math.Product toPmot
     annotation (Placement(transformation(extent={{-72,0},{-52,20}})));
-  Modelica.Blocks.Math.Gain normalizeSpeed(k = 1 / wMax) annotation (
+  Modelica.Blocks.Math.Gain toMapSpeed(k = speedFactor_) annotation (
     Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-34, -40})));
+  final parameter Real speedFactor_(fixed=false);
+  final parameter Real tauFactor_(fixed=false);
+initial equation
+  if mapsOnFile then
+    speedFactor_=speedFactor;
+    tauFactor_=tauFactor;
+  else
+    speedFactor_=1;
+    tauFactor_=1;
+end if;
 equation
   connect(tau, abs2.u) annotation (
     Line(points = {{-120, 40}, {-94, 40}, {-94, 50}, {-82, 50}}, color = {0, 0, 127}, smooth = Smooth.None));
   connect(w, abs1.u) annotation (
     Line(points = {{-120, -40}, {-78, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(abs2.y, normalizeTau.u) annotation (
+  connect(abs2.y, toMapTorque.u) annotation (
     Line(points = {{-59, 50}, {-48, 50}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(normalizeTau.y, toEff.u1) annotation (Line(
+  connect(toMapTorque.y, toEff.u1) annotation (Line(
       points={{-25,50},{-18,50},{-18,-12.8},{7.6,-12.8}},
       color={0,0,127},
       smooth=Smooth.None));
@@ -73,9 +84,9 @@ equation
       points={{-51,10},{42,10},{42,7.6},{57.6,7.6}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(abs1.y, normalizeSpeed.u) annotation (
+  connect(abs1.y, toMapSpeed.u) annotation (
     Line(points = {{-55, -40}, {-46, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(normalizeSpeed.y, toEff.u2) annotation (Line(
+  connect(toMapSpeed.y, toEff.u2) annotation (Line(
       points={{-23,-40},{-2,-40},{-2,-27.2},{7.6,-27.2}},
       color={0,0,127},
       smooth=Smooth.None));
