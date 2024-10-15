@@ -519,6 +519,7 @@ and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}}
     // General parameters:
     parameter Real gsRatio = 1 "IdealGear speed reduction factor";
     parameter Real throttlePerWerr = 10/maxGenW "internal throttle controller proportional gain";
+    parameter Real uDcNom=100"nominal DC voltage (only order of magnitude needs to be right";
     // Parameters related to input maps:
     // ICE related parameters:
     parameter Modelica.Units.SI.MomentOfInertia jIce = 0.1 "ICE moment of inertia" annotation(
@@ -553,7 +554,7 @@ and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}}
       Placement(transformation(extent = {{90, 50}, {110, 70}}), iconTransformation(extent = {{90, 50}, {110, 70}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMax = inf, uMin = 0) annotation(
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 48})));
-    EHPTlib.MapBased.OneFlange gen(wMax = maxGenW, J = jGen, limitsFileName = mapsFileName, effMapOnFile = true, powMax = maxGenPow, tauMax = maxTau, effMapFileName = mapsFileName, effTableName = "gensetDriveEffTable") annotation(
+    EHPTlib.MapBased.OneFlange gen(wMax = maxGenW, J = jGen, limitsFileName = mapsFileName, effMapOnFile = true, powMax = maxGenPow, tauMax = maxTau, effMapFileName = mapsFileName, effTableName = "gensetDriveEffTable", uDcNom = uDcNom) annotation(
       Placement(visible = true, transformation(extent = {{74, 2}, {54, -18}}, rotation = 0)));
     IceT01 iceT(iceJ = jIce, scMapOnFile = true, tlMapOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = "specificCons") annotation(
       Placement(transformation(extent = {{-28, -18}, {-8, 4}})));

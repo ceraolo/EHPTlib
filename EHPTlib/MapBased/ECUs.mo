@@ -285,7 +285,7 @@ package ECUs
       fileName=mapsFileName,
       tableName="maxIceTau",
       tableOnFile=true)
-      "gives the optimal speed as a function of requested power"
+      "Gives the maximum torque as a function of the mechanical speed"
       annotation (Placement(transformation(extent={{-12,68},{8,88}})));
     Modelica.Blocks.Nonlinear.VariableLimiter tauLimiter annotation (
       Placement(transformation(extent={{62,50},{82,70}})));
@@ -466,8 +466,7 @@ torques")}),
               textColor={28,108,200},
               textString="constant=1 for 
 un-normalised
-speeds",
-              horizontalAlignment=TextAlignment.Left), Text(
+speeds",      horizontalAlignment=TextAlignment.Left), Text(
               extent={{4,60},{24,46}},
               textColor={28,108,200},
               horizontalAlignment=TextAlignment.Left,
