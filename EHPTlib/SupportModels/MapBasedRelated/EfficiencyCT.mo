@@ -2,11 +2,13 @@ within EHPTlib.SupportModels.MapBasedRelated;
 block EfficiencyCT
   "Determines the electric power from the mechanical from a Combi-Table efficiency map"
   import Modelica.Constants.pi;
-  parameter Boolean mapOnFile = false /*annotation(choices(checkBox = true))*/;
+  parameter Boolean mapOnFile = false;/*annotation(choices(checkBox = true))*/
   parameter Real tauFactor=1
-    "Factor before inputting torque into map from txt file"annotation(Dialog(enable=mapOnFile));
+    "Factor before inputting torque into map from txt file"
+                                                           annotation(Dialog(enable=mapOnFile));
   parameter Real speedFactor=60/(2*pi)
-    "Factor before inputting speed into map from txt file"annotation(Dialog(enable=mapOnFile));
+    "Factor before inputting speed into map from txt file"
+                                                          annotation(Dialog(enable=mapOnFile));
   parameter String mapFileName = "NoName" "File where matrix is stored" annotation (
     Dialog(enable = mapOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
   parameter String effTableName = "noName" "name of the on-file efficiency matrix" annotation (
@@ -15,83 +17,54 @@ block EfficiencyCT
     Dialog(enable = not mapOnFile));
   //the name is passed because a file can contain efficiency tables for
   //different submodels, e.g. genEfficiency for generator and motEfficiency for motor.
-  Modelica.Blocks.Tables.CombiTable2Ds toEff(
-    tableOnFile=mapOnFile,
-    smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
-    fileName=mapFileName,
-    tableName=effTableName,
-    table=effTable,
-    extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
-                    "normalised efficiency" annotation (Placement(
-        transformation(
-        extent={{-12,-12},{12,12}},
-        rotation=0,
-        origin={22,-20})));
   Modelica.Blocks.Interfaces.RealInput w annotation (
-    Placement(transformation(extent = {{-140, -60}, {-100, -20}}), iconTransformation(extent = {{-140, -60}, {-100, -20}})));
+    Placement(transformation(origin = {28, 0}, extent = {{-140, -60}, {-100, -20}}), iconTransformation(extent = {{-140, -60}, {-100, -20}})));
   Modelica.Blocks.Interfaces.RealInput tau annotation (
-    Placement(transformation(extent = {{-140, 20}, {-100, 60}}), iconTransformation(extent = {{-140, 20}, {-100, 60}})));
-  Modelica.Blocks.Interfaces.RealOutput elePow( unit="W") annotation (
-    Placement(transformation(extent = {{96, -10}, {116, 10}})));
+    Placement(transformation(origin = {28, 0}, extent = {{-140, 20}, {-100, 60}}), iconTransformation(extent = {{-140, 20}, {-100, 60}})));
   Modelica.Blocks.Math.Abs abs1 annotation (
-    Placement(transformation(extent = {{-76, -50}, {-56, -30}})));
+    Placement(transformation(origin = {24, 0}, extent = {{-76, -50}, {-56, -30}})));
   Modelica.Blocks.Math.Abs abs2 annotation (
-    Placement(transformation(extent = {{-80, 40}, {-60, 60}})));
-  Modelica.Blocks.Math.Gain toMapTorque(k = tauFactor_) annotation (
-    Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-36, 50})));
+    Placement(transformation(origin = {24, -10}, extent = {{-76, 40}, {-56, 60}})));
   SupportModels.MapBasedRelated.Pel applyEta annotation (
-    Placement(transformation(extent = {{60, -10}, {84, 12}})));
+    Placement(transformation(origin = {20, 0}, extent = {{20, -10}, {40, 10}})));
   Modelica.Blocks.Math.Product toPmot
-    annotation (Placement(transformation(extent={{-72,0},{-52,20}})));
-  Modelica.Blocks.Math.Gain toMapSpeed(k = speedFactor_) annotation (
-    Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-34, -40})));
-  final parameter Real speedFactor_(fixed=false);
-  final parameter Real tauFactor_(fixed=false);
-initial equation
-  if mapOnFile then
-    speedFactor_=speedFactor;
-    tauFactor_=tauFactor;
-  else
-    speedFactor_=1;
-    tauFactor_=1;
-end if;
+    annotation (Placement(transformation(origin = {24, 0}, extent = {{-72, 0}, {-52, 20}})));
+  CombiTable2Factor toEff(
+    u1Factor=tauFactor,
+    u2Factor=speedFactor,
+    yFactor=1,
+    tableOnFile=mapOnFile,
+    tableName=effTableName,
+    fileName=mapFileName, table = effTable)
+    annotation (Placement(transformation(origin = {24, 0}, extent = {{-20, -26}, {0, -6}})));
+  Modelica.Blocks.Interfaces.RealOutput elePow(unit="W")  annotation (
+    Placement(transformation(origin = {8, 0}, extent = {{60, -10}, {80, 10}}), iconTransformation(
+          extent={{100,-10},{120,10}})));
 equation
   connect(tau, abs2.u) annotation (
-    Line(points = {{-120, 40}, {-94, 40}, {-94, 50}, {-82, 50}}, color = {0, 0, 127}, smooth = Smooth.None));
+    Line(points = {{-92, 40}, {-54, 40}},          color = {0, 0, 127}));
   connect(w, abs1.u) annotation (
-    Line(points = {{-120, -40}, {-78, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(abs2.y, toMapTorque.u) annotation (
-    Line(points = {{-59, 50}, {-48, 50}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(toMapTorque.y, toEff.u1) annotation (Line(
-      points={{-25,50},{-18,50},{-18,-12.8},{7.6,-12.8}},
-      color={0,0,127},
-      smooth=Smooth.None));
+    Line(points = {{-92, -40}, {-54, -40}}, color = {0, 0, 127}));
   connect(applyEta.Pel, elePow) annotation (
-    Line(points = {{85.2, 1}, {92.48, 1}, {92.48, 0}, {106, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(toEff.y, applyEta.eta) annotation (Line(
-      points={{35.2,-20},{48,-20},{48,-5.6},{57.6,-5.6}},
-      color={0,0,127},
-      smooth=Smooth.None));
+    Line(points = {{61, 0}, {78, 0}},                                 color = {0, 0, 127}));
   connect(toPmot.u1, tau) annotation (Line(
-      points={{-74,16},{-84,16},{-84,40},{-120,40}},
-      color={0,0,127},
-      smooth=Smooth.None));
+      points = {{-50, 16}, {-60, 16}, {-60, 40}, {-92, 40}},
+      color={0,0,127}));
   connect(toPmot.u2, w) annotation (Line(
-      points={{-74,4},{-84,4},{-84,-40},{-120,-40}},
-      color={0,0,127},
-      smooth=Smooth.None));
+      points = {{-50, 4}, {-60, 4}, {-60, -40}, {-92, -40}},
+      color={0,0,127}));
   connect(toPmot.y, applyEta.P) annotation (Line(
-      points={{-51,10},{42,10},{42,7.6},{57.6,7.6}},
-      color={0,0,127},
-      smooth=Smooth.None));
-  connect(abs1.y, toMapSpeed.u) annotation (
-    Line(points = {{-55, -40}, {-46, -40}}, color = {0, 0, 127}, smooth = Smooth.None));
-  connect(toMapSpeed.y, toEff.u2) annotation (Line(
-      points={{-23,-40},{-2,-40},{-2,-27.2},{7.6,-27.2}},
-      color={0,0,127},
-      smooth=Smooth.None));
+      points = {{-27, 10}, {8, 10}, {8, 6}, {38, 6}},
+      color={0,0,127}));
+  connect(applyEta.eta, toEff.y) annotation (Line(points={{38,-6},{32,-6},{32,-16},
+          {25,-16}}, color={0,0,127}));
+  connect(abs2.y, toEff.u1) annotation (Line(points={{-31,40},{-8,40},{-8,-10.2},
+          {2,-10.2}}, color={0,0,127}));
+  connect(toEff.u2, abs1.y) annotation (Line(points={{2,-22},{-4,-22},{-4,-40},
+          {-31,-40}}, color={0,0,127}));
   annotation (
-    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}})),
+    Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-60},{80,
+            60}})),
     Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 72}, {100, -72}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Line(points = {{-74, -54}, {-74, 58}}, color = {0, 0, 0}, smooth = Smooth.None), Line(points = {{-82, -48}, {78, -48}}, color = {0, 0, 0}, smooth = Smooth.None), Line(points = {{-74, 38}, {-24, 38}, {-4, 12}, {28, -8}, {60, -22}, {62, -48}}, color = {0, 0, 0}, smooth = Smooth.None), Polygon(points = {{-20, 14}, {-40, 24}, {-56, -4}, {-38, -36}, {12, -38}, {26, -28}, {22, -20}, {8, -6}, {-8, 4}, {-20, 14}}, lineColor = {0, 0, 0}, smooth = Smooth.None, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Polygon(points = {{-28, 4}, {-38, 2}, {-32, -20}, {0, -32}, {10, -28}, {12, -20}, {-28, 4}}, lineColor = {0, 0, 0}, smooth = Smooth.None, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid), Text(extent = {{-102, 118}, {100, 78}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, textString = "%name"), Text(extent={{-2,54},
               {86,20}},                                                                                                                                                                                                        lineColor={0,0,0},
           textString="T")}),

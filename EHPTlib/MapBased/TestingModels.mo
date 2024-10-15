@@ -5,44 +5,45 @@ package TestingModels
   package TestOneFlange
     model TestOneFlange1 "Tests OneFlange with fixed torque limits and loss formula"
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 7, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
-        Placement(transformation(extent = {{38, -10}, {58, 10}})));
+        Placement(transformation(extent={{40,-10},{60,10}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -150, w_nominal = 250) annotation(
-        Placement(transformation(extent = {{92, -10}, {72, 10}})));
+        Placement(transformation(extent={{94,-10},{74,10}})));
       Modelica.Blocks.Sources.Trapezoid tauRef(rising = 5, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 450, offset = 10) annotation(
-        Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
+        Placement(transformation(extent={{-58,-38},{-38,-18}})));
       OneFlange oneFlange(powMax(displayUnit = "kW") = 7e4, limitsOnFile = false, tauMax = 400, J = 0.2, wMax = 200, effMapOnFile = false, efficiencyFromTable = false, uDcNom = 400) annotation(
-        Placement(transformation(extent = {{-22, -10}, {-2, 10}})));
+        Placement(transformation(extent={{-20,-10},{0,10}})));
       Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 400) annotation(
-        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={-62,10})));
       Modelica.Electrical.Analog.Basic.Ground ground annotation(
-        Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
+        Placement(transformation(extent={{-82,-20},{-62,0}})));
       Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech annotation(
-        Placement(transformation(extent = {{12, -10}, {32, 10}})));
+        Placement(transformation(extent={{14,-10},{34,10}})));
       Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation(
-        Placement(transformation(extent = {{-48, 20}, {-28, 40}})));
+        Placement(transformation(extent={{-46,20},{-26,40}})));
     equation
       connect(inertia.flange_b, loadTorque.flange) annotation(
-        Line(points = {{58, 0}, {72, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{60,0},{74,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(tauRef.y, oneFlange.tauRef) annotation(
-        Line(points = {{-39, -28}, {-32, -28}, {-32, 0}, {-23.4, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points={{-37,-28},{-30,-28},{-30,0},{-21.4,0}},          color = {0, 0, 127}, smooth = Smooth.None));
       connect(ground.p, gen.n) annotation(
-        Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-72,0},{-62,0}},      color = {0, 0, 255}, smooth = Smooth.None));
       connect(oneFlange.flange_a, powMech.flange_a) annotation(
-        Line(points = {{-2, 0}, {12, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{0,0},{14,0}},       color = {0, 0, 0}, smooth = Smooth.None));
       connect(inertia.flange_a, powMech.flange_b) annotation(
-        Line(points = {{38, 0}, {32, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{40,0},{34,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(powElec.nc, oneFlange.pin_p) annotation(
-        Line(points = {{-28, 30}, {-22, 30}, {-22, 4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-26,30},{-20,30},{-20,4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pc, gen.p) annotation(
-        Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-46,30},{-62,30},{-62,20}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pv, powElec.nc) annotation(
-        Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,40},{-26,40},{-26,30}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(gen.n, oneFlange.pin_n) annotation(
-        Line(points = {{-64, 0}, {-64, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-62,0},{-62,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.nv, oneFlange.pin_n) annotation(
-        Line(points = {{-38, 20}, {-38, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,20},{-36,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics = {Text(origin = {0, 24}, textColor = {238, 46, 47}, extent = {{0, -54}, {48, -72}}, textString = "- 70 kW - 400 Nm
+        Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-60},
+                {100,60}}),                                                                       graphics = {Text(origin={2,24},    textColor = {238, 46, 47}, extent = {{0, -54}, {48, -72}}, textString = "- 70 kW - 400 Nm
 - Fixed torque limits 
 - Loss formula", horizontalAlignment = TextAlignment.Left)}),
         experiment(StopTime = 50),
@@ -88,46 +89,47 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
 
     model TestOneFlange2 "Tests OneFlange with torque limits from file (unNormalised) and loss formula"
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 7, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
-        Placement(transformation(extent = {{38, -10}, {58, 10}})));
+        Placement(transformation(extent={{40,-10},{60,10}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -150, w_nominal = 250) annotation(
-        Placement(transformation(extent = {{92, -10}, {72, 10}})));
+        Placement(transformation(extent={{94,-10},{74,10}})));
       Modelica.Blocks.Sources.Trapezoid tauRef(rising = 5, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 450, offset = 10) annotation(
-        Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
-      OneFlange oneFlange(powMax= 7e4, limitsOnFile = true, tauMax = 400, J = 0.2, wMax= 20.943951023931955, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), 
-      tauLimitsMapName = "minMaxTorque", uDcNom = 400, 
+        Placement(transformation(extent={{-58,-38},{-38,-18}})));
+      OneFlange oneFlange(powMax= 7e4, limitsOnFile = true, tauMax = 400, J = 0.2, wMax= 20.943951023931955, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"),
+      tauLimitsMapName = "minMaxTorque", uDcNom = 400,
       efficiencyFromTable = false, bT = 0, bW = 0.003, bP = 0, A = 0.04) annotation(
-        Placement(transformation(extent = {{-22, -10}, {-2, 10}})));
+        Placement(transformation(extent={{-20,-10},{0,10}})));
       Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 400) annotation(
-        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={-62,10})));
       Modelica.Electrical.Analog.Basic.Ground ground annotation(
-        Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
+        Placement(transformation(extent={{-82,-20},{-62,0}})));
       Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech annotation(
-        Placement(transformation(extent = {{12, -10}, {32, 10}})));
+        Placement(transformation(extent={{14,-10},{34,10}})));
       Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation(
-        Placement(transformation(extent = {{-48, 20}, {-28, 40}})));
+        Placement(transformation(extent={{-46,20},{-26,40}})));
     equation
       connect(inertia.flange_b, loadTorque.flange) annotation(
-        Line(points = {{58, 0}, {72, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{60,0},{74,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(tauRef.y, oneFlange.tauRef) annotation(
-        Line(points = {{-39, -28}, {-32, -28}, {-32, 0}, {-23.4, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points={{-37,-28},{-30,-28},{-30,0},{-21.4,0}},          color = {0, 0, 127}, smooth = Smooth.None));
       connect(ground.p, gen.n) annotation(
-        Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-72,0},{-62,0}},      color = {0, 0, 255}, smooth = Smooth.None));
       connect(oneFlange.flange_a, powMech.flange_a) annotation(
-        Line(points = {{-2, 0}, {12, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{0,0},{14,0}},       color = {0, 0, 0}, smooth = Smooth.None));
       connect(inertia.flange_a, powMech.flange_b) annotation(
-        Line(points = {{38, 0}, {32, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{40,0},{34,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(powElec.nc, oneFlange.pin_p) annotation(
-        Line(points = {{-28, 30}, {-22, 30}, {-22, 4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-26,30},{-20,30},{-20,4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pc, gen.p) annotation(
-        Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-46,30},{-62,30},{-62,20}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pv, powElec.nc) annotation(
-        Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,40},{-26,40},{-26,30}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(gen.n, oneFlange.pin_n) annotation(
-        Line(points = {{-64, 0}, {-64, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-62,0},{-62,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.nv, oneFlange.pin_n) annotation(
-        Line(points = {{-38, 20}, {-38, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,20},{-36,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics = {Text(origin = {0, -4}, textColor = {238, 46, 47}, extent = {{0, -24}, {78, -36}}, textString = "- around 70 kW, Max 700 Nm
+        Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-60},
+                {100,60}}),                                                                       graphics = {Text(origin={2,-4},    textColor = {238, 46, 47}, extent = {{0, -24}, {78, -36}}, textString = "- around 70 kW, Max 700 Nm
     - Torque limits from file (rpm, Nm)
     - Loss formula", horizontalAlignment = TextAlignment.Left)}),
         experiment(StopTime = 50),
@@ -137,47 +139,48 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
     <p>Siimilar to TestOneFlange1, but torque limits taken from a file (un-normalised).&nbsp;</p><p>Since the limits from file allow larger speeds to be reached (250 rpms instead of 210), loss formula parameters are changed to have comparable losses during the considered transient.</p><p>Suggesed plots are as per&nbsp;TestOneFlange1. Only, we note that here state is rather meaningless, since it is contantly equal to -1 as it should when limits are taken from file.</p><p>It is also useful to see oneFlange.limtau.yH versus inertia.w and see oneFlange.powSensor.power.yH versus inertia.w.</p><p><br></p>
     </body></html>"));
     end TestOneFlange2;
-    
+
     model TestOneFlange3 "Tests OneFlange with torque limits from file (unNormalised) and loss formula"
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 7, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
-        Placement(transformation(extent = {{38, -10}, {58, 10}})));
+        Placement(transformation(extent={{40,-10},{60,10}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -150, w_nominal = 250) annotation(
-        Placement(transformation(extent = {{92, -10}, {72, 10}})));
+        Placement(transformation(extent={{94,-10},{74,10}})));
       Modelica.Blocks.Sources.Trapezoid tauRef(rising = 5, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 450, offset = 10) annotation(
-        Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
+        Placement(transformation(extent={{-58,-38},{-38,-18}})));
       OneFlange oneFlange(powMax = 7e4, limitsOnFile = true, tauMax = 400, J = 0.2, wMax = 20.943951023931955, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), tauLimitsMapName = "minMaxTorque", uDcNom = 400, efficiencyFromTable = false, bT = 0, bW = 0.003, bP = 0, A = 0.04) annotation(
-        Placement(transformation(extent = {{-22, -10}, {-2, 10}})));
+        Placement(transformation(extent={{-20,-10},{0,10}})));
       Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 400) annotation(
-        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={-62,10})));
       Modelica.Electrical.Analog.Basic.Ground ground annotation(
-        Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
+        Placement(transformation(extent={{-82,-20},{-62,0}})));
       Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech annotation(
-        Placement(transformation(extent = {{12, -10}, {32, 10}})));
+        Placement(transformation(extent={{14,-10},{34,10}})));
       Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation(
-        Placement(transformation(extent = {{-48, 20}, {-28, 40}})));
+        Placement(transformation(extent={{-46,20},{-26,40}})));
     equation
       connect(inertia.flange_b, loadTorque.flange) annotation(
-        Line(points = {{58, 0}, {72, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{60,0},{74,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(tauRef.y, oneFlange.tauRef) annotation(
-        Line(points = {{-39, -28}, {-32, -28}, {-32, 0}, {-23.4, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points={{-37,-28},{-30,-28},{-30,0},{-21.4,0}},          color = {0, 0, 127}, smooth = Smooth.None));
       connect(ground.p, gen.n) annotation(
-        Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-72,0},{-62,0}},      color = {0, 0, 255}, smooth = Smooth.None));
       connect(oneFlange.flange_a, powMech.flange_a) annotation(
-        Line(points = {{-2, 0}, {12, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{0,0},{14,0}},       color = {0, 0, 0}, smooth = Smooth.None));
       connect(inertia.flange_a, powMech.flange_b) annotation(
-        Line(points = {{38, 0}, {32, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{40,0},{34,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(powElec.nc, oneFlange.pin_p) annotation(
-        Line(points = {{-28, 30}, {-22, 30}, {-22, 4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-26,30},{-20,30},{-20,4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pc, gen.p) annotation(
-        Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-46,30},{-62,30},{-62,20}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pv, powElec.nc) annotation(
-        Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,40},{-26,40},{-26,30}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(gen.n, oneFlange.pin_n) annotation(
-        Line(points = {{-64, 0}, {-64, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-62,0},{-62,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.nv, oneFlange.pin_n) annotation(
-        Line(points = {{-38, 20}, {-38, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,20},{-36,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics = {Text(origin = {0, -4}, textColor = {238, 46, 47}, extent = {{0, -24}, {78, -36}}, textString = "- around 70 kW, Max 700 Nm
+        Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-60},
+                {100,60}}),                                                                       graphics = {Text(origin={2,-4},    textColor = {238, 46, 47}, extent = {{0, -24}, {78, -36}}, textString = "- around 70 kW, Max 700 Nm
         - Torque limits from file (rpm, Nm, doubled)
         - Loss formula", horizontalAlignment = TextAlignment.Left)}),
         experiment(StopTime = 50),
@@ -187,48 +190,49 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
         <p>Siimilar to TestOneFlange1, but torque limits taken from a file (un-normalised).&nbsp;</p><p>Since the limits from file allow larger speeds to be reached (250 rpms instead of 210), loss formula parameters are changed to have comparable losses during the considered transient.</p><p>Suggesed plots are as per&nbsp;TestOneFlange1. Only, we note that here state is rather meaningless, since it is contantly equal to -1 as it should when limits are taken from file.</p><p>It is also useful to see oneFlange.limtau.yH versus inertia.w and see oneFlange.powSensor.power.yH versus inertia.w.</p><p><br></p>
         </body></html>"));
     end TestOneFlange3;
-    
+
     model TestOneFlange4 "Tests OneFlange with torque limits from file (unNormalised) and loss formula"
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 7, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
-        Placement(transformation(extent = {{38, -10}, {58, 10}})));
+        Placement(transformation(extent={{40,-10},{60,10}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -150, w_nominal = 250) annotation(
-        Placement(transformation(extent = {{92, -10}, {72, 10}})));
+        Placement(transformation(extent={{94,-10},{74,10}})));
       Modelica.Blocks.Sources.Trapezoid tauRef(rising = 5, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 450, offset = 10) annotation(
-        Placement(transformation(extent = {{-60, -38}, {-40, -18}})));
-      OneFlange oneFlange(powMax= 7e4, limitsOnFile = true, tauMax = 400, J = 0.2, wMax= 20.943951023931955, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), 
+        Placement(transformation(extent={{-58,-38},{-38,-18}})));
+      OneFlange oneFlange(powMax= 7e4, limitsOnFile = true, tauMax = 400, J = 0.2, wMax= 20.943951023931955, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"),
       tauLimitsMapName = "minMaxTorque", uDcNom = 400, efficiencyFromTable = true, bT = 0, bW = 0.003, bP = 0, A = 0.04, effMapOnFile = true, effTableName = "effTable", effMapFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt")) annotation(
-        Placement(transformation(extent = {{-22, -10}, {-2, 10}})));
+        Placement(transformation(extent={{-20,-10},{0,10}})));
       Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 400) annotation(
-        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
+        Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin={-62,10})));
       Modelica.Electrical.Analog.Basic.Ground ground annotation(
-        Placement(transformation(extent = {{-90, -20}, {-70, 0}})));
+        Placement(transformation(extent={{-82,-20},{-62,0}})));
       Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech annotation(
-        Placement(transformation(extent = {{12, -10}, {32, 10}})));
+        Placement(transformation(extent={{14,-10},{34,10}})));
       Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation(
-        Placement(transformation(extent = {{-48, 20}, {-28, 40}})));
+        Placement(transformation(extent={{-46,20},{-26,40}})));
     equation
       connect(inertia.flange_b, loadTorque.flange) annotation(
-        Line(points = {{58, 0}, {72, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{60,0},{74,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(tauRef.y, oneFlange.tauRef) annotation(
-        Line(points = {{-39, -28}, {-32, -28}, {-32, 0}, {-23.4, 0}}, color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points={{-37,-28},{-30,-28},{-30,0},{-21.4,0}},          color = {0, 0, 127}, smooth = Smooth.None));
       connect(ground.p, gen.n) annotation(
-        Line(points = {{-80, 0}, {-64, 0}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-72,0},{-62,0}},      color = {0, 0, 255}, smooth = Smooth.None));
       connect(oneFlange.flange_a, powMech.flange_a) annotation(
-        Line(points = {{-2, 0}, {12, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{0,0},{14,0}},       color = {0, 0, 0}, smooth = Smooth.None));
       connect(inertia.flange_a, powMech.flange_b) annotation(
-        Line(points = {{38, 0}, {32, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points={{40,0},{34,0}},      color = {0, 0, 0}, smooth = Smooth.None));
       connect(powElec.nc, oneFlange.pin_p) annotation(
-        Line(points = {{-28, 30}, {-22, 30}, {-22, 4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-26,30},{-20,30},{-20,4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pc, gen.p) annotation(
-        Line(points = {{-48, 30}, {-64, 30}, {-64, 20}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-46,30},{-62,30},{-62,20}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.pv, powElec.nc) annotation(
-        Line(points = {{-38, 40}, {-28, 40}, {-28, 30}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,40},{-26,40},{-26,30}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(gen.n, oneFlange.pin_n) annotation(
-        Line(points = {{-64, 0}, {-64, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-62,0},{-62,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       connect(powElec.nv, oneFlange.pin_n) annotation(
-        Line(points = {{-38, 20}, {-38, -4}, {-22, -4}}, color = {0, 0, 255}, smooth = Smooth.None));
+        Line(points={{-36,20},{-36,-4},{-20,-4}},        color = {0, 0, 255}, smooth = Smooth.None));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}}), graphics = {Text(origin = {0, -4}, textColor = {238, 46, 47}, extent = {{0, -24}, {78, -36}}, textString = "- around 70 kW, Max 700 Nm
+        Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-80,-60},
+                {100,60}}),                                                                       graphics = {Text(origin={2,-4},    textColor = {238, 46, 47}, extent = {{0, -24}, {78, -36}}, textString = "- around 70 kW, Max 700 Nm
     - Torque limits from file (rpm, Nm)
     - Efficiency from file", horizontalAlignment = TextAlignment.Left)}),
         experiment(StopTime = 50),
@@ -244,7 +248,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
         Placement(transformation(extent = {{38, -10}, {58, 10}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(tau_nominal = -150, w_nominal = 250) annotation(
         Placement(transformation(extent = {{92, -10}, {72, 10}})));
-      OneFlangeConn oneFlange(powMax (displayUnit = "kW")= 7e4, limitsOnFile = false, tauMax = 400, J = 0.2, wMax = 200, uDcNom = 400, efficiencyFromTable = false) annotation(
+      OneFlangeConn oneFlange(powMax( displayUnit = "kW")= 7e4, limitsOnFile = false, tauMax = 400, J = 0.2, wMax = 200, uDcNom = 400, efficiencyFromTable = false) annotation(
         Placement(transformation(extent = {{-24, -10}, {-4, 10}})));
       Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 400) annotation(
         Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-64, 10})));
@@ -382,7 +386,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
     equation
       connect(inertia.flange_b, loadTorque.flange) annotation(
         Line(points = {{48, 8}, {56, 8}}, color = {0, 0, 0}, smooth = Smooth.None));
-//    experiment(StopTime = 50),
+      //    experiment(StopTime = 50),
       connect(iceP.powRef, trapezoid.y) annotation(
         Line(points = {{-18, -4}, {-18, -20}, {-31, -20}}, color = {0, 0, 127}));
       connect(iceP.flange_a, pow.flange_a) annotation(
@@ -562,11 +566,11 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
       Placement(transformation(origin = {-10, -4}, extent = {{8, -8}, {-8, 8}}, rotation = -180)));
   equation
     connect(fixedLimits.w, radsPerSec.y) annotation(
-      Line(points = {{-10, 32}, {-32, 32}, {-32, -4}, {-46, -4}}, color = {0, 0, 127}));
+      Line(points={{-10,32},{-32,32},{-32,-4},{-47,-4}},          color = {0, 0, 127}));
     connect(toPuSpeed.u, radsPerSec.y) annotation(
-      Line(points = {{-19.6, -4}, {-45.6, -4}}, color = {0, 0, 127}));
+      Line(points={{-19.6,-4},{-47,-4}},        color = {0, 0, 127}));
     connect(toPuSpeed.y, fileTxtLimits.w) annotation(
-      Line(points = {{-1.2, -4}, {6.8, -4}}, color = {0, 0, 127}));
+      Line(points={{-1.2,-4},{6,-4}},        color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body>Tests torque limits in various conditions: fixed limits, from text file normalised, from text file un-normalised.<br></body></html>"),
       Diagram(coordinateSystem(extent = {{-80, 60}, {60, -40}})),
@@ -722,7 +726,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
 <p>Output power and torque at the internal machines (ICE and gen) go to zero.</p>
 </html>"));
   end TestGensetOO;
-  
+
   model TestTwoFlange2 "Test of TwoFlange drive train model"
     import Modelica.Constants.pi;
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
