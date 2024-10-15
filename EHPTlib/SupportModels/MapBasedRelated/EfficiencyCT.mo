@@ -1,24 +1,24 @@
 within EHPTlib.SupportModels.MapBasedRelated;
 block EfficiencyCT
   "Determines the electric power from the mechanical from a Combi-Table efficiency map"
-
-  parameter Boolean mapsOnFile = false /*annotation(choices(checkBox = true))*/;
+  import Modelica.Constants.pi;
+  parameter Boolean mapOnFile = false /*annotation(choices(checkBox = true))*/;
   parameter Real tauFactor=1
-    "Factor before inputting torque into map from txt file"annotation(Dialog(enable=mapsOnFile));
+    "Factor before inputting torque into map from txt file"annotation(Dialog(enable=mapOnFile));
   parameter Real speedFactor=60/(2*pi)
-    "Factor before inputting speed into map from txt file"annotation(Dialog(enable=mapsOnFile));
-  parameter String mapsFileName = "NoName" "File where matrix is stored" annotation (
-    Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+    "Factor before inputting speed into map from txt file"annotation(Dialog(enable=mapOnFile));
+  parameter String mapFileName = "NoName" "File where matrix is stored" annotation (
+    Dialog(enable = mapOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
   parameter String effTableName = "noName" "name of the on-file efficiency matrix" annotation (
-    Dialog(enable = mapsOnFile));
+    Dialog(enable = mapOnFile));
   parameter Real effTable[:, :] = [0.00, 0.00, 0.25, 0.50, 0.75, 1.00; 0.00, 0.75, 0.80, 0.81, 0.82, 0.83; 0.25, 0.76, 0.81, 0.82, 0.83, 0.84; 0.50, 0.77, 0.82, 0.83, 0.84, 0.85; 0.75, 0.78, 0.83, 0.84, 0.85, 0.87; 1.00, 0.80, 0.84, 0.85, 0.86, 0.88] annotation (
-    Dialog(enable = not mapsOnFile));
+    Dialog(enable = not mapOnFile));
   //the name is passed because a file can contain efficiency tables for
   //different submodels, e.g. genEfficiency for generator and motEfficiency for motor.
   Modelica.Blocks.Tables.CombiTable2Ds toEff(
-    tableOnFile=mapsOnFile,
+    tableOnFile=mapOnFile,
     smoothness=Modelica.Blocks.Types.Smoothness.LinearSegments,
-    fileName=mapsFileName,
+    fileName=mapFileName,
     tableName=effTableName,
     table=effTable,
     extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
@@ -48,7 +48,7 @@ block EfficiencyCT
   final parameter Real speedFactor_(fixed=false);
   final parameter Real tauFactor_(fixed=false);
 initial equation
-  if mapsOnFile then
+  if mapOnFile then
     speedFactor_=speedFactor;
     tauFactor_=tauFactor;
   else

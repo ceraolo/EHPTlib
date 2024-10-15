@@ -12,8 +12,7 @@ package Partial
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.AngularVelocity wMax = 3000 "Maximum speed (for efficiency and torque limitation when limitsOnFile=false)" annotation(
       Dialog(group = "General parameters", enable=not limitsOnFile));
-    parameter Real tlTorqueFactor=1 "factor applied to input torque for limits they are from file"
-                                                                                                  annotation(
+    parameter Real tlTorqueFactor=1 "factor applied to input torque for limits they are from file" annotation(
       Dialog(group = "Torque limitation related parameters", enable=limitsOnFile));
     parameter Real tlSpeedFactor=60/(2*pi) "factor applied to input speed for limits when they are from file"
                                                                                                              annotation(
@@ -37,10 +36,10 @@ package Partial
     parameter String effMapFileName = "noName" "File where efficiency table matrix is stored" annotation(
       Dialog(group = "Efficiency related parameters", enable = effMapOnFile and efficiencyFromTable, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter Real eTorqueFactor=1 "factor applied to input torque for efficiencies when they are from file"
-                                                                                                            annotation(
+                                annotation(
       Dialog(group = "Efficiency related parameters", enable=effMapOnFile));
     parameter Real eSpeedFactor=60/(2*pi) "factor applied to input speed for efficiencies when they are from file"
-                                                                                                                  annotation(
+                                annotation(
       Dialog(group = "Efficiency related parameters", enable=effMapOnFile));
     parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation(
       Dialog(enable = effMapOnFile and efficiencyFromTable, group = "Efficiency related parameters"));
@@ -82,7 +81,7 @@ package Partial
       Placement(visible = true, transformation(origin = {14, 2}, extent = {{-6, -6}, {6, 6}}, rotation = 180)));
     SupportModels.Miscellaneous.Gain toPuSpeed(k = tlSpeedFactor_) annotation(
       Placement(visible = true, transformation(origin = {68, 10}, extent = {{-8, -8}, {8, 8}}, rotation = 180)));
-    SupportModels.MapBasedRelated.EfficiencyCT toElePow(mapsOnFile = effMapOnFile, tauFactor=eTorqueFactor, speedFactor=eSpeedFactor, mapsFileName = effMapFileName, effTableName = effTableName, effTable = effTable) if efficiencyFromTable annotation(
+    SupportModels.MapBasedRelated.EfficiencyCT toElePow(mapOnFile = effMapOnFile, tauFactor=eTorqueFactor, speedFactor=eSpeedFactor, mapFileName = effMapFileName, effTableName = effTableName, effTable = effTable) if efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -34}, {-58, -14}})));
     SupportModels.MapBasedRelated.EfficiencyLF toElePow1(A = A, bT = bT, bW = bW, bP = bP, tauMax = tauMax, powMax = powMax, wMax = wMax) if not efficiencyFromTable annotation(
       Placement(transformation(extent = {{-38, -56}, {-58, -36}})));
@@ -160,24 +159,30 @@ false")}),
   end PartialOneFlange;
 
   partial model PartialTwoFlange "Simple map-based two-flange electric drive model"
+    import Modelica.Constants.pi;
     parameter Modelica.Units.SI.Power powMax = 50000 "Maximum Mechanical drive power";
     parameter Modelica.Units.SI.Torque tauMax = 400 "Maximum drive Torque";
     parameter Modelica.Units.SI.AngularVelocity wMax = 650 "Maximum drive speed";
     parameter Modelica.Units.SI.MomentOfInertia J = 0.59 "Moment of Inertia";
-    parameter Boolean mapsOnFile = false "= true, if tables are taken from a txt file";
+    parameter Boolean mapsOnFile = false "= true, if efficiency table is taken from a txt file" 
+                             annotation(Dialog(group = "Efficiency related parameters"),choices(checkBox = true));
+    parameter Real eTorqueFactor=1 "factor applied to input torque for efficiencies when they are from file"
+                         annotation(Dialog(group = "Efficiency related parameters", enable=mapsOnFile));
+    parameter Real eSpeedFactor=60/(2*pi) "factor applied to input speed for efficiencies when they are from file"
+                         annotation(Dialog(group = "Efficiency related parameters", enable=mapsOnFile));
     parameter String mapsFileName = "noName" "File where efficiency table is stored" annotation(
-      Dialog(enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
+      Dialog(group = "Efficiency related parameters",enable = mapsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
     parameter String effTableName = "noName" "Name of the on-file maximum torque as a function of speed" annotation(
-      Dialog(enable = mapsOnFile));
+      Dialog(group = "Efficiency related parameters",enable = mapsOnFile));
     parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] annotation(
-      Dialog(enable = not mapsOnFile));
+      Dialog(group = "Efficiency related parameters",enable = not mapsOnFile));
     SupportModels.MapBasedRelated.LimTorqueFV limTau(tauMax = tauMax, wMax = wMax, powMax = powMax) annotation(
       Placement(transformation(extent = {{-58, -8}, {-36, 14}})));
     SupportModels.MapBasedRelated.InertiaTq inertia(w(displayUnit = "rad/s", start = 0), J = J) annotation(
       Placement(transformation(extent = {{8, 40}, {28, 60}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedRing annotation(
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-80, 40})));
-    SupportModels.MapBasedRelated.EfficiencyCT effMap(tauMax = tauMax, wMax = wMax, mapsOnFile = mapsOnFile, mapsFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation(
+    SupportModels.MapBasedRelated.EfficiencyCT effMap(mapOnFile = mapsOnFile, mapFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation(
       Placement(transformation(extent = {{20, -46}, {40, -26}})));
     SupportModels.MapBasedRelated.ConstPg constPDC annotation(
       Placement(transformation(extent = {{-10, 10}, {10, -10}}, rotation = -90, origin = {0, 100})));
@@ -197,6 +202,16 @@ false")}),
       Placement(transformation(extent = {{-16, -8}, {4, 12}})));
     Modelica.Electrical.Analog.Interfaces.NegativePin pin_n annotation(
       Placement(visible = true, transformation(extent = {{42, 90}, {62, 110}}, rotation = 0), iconTransformation(extent = {{30, 72}, {50, 92}}, rotation = 0)));
+    final parameter Real eTorqueFactor_(fixed=false);
+    final parameter Real eSpeedFactor_(fixed=false);
+  initial equation
+    if mapsOnFile then
+      eTorqueFactor_ = eTorqueFactor;
+      eSpeedFactor_  = eSpeedFactor;
+    else
+      eTorqueFactor_ = 1;
+      eSpeedFactor_  = 1;
+    end if;
   equation
     connect(flange_a, speedRing.flange) annotation(
       Line(points = {{-100, 50}, {-80, 50}}, color = {0, 0, 0}, smooth = Smooth.None));

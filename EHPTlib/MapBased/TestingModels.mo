@@ -551,42 +551,30 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
   end TestICE;
 
   model TestLimTorque
-    parameter Real nomSpeed = 2300 "rad/s";
-    parameter Real nomTorque = 300 "Nm";
+    import Modelica.Constants.pi;
     SupportModels.MapBasedRelated.LimTorque fixedLimits(tauMax = 700, powMax(displayUnit = "kW") = 7e4) annotation(
-      Placement(transformation(origin = {-4, 38}, extent = {{-10, -10}, {10, 10}})));
-    SupportModels.MapBasedRelated.LimTorque fileTxtNorm(limitsOnFile = true, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), maxTorqueTableName = "nMaxTorque", minTorqueTableName = "nMinTorque") annotation(
-      Placement(transformation(origin = {12, 2}, extent = {{-10, -10}, {10, 10}})));
-    SupportModels.MapBasedRelated.LimTorque fileTxtUnNorm(limitsOnFile = true, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), maxTorqueTableName = "maxTorque", minTorqueTableName = "minTorque") annotation(
-      Placement(transformation(origin = {-4, -30}, extent = {{-10, -10}, {10, 10}})));
+      Placement(transformation(origin = {2, 32}, extent = {{-10, -10}, {10, 10}})));
+    SupportModels.MapBasedRelated.LimTorque fileTxtLimits(limitsOnFile = true, limitsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), limitsTableName = "minMaxTorque") annotation(
+      Placement(transformation(origin = {18, -4}, extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Ramp radsPerSec(height = 200, duration = 3, offset = 20, startTime = 1) annotation(
-      Placement(transformation(origin = {-64, 2}, extent = {{-10, -10}, {10, 10}})));
-    EHPTlib.SupportModels.Miscellaneous.Gain fromPuTorque(k = nomTorque) annotation(
-      Placement(transformation(origin = {46, 22}, extent = {{6, -6}, {-6, 6}}, rotation = -180)));
-    EHPTlib.SupportModels.Miscellaneous.Gain fromPuTorque1(k = nomTorque) annotation(
-      Placement(transformation(origin = {46, -10}, extent = {{6, -6}, {-6, 6}}, rotation = -180)));
-    EHPTlib.SupportModels.Miscellaneous.Gain toPuSpeed(k = 1/nomSpeed) annotation(
-      Placement(transformation(origin = {-16, 2}, extent = {{8, -8}, {-8, 8}}, rotation = -180)));
+      Placement(transformation(origin = {-58, -4}, extent = {{-10, -10}, {10, 10}})));
+    EHPTlib.SupportModels.Miscellaneous.Gain toPuSpeed(k = 60/(2*pi)) annotation(
+      Placement(transformation(origin = {-10, -4}, extent = {{8, -8}, {-8, 8}}, rotation = -180)));
   equation
     connect(fixedLimits.w, radsPerSec.y) annotation(
-      Line(points = {{-16, 38}, {-38, 38}, {-38, 2}, {-52, 2}}, color = {0, 0, 127}));
-    connect(fileTxtUnNorm.w, radsPerSec.y) annotation(
-      Line(points = {{-16, -30}, {-38, -30}, {-38, 2}, {-52, 2}}, color = {0, 0, 127}));
-    connect(fileTxtNorm.yL, fromPuTorque1.u) annotation(
-      Line(points = {{23, -4}, {27, -4}, {27, -10}, {37, -10}}, color = {0, 0, 127}));
-    connect(fromPuTorque.u, fileTxtNorm.yH) annotation(
-      Line(points = {{38.8, 22}, {30.8, 22}, {30.8, 8}, {24.8, 8}}, color = {0, 0, 127}));
+      Line(points = {{-10, 32}, {-32, 32}, {-32, -4}, {-46, -4}}, color = {0, 0, 127}));
     connect(toPuSpeed.u, radsPerSec.y) annotation(
-      Line(points = {{-25.6, 2}, {-51.6, 2}}, color = {0, 0, 127}));
-    connect(toPuSpeed.y, fileTxtNorm.w) annotation(
-      Line(points = {{-7.2, 2}, {0.8, 2}}, color = {0, 0, 127}));
+      Line(points = {{-19.6, -4}, {-45.6, -4}}, color = {0, 0, 127}));
+    connect(toPuSpeed.y, fileTxtLimits.w) annotation(
+      Line(points = {{-1.2, -4}, {6.8, -4}}, color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body>Tests torque limits in various conditions: fixed limits, from text file normalised, from text file un-normalised.<br></body></html>"),
       Diagram(coordinateSystem(extent = {{-80, 60}, {60, -40}})),
       experiment(StartTime = 0, StopTime = 5, Tolerance = 1e-06, Interval = 0.01));
   end TestLimTorque;
 
-  model TestTwoFlange "Test of TwoFlange drive train model"
+  model TestTwoFlange1 "Test of TwoFlange drive train model"
+    import Modelica.Constants.pi;
     Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
       Placement(transformation(extent = {{38, -10}, {58, 10}})));
     Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 400, tau_nominal = -50.0) annotation(
@@ -599,14 +587,16 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
       Placement(transformation(extent = {{12, -10}, {32, 10}})));
     Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation(
       Placement(transformation(extent = {{-48, 32}, {-28, 52}})));
-    TwoFlange twoFlanges(J = 0.5, wMax = 300, tauMax = 60, powMax = 22000, mapsFileName = "EVmaps.txt", effTableName = "effTable") annotation(
+    TwoFlange twoFlanges(J = 0.5, wMax = 300, tauMax = 60, powMax = 22000, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), effTableName = "effTable", mapsOnFile = false) annotation(
       Placement(transformation(extent = {{-18, -10}, {2, 10}})));
     Modelica.Mechanics.Rotational.Sources.ConstantTorque tau1(tau_constant = -5.0) annotation(
       Placement(transformation(extent = {{-76, -10}, {-56, 10}})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech1 annotation(
       Placement(transformation(extent = {{-28, -10}, {-48, 10}})));
     Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 50, offset = 20) annotation(
-      Placement(transformation(extent = {{-40, -48}, {-20, -28}})));
+      Placement(transformation(origin = {-26, -2}, extent = {{-40, -48}, {-20, -28}})));
+  Modelica.Blocks.Math.Add toTotPmecc annotation(
+      Placement(transformation(origin = {44, -34}, extent = {{-10, -10}, {10, 10}})));
   equation
     connect(inertia.flange_b, loadTorque.flange) annotation(
       Line(points = {{58, 0}, {72, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
@@ -631,7 +621,11 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
     connect(tau1.flange, powMech1.flange_b) annotation(
       Line(points = {{-56, 0}, {-48, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(tauRef.y, twoFlanges.tauRef) annotation(
-      Line(points = {{-19, -38}, {-8, -38}, {-8, -9.2}}, color = {0, 0, 127}));
+      Line(points = {{-45, -40}, {-10, -40}, {-10, -9.2}, {-8, -9.2}}, color = {0, 0, 127}));
+  connect(powMech1.power, toTotPmecc.u1) annotation(
+      Line(points = {{-30, -10}, {-30, -28}, {32, -28}}, color = {0, 0, 127}));
+  connect(toTotPmecc.u2, powMech2.power) annotation(
+      Line(points = {{32, -40}, {14, -40}, {14, -10}}, color = {0, 0, 127}));
     annotation(
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}})),
       experiment(StopTime = 50),
@@ -648,7 +642,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
 <p>&middot;<span style=\"font-size: 7pt;\">&nbsp; </span>after 33s, the requested torque is delivered. </p>
 <p>Second suggested plot: once the first plots are analysed, the user might want to have an idea of the mechanical and electrical powers: these are seen putting in the same plot (powMech1.power+powMech2.power) and powElec.power. </p>
 </html>"));
-  end TestTwoFlange;
+  end TestTwoFlange1;
 
   model TestGenset "Ice, Generator, DriveTrain, all map-based"
     Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
@@ -728,4 +722,75 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
 <p>Output power and torque at the internal machines (ICE and gen) go to zero.</p>
 </html>"));
   end TestGensetOO;
+  
+  model TestTwoFlange2 "Test of TwoFlange drive train model"
+    import Modelica.Constants.pi;
+    Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true), w(start = 50, fixed = true)) annotation(
+      Placement(transformation(extent = {{38, -10}, {58, 10}})));
+    Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 400, tau_nominal = -50.0) annotation(
+      Placement(transformation(extent = {{92, -10}, {72, 10}})));
+    Modelica.Electrical.Analog.Sources.ConstantVoltage gen(V = 100) annotation(
+      Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = -90, origin = {-60, 28})));
+    Modelica.Electrical.Analog.Basic.Ground ground annotation(
+      Placement(transformation(extent = {{-100, -2}, {-80, 18}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech2 annotation(
+      Placement(transformation(extent = {{12, -10}, {32, 10}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor powElec annotation(
+      Placement(transformation(extent = {{-48, 32}, {-28, 52}})));
+    TwoFlange twoFlanges(J = 0.5, wMax = 300, tauMax = 60, powMax = 22000, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/EVmapsNew.txt"), effTableName = "effTable", mapsOnFile = true, eSpeedFactor = 0.6*60/(2*pi)) annotation(
+      Placement(transformation(extent = {{-18, -10}, {2, 10}})));
+    Modelica.Mechanics.Rotational.Sources.ConstantTorque tau1(tau_constant = -5.0) annotation(
+      Placement(transformation(extent = {{-76, -10}, {-56, 10}})));
+    Modelica.Mechanics.Rotational.Sensors.PowerSensor powMech1 annotation(
+      Placement(transformation(extent = {{-28, -10}, {-48, 10}})));
+    Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, amplitude = 50, offset = 20) annotation(
+      Placement(transformation(origin = {-26, -2}, extent = {{-40, -48}, {-20, -28}})));
+  Modelica.Blocks.Math.Add toTotPmecc annotation(
+      Placement(transformation(origin = {44, -34}, extent = {{-10, -10}, {10, 10}})));
+  equation
+    connect(inertia.flange_b, loadTorque.flange) annotation(
+      Line(points = {{58, 0}, {72, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(ground.p, gen.n) annotation(
+      Line(points = {{-90, 18}, {-60, 18}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(inertia.flange_a, powMech2.flange_b) annotation(
+      Line(points = {{38, 0}, {32, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(powElec.pc, gen.p) annotation(
+      Line(points = {{-48, 42}, {-60, 42}, {-60, 38}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.pv, powElec.nc) annotation(
+      Line(points = {{-38, 52}, {-28, 52}, {-28, 42}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powMech2.flange_a, twoFlanges.flange_b) annotation(
+      Line(points = {{12, 0}, {8, 0}, {8, -0.2}, {2, -0.2}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(powElec.nc, twoFlanges.pin_n) annotation(
+      Line(points = {{-28, 42}, {-4, 42}, {-4, 8.2}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(twoFlanges.pin_p, gen.n) annotation(
+      Line(points = {{-12, 8.2}, {-12, 18}, {-60, 18}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(powElec.nv, gen.n) annotation(
+      Line(points = {{-38, 32}, {-38, 18}, {-60, 18}}, color = {0, 0, 255}, smooth = Smooth.None));
+    connect(twoFlanges.flange_a, powMech1.flange_a) annotation(
+      Line(points = {{-18, 0}, {-28, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(tau1.flange, powMech1.flange_b) annotation(
+      Line(points = {{-56, 0}, {-48, 0}}, color = {0, 0, 0}, smooth = Smooth.None));
+    connect(tauRef.y, twoFlanges.tauRef) annotation(
+      Line(points = {{-45, -40}, {-10, -40}, {-10, -9.2}, {-8, -9.2}}, color = {0, 0, 127}));
+  connect(powMech1.power, toTotPmecc.u1) annotation(
+      Line(points = {{-30, -10}, {-30, -28}, {32, -28}}, color = {0, 0, 127}));
+  connect(toTotPmecc.u2, powMech2.power) annotation(
+      Line(points = {{32, -40}, {14, -40}, {14, -10}}, color = {0, 0, 127}));
+    annotation(
+      Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -60}, {100, 60}})),
+      experiment(StopTime = 50),
+      __Dymola_experimentSetupOutput,
+      Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}})),
+      Documentation(info = "<html>
+  <p>This is a simple test of model TwoFlange. </p>
+  <p>It shows that the generated torque follows the normalised torque request as long as it does not overcome torque and power limits. The generated torque will act on the machine inertia in conjunction with the torques applied from the exterior to the two flanges. </p>
+  <p>It shows also the effects of efficiency on the DC power. </p>
+  <p>First suggested plots: a plot with tauRef.y and twoFlanges.inertia.flange_a.tau; with the same axes another plot with twoFlanges.limTau.powLimActive and twoFlanges.limTau.powLimActive. In these plots it can be seen that: </p>
+  <p>&middot;<span style=\"font-size: 7pt;\">&nbsp; </span>during the first 18 seconds the generated torque equals the torque request tauRef.y </p>
+  <p>&middot;<span style=\"font-size: 7pt;\">&nbsp; </span>between 18 and 21 s the maximum torque limit is reached, but not the maximum power limit </p>
+  <p>&middot;<span style=\"font-size: 7pt;\">&nbsp; </span>between 21 and 33 s the maximum power occurs </p>
+  <p>&middot;<span style=\"font-size: 7pt;\">&nbsp; </span>after 33s, the requested torque is delivered. </p>
+  <p>Second suggested plot: once the first plots are analysed, the user might want to have an idea of the mechanical and electrical powers: these are seen putting in the same plot (powMech1.power+powMech2.power) and powElec.power. </p>
+  </html>"));
+  end TestTwoFlange2;
 end TestingModels;
