@@ -5,10 +5,10 @@ block EfficiencyCT
   parameter Boolean mapOnFile = false;/*annotation(choices(checkBox = true))*/
   parameter Real tauFactor=1
     "Factor before inputting torque into map from txt file"
-                                                           annotation(Dialog(enable=mapOnFile));
+                 annotation(Dialog(enable=mapOnFile));
   parameter Real speedFactor=60/(2*pi)
     "Factor before inputting speed into map from txt file"
-                                                          annotation(Dialog(enable=mapOnFile));
+                 annotation(Dialog(enable=mapOnFile));
   parameter String mapFileName = "NoName" "File where matrix is stored" annotation (
     Dialog(enable = mapOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
   parameter String effTableName = "noName" "name of the on-file efficiency matrix" annotation (

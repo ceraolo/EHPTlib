@@ -518,7 +518,7 @@ and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}}
     import Modelica.Constants.pi;
     // General parameters:
     parameter Real gsRatio = 1 "IdealGear speed reduction factor";
-    parameter Real throttlePerWerr = 10/maxGenW "internal throttle controller proportional gain";
+    parameter Real throttlePerWerr = 100/maxGenW "internal throttle controller proportional gain";
     parameter Real uDcNom=100"nominal DC voltage (only order of magnitude needs to be right";
     // Parameters related to input maps:
     // ICE related parameters:

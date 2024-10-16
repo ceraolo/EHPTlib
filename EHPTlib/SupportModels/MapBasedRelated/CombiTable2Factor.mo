@@ -1,7 +1,7 @@
 within EHPTlib.SupportModels.MapBasedRelated;
-block CombiTable2Factor "CombiTable 2Ds, with input nd outpuut factors"
-  parameter Real u1Factor = 1 "Multiplies input before entering table";
-  parameter Real u2Factor = 1 "Multiplies input before entering table";
+block CombiTable2Factor "CombiTable 2Ds, with input and output factors"
+  parameter Real u1Factor = 1 "Multiplies input u1 before entering table";
+  parameter Real u2Factor = 1 "Multiplies input u2 before entering table";
   parameter Real yFactor = 1 "multiplies table output exiting the block";
   parameter Boolean tableOnFile=false "=true, if table is defined in a txt file";
   parameter Real[:, :] table= fill(0.0, 0, 2) "Table matrix (as per CombiTable1ds)"
@@ -63,5 +63,5 @@ equation
           lineColor={0,0,0},
           fillColor={255,255,170},
           fillPattern=FillPattern.Solid)}),
-  Documentation(info = "<html><head></head><body>This model implements the way EHTPlib uses matrices to determine components' behaviour such as torque limitation, optimal speeds, ICE consumptions, etc.<div><br></div><div>These matrices can be directly written on the input mask, or taken from a file.</div><div><br></div><div>When they are taken from a file, it is very convenent to use factors on matrix inputs and output. This allows for instance to compensate usage of rpm instead of rad/s for speeds, or to re-use matrices in machines different from those they were originally written for, scaling input axes and ouptut.</div><div>For instance one could have a fuel consumption map of an ICE; which is adequate for a full family of engines: using these factors, it can be scaled to different speed/torque ranges, and omothetically varied also vertically (e.g. consumptions can be reduced to 90% by multiplication with an output factor equal to 0.9).</div><div><br></div><div><div>When matrix is not from a file, factors are automatically set to 1, and the input matrix is used without changes. When, instead, it is taken from a file, the two inputs are mutiplied by u1Factor and u2Factor respectively, and output by yFactor.</div></div></body></html>"));
+  Documentation(info = "<html><head></head><body><div><div>Blocks CombiTable1Factor and CombiTable2Factor implement the way EHTPlib uses matrices to determine components' behaviour such as torque limitation, optimal speeds, ICE consumptions, etc.</div><div><i>CombiTable1Factor is based on a MSL CombiTable1Ds, &nbsp;CombiTable2Factor on CombiTable2Ds.</i></div><div><br></div></div><div>These matrices can be directly written on the input mask, or taken from a file.</div><div><br></div><div>When they are taken from a file, it is very convenent to use factors on matrix inputs and output. This allows for instance to compensate usage of rpm instead of rad/s for speeds, or to re-use matrices in machines different from those they were originally written for, scaling input axes and ouptut.</div><div>For instance one could have a fuel consumption map of an ICE; which is adequate for a full family of engines: using these factors, it can be scaled to different speed/torque ranges, and omothetically varied also vertically (e.g. consumptions can be reduced to 90% by multiplication with an output factor equal to 0.9).</div><div><br></div><div><div>When matrix is not from a file, factors are automatically set to 1, and the input matrix is used without changes. When, instead, it is taken from a file, the two inputs are mutiplied by u1Factor and u2Factor respectively, and output by yFactor.</div></div></body></html>"));
 end CombiTable2Factor;
