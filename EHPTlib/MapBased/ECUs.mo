@@ -216,9 +216,9 @@ package ECUs
       Placement(transformation(extent = {{100, -40}, {120, -20}}), iconTransformation(extent = {{100, -70}, {120, -50}})));
     Modelica.Blocks.Interfaces.RealInput Wmecc annotation(
       Placement(transformation(origin = {-8, -88}, extent = {{-14, -14}, {14, 14}}, rotation = 90), iconTransformation(origin = {-1, -115}, extent = {{-15, -15}, {15, 15}}, rotation = 90)));
-    SupportModels.MapBasedRelated.CombiTable1Factor optiSpeed(uFactor = os_uFactor, yFactor = os_yFactor, tableOnFile = mapsOnFile, table = osTable, tableName = osTableName, fileName = mapsFileName) annotation(
+    SupportModels.MapBasedRelated.CombiTable1Factor optiSpeed(uFactor = os_uFactor, yFactor = os_yFactor, tableOnFile = optiSpeedOnFile, table = osTable, tableName = osTableName, fileName = mapsFileName) annotation(
       Placement(transformation(origin = {-42, -30}, extent = {{-10, -10}, {10, 10}})));
-    SupportModels.MapBasedRelated.CombiTable1Factor maxTau(fileName = mapsFileName, table = mtTable, tableName = mtTableName, tableOnFile = mapsOnFile, uFactor = mt_uFactor, yFactor = mt_yFactor) annotation(
+    SupportModels.MapBasedRelated.CombiTable1Factor maxTau(fileName = mapsFileName, table = mtTable, tableName = mtTableName, tableOnFile = tauLimitsOnFile, uFactor = mt_uFactor, yFactor = mt_yFactor) annotation(
       Placement(transformation(origin = {12, 62}, extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Math.Gain gain1(k = -1) annotation(
       Placement(transformation(origin = {48, 32}, extent = {{-8, -8}, {8, 8}})));

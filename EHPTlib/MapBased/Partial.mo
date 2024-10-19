@@ -8,19 +8,19 @@ package Partial
     parameter Modelica.Units.SI.Voltage uDcNom = 100 "Nominal DC voltage" annotation(
       Dialog(group = "General parameters"));
     parameter Boolean limitsOnFile = false "= true, if torque and speed limits are taken from a txt file, otherwise they are tauMax and wMax" annotation(
-      choices(checkBox = true),
+//      choices(checkBox = true),
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.AngularVelocity wMax = 3000 "Maximum speed (for efficiency and torque limitation when limitsOnFile=false)" annotation(
       Dialog(group = "General parameters", enable=not limitsOnFile));
     parameter Real tlTorqueFactor=1 "factor applied to input torque for limits they are from file" annotation(
       Dialog(group = "Torque limitation related parameters", enable=limitsOnFile));
     parameter Real tlSpeedFactor=60/(2*pi) "factor applied to input speed for limits when they are from file"
-                                                                                                             annotation(
+                                 annotation(
       Dialog(group = "Torque limitation related parameters", enable=limitsOnFile));
     parameter Modelica.Units.SI.Power powMax = 22000 "Maximum mechanical power (used for efficiency and torque limitation when limitsOnFile=false)" annotation(
       Dialog(group = "General parameters", enable=not limitsOnFile));
     //Parameters related to torque limits:
-    parameter Modelica.Units.SI.Torque tauMax = 80 "Maximum torque when limits are not from an un-normalised file" annotation(
+    parameter Modelica.Units.SI.Torque tauMax = 80 "Maximum torque when limitsOnFile=false" annotation(
       Dialog(group = "General parameters", enable= not limitsOnFile));
     parameter String limitsFileName = "noName" "File where efficiency table matrix is stored" annotation(
       Dialog(group = "Torque limitation related parameters", enable = limitsOnFile, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
@@ -264,9 +264,9 @@ false")}),
       Dialog(group = "Consumption map related parameters"));
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation(
       Dialog(group = "General parameters", loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
-    parameter String specConsName = "NoName" "Name of the on-file specific consumption variable" annotation(
+    parameter String specConsName = "NoName" "Name of the on-file specific consumption matrix" annotation(
       Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
-    parameter Real scTorqueFactor = 1 "Torque multiplier for for specific consumption  map " annotation(
+    parameter Real scTorqueFactor = 1 "Torque multiplier for specific consumption  map " annotation(
       Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
     parameter Real scSpeedFactor = 60/(2*pi) "Speed multiplier for specific consumption  map (see info)" annotation(
       Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
@@ -275,6 +275,8 @@ false")}),
     parameter Boolean tlMapOnFile = false "= true, if tables are taken from a txt file" annotation(
       choices(checkBox = true),
       Dialog(group = "Torque limit map related parameters"));
+    parameter String torqueLimitName = "NoName" "Name of the on-file torque-limit matrix" annotation(
+      Dialog(enable = tlMapOnFile, group = "Torque limit map related parameters"));
     parameter Real tlTorqueFactor = 1 "Torque multiplier for for torque limit map " annotation(
       Dialog(enable = tlMapOnFile, group = "Torque limit map related parameters"));
     parameter Real tlSpeedFactor = 60/(2*pi) "Speed multiplier for torque limit map" annotation(
@@ -394,7 +396,7 @@ false")}),
       Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceT01 used when ICE must follow a Torque request in per unit of the maximum allowed</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p><p><span style=\"font-family: MS Shell Dlg 2;\">------------------------------------------------------------------</span></p><p>When consumption is taken from a file, multipliers are useful to reuse a map for a different vehicle: scSpeeedFactor and scTorqueFactor multiply the computed speed and torque before entering the table, &nbsp;scConsFactor multiplies the table output before further processing.</p><div>Consider for instance the following map:</div><p><span style=\"font-family: 'Courier New';\"># First row: (from column 2) speed (rpm)&nbsp;</span></p><div><span style=\"font-family: 'Courier New';\"><span style=\"font-family: 'Courier New';\">
+<p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p><p><span style=\"font-family: MS Shell Dlg 2;\">------------------------------------------------------------------</span></p><p>When consumption is taken from a file, multipliers are useful to reuse a map for a different vehicle: scSpeedFactor and scTorqueFactor multiply the computed speed and torque before entering the table, &nbsp;scConsFactor multiplies the table output before further processing.</p><div>Consider for instance the following map:</div><p><span style=\"font-family: 'Courier New';\"># First row: (from column 2) speed (rpm)&nbsp;</span></p><div><span style=\"font-family: 'Courier New';\"><span style=\"font-family: 'Courier New';\">
 # First column (from row 2): torque (Nm)<br>
 # body: spec. consumption (g/kWh).<br>
 double iceSpecificCons(10 6)<br>
@@ -513,38 +515,68 @@ reference
 and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}},      color = {255, 0, 0})}));
   end PartialIceP;
 
-  partial model PartialGenset "GenSet GMS+GEN+SEngine"
-    import Modelica.Constants.inf;
-    import Modelica.Constants.pi;
-    // General parameters:
-    parameter Real gsRatio = 1 "IdealGear speed reduction factor";
-    parameter Real throttlePerWerr = 100/maxGenW "internal throttle controller proportional gain";
-    parameter Real uDcNom=100"nominal DC voltage (only order of magnitude needs to be right";
-    // Parameters related to input maps:
-    // ICE related parameters:
-    parameter Modelica.Units.SI.MomentOfInertia jIce = 0.1 "ICE moment of inertia" annotation(
-      Dialog(group = "ICE parameters"));
-    parameter Boolean useNormalisedFuelMaps = false "= true, ICE consumption map has torque and speed between 0 and 1; else between 0 and maxTauNorm and maxSpeedNorm" annotation(
-      choices(checkBox = true));
-    parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
-      Dialog(group = "ICE parameters"));
-    // generator related parameters:
-    parameter Modelica.Units.SI.MomentOfInertia jGen = 0.1 "Generator moment of inertia" annotation(
-      Dialog(group = "Generator parameters"));
-    parameter Modelica.Units.SI.AngularVelocity maxGenW = 1e6 "Max generator angular speed" annotation(
-      Dialog(group = "Generator parameters"));
-    parameter Modelica.Units.SI.Power maxGenPow = 100e3 "Max mechanical power of the internal generator" annotation(
-      Dialog(group = "Generator parameters"));
-    parameter String mapsFileName = "maps.txt" "File containing data maps (maxIceTau, gensetDriveEffTable, specificCons, optiSpeed)" annotation(
-      Dialog(group = "Input map (ICE and Gen) parameters"));
-    parameter Modelica.Units.SI.Torque maxTau = 200 "Max mechanical torque between internal ICE and generator";
-    parameter Modelica.Units.SI.Torque maxTauNorm = maxTau "Max torque for normalised maps" annotation(
-      Dialog(group = "Input map (ICE and Gen) parameters"));
-    parameter Modelica.Units.SI.AngularVelocity maxSpeedNorm "Max mechanical speed for normalised maps" annotation(
-      Dialog(group = "Input map (ICE and Gen) parameters"));
-    final parameter Modelica.Units.SI.Torque actualTauMax(fixed = false);
-    //actual Max torque value for consumption map (which in file is between 0 and 1)
-    final parameter Modelica.Units.SI.AngularVelocity actualSpeedMax(fixed = false);
+partial model PartialGenset "GenSet= GMS+ICE+GEN"
+  import Modelica.Constants.inf;
+  import Modelica.Constants.pi;
+  // General parameters:
+  parameter Real gsRatio = 1 "IdealGear speed reduction factor";
+  parameter Real throttlePerWerr = 100/maxGenW "internal throttle controller proportional gain";
+  parameter Real uDcNom=100"nominal DC voltage (only order of magnitude needs to be right";
+
+  // general tab ICE related parameters :
+  parameter Modelica.Units.SI.MomentOfInertia jIce = 0.1 "ICE moment of inertia" annotation(
+    Dialog(group = "ICE parameters"));
+  parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
+    Dialog(group = "ICE parameters"));
+  // general tab generator related parameters:
+  parameter Modelica.Units.SI.MomentOfInertia jGen = 0.1 "Generator moment of inertia" annotation(
+    Dialog(group = "Generator parameters"));
+   parameter Modelica.Units.SI.AngularVelocity maxGenW = 1e6 "Max generator angular speed when not mapsOnFile" annotation(
+    Dialog(group = "Generator parameters", enable= not mapsOnFile));
+  parameter Modelica.Units.SI.Power maxGenPow = 100e3 "Max mechanical power of the internal generator when not mapsOnFile" annotation(
+    Dialog(group = "Generator parameters", enable= not mapsOnFile));
+  parameter String mapsFileName = "maps.txt" "File containing data maps" annotation(
+    Dialog(tab="Map related parameters"));
+  parameter Modelica.Units.SI.Torque maxTau = 200 "Max torque between internal ICE and generator when not mapsOnFile" annotation(Dialog(group = "Generator parameters", enable= not mapsOnFile));
+
+  // Parameters related to input maps (maps Tab):
+  parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
+  // GMS
+  parameter String optiSpeedName = "optiSpeed"  "Name of the on-file specific consumption variable" annotation(
+    Dialog(tab="Map related parameters", group="GMS parameters"));
+  parameter Real os_uFactor = 1 "Factor before inputting pRef into map from txt file" annotation(
+    Dialog(tab="Map related parameters", group="GMS parameters", enable = mapsOnFile));
+  parameter Real os_yFactor = 2*pi/60 "Factor after reading optiSpeed from txt file" annotation(
+    Dialog(tab="Map related parameters", group="GMS parameters", enable = mapsOnFile));
+  parameter Real mt_uFactor = 1 "Factor before inputting wMecc into maxTau map from txt file" annotation(
+    Dialog(tab="Map related parameters", group="GMS parameters", enable = mapsOnFile));
+  parameter Real mt_yFactor = 1 "Factor after reading max torque from maxTau map from txt file" annotation(
+    Dialog(tab="Map related parameters", group="GMS parameters", enable = mapsOnFile));
+  //ICE
+  parameter String specConsName = "specificCons" "Name of the on-file specific consumption variable" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters"));
+  parameter Real scTorqueFactor = 1 "Torque multiplier for specific consumption map" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters", enable = mapsOnFile));
+  parameter Real scSpeedFactor = 2*pi/60 "Torque multiplier for specific consumption map" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters", enable = mapsOnFile));
+  parameter Real scConsFactor = 1 "Output multiplier for specific consumption map" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters", enable = mapsOnFile));
+  parameter String iceTauLimitName = "maxIceTau" "Name of the on-file max ICE torque matrix" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters"));
+  parameter Real tlTorqueFactor = 1 "Torque multiplier for torque limit map" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters", enable = mapsOnFile));
+  parameter Real tlSpeedFactor  = 1 "Speed multiplier for torque limit map" annotation(
+    Dialog(tab="Map related parameters", group="ICE parameters", enable = mapsOnFile));
+  //GEN
+  parameter String efficiencyName = "gensetGenEff" "Name of the on-file generator efficiency matrix" annotation(
+    Dialog(tab="Map related parameters", group="Gen parameters"));
+  parameter Real eTorqueFactor=1 "Factor applied to input torque for efficiencies when they are from file"
+        annotation( Dialog(tab="Map related parameters", group = "Gen parameters"));
+  parameter Real eSpeedFactor=60/(2*pi) "Factor applied to input speed for efficiencies when they are from file"    annotation( Dialog(tab="Map related parameters", group = "Gen parameters", enable=mapsOnFile));
+  parameter String genTauLimitName = "minMaxGenTau" "Name of the on-file max ICE torque matrix" annotation(
+    Dialog(tab="Map related parameters", group="Gen parameters"));
+
+ 
     //actual Max speed value for consumption map (which in file is between 0 and 1)
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation(
       Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin = {-20, -40})));
@@ -556,7 +588,7 @@ and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}}
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 48})));
     EHPTlib.MapBased.OneFlange gen(wMax = maxGenW, J = jGen, limitsFileName = mapsFileName, effMapOnFile = true, powMax = maxGenPow, tauMax = maxTau, effMapFileName = mapsFileName, effTableName = "gensetDriveEffTable", uDcNom = uDcNom) annotation(
       Placement(visible = true, transformation(extent = {{74, 2}, {54, -18}}, rotation = 0)));
-    IceT01 iceT(iceJ = jIce, scMapOnFile = true, tlMapOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = "specificCons") annotation(
+    IceT01 iceT(iceJ = jIce, scMapOnFile = true, tlMapOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = specConsName, torqueLimitName = iceTauLimitName) annotation(
       Placement(transformation(extent = {{-28, -18}, {-8, 4}})));
     Modelica.Blocks.Math.Gain gain(k = -gsRatio) annotation(
       Placement(transformation(extent = {{14, 24}, {34, 44}})));
@@ -570,14 +602,6 @@ and computes consumption"), Line(origin={-74,-26},    points={{-46,84},{-36,84}}
       Placement(transformation(extent = {{90, -46}, {110, -26}}), iconTransformation(extent = {{92, -70}, {112, -50}})));
     Modelica.Blocks.Interfaces.RealInput powRef(unit = "W") "Reference genset power" annotation(
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {60, 82}), iconTransformation(extent = {{15, -15}, {-15, 15}}, rotation = 90, origin = {57, 115})));
-  initial equation
-    if useNormalisedFuelMaps then
-      actualTauMax = maxTauNorm;
-      actualSpeedMax = maxSpeedNorm;
-    else
-      actualTauMax = 1;
-      actualSpeedMax = 1;
-    end if;
   equation
     connect(gain.y, gen.tauRef) annotation(
       Line(points = {{35, 34}, {80, 34}, {80, -8}, {75.4, -8}}, color = {0, 0, 127}));

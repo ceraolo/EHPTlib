@@ -1,7 +1,7 @@
 within EHPTlib.MapBased;
 
 model IceT
-  extends Partial.PartialIceTNm;
+  extends Partial.PartialIceTNm(limTauMap(tableOnFile = tlMapOnFile));
   Modelica.Blocks.Nonlinear.Limiter limiter(uMin = 0, uMax = 1e99) annotation(
     Placement(transformation(origin = {-80, -56}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
   Modelica.Blocks.Interfaces.RealInput tauRef "torque request (positive when motor)" annotation(
