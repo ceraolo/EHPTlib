@@ -181,23 +181,24 @@ package ECUs
 
   model GMS "Genset Management System (simplified)"
     parameter Real throttlePerWerr = 0.01 "speed controller gain (throttle per rad/s)";
-    parameter Boolean mapsOnFile = true;
+    parameter Boolean optiSpeedOnFile = true;
+    parameter Boolean tauLimitsOnFile = true;
     /*annotation(choices(checkBox = true))*/
     parameter String mapsFileName = "maps.txt" "File name where optimal speed is stored";
     import Modelica.Constants.pi;
     parameter Real os_uFactor = 1 "Factor before inputting pRef into map from txt file" annotation(
-      Dialog(enable = mapsOnFile));
+      Dialog(group = "GMS parameters", enable = optiSpeedOnFile));
     parameter Real os_yFactor = 2*pi/60 "Factor after reading optiSpeed from txt file" annotation(
-      Dialog(enable = mapsOnFile));
-    parameter Real mt_uFactor = 1 "Factor before inputting wMecc into map from txt file" annotation(
-      Dialog(enable = mapsOnFile));
-    parameter Real mt_yFactor = 1 "Factor after reading max torque from txt file" annotation(
-      Dialog(enable = mapsOnFile));
+      Dialog(group = "GMS parameters", enable = optiSpeedOnFile));
+    parameter Real mt_uFactor = 1 "Factor before inputting wMecc into maxTau map from txt file" annotation(
+      Dialog(group = "GMS parameters", enable = tauLimitsOnFile));
+    parameter Real mt_yFactor = 1 "Factor after reading max torque from maxTau map from txt file" annotation(
+      Dialog(group = "GMS parameters", enable = tauLimitsOnFile));
     parameter Real osTable[:, :] = [0, 100; 1000, 100] "optimal speed (rad/s) as a function of requested power (W)" annotation(
-      Dialog(enable = not mapsOnFile));
+      Dialog(enable = not optiSpeedOnFile));
     parameter String osTableName = "optiSpeed";
     parameter Real mtTable[:, :] = [0, 100; 100, 100] "max torque  (Nm) as a function of speed  (rad/s))" annotation(
-      Dialog(enable = not mapsOnFile));
+      Dialog(enable = not tauLimitsOnFile));
     parameter String mtTableName = "maxIceTau";
     Modelica.Blocks.Math.Division division annotation(
       Placement(transformation(origin = {-62, 30}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));

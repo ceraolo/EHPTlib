@@ -14,24 +14,9 @@ equation
           {-44,-24},{-24,-24},{-24,-20.2}}, color={0,0,127}));
   connect(gms.pRef, limiter.y)
     annotation (Line(points={{-72,22},{-80,22},{-80,37}}, color={0,0,127}));
-  annotation (Documentation(info="<html>
-<p>Generator set containing Internal Combustion Engine (ICE), electric generator (with DC output), and the related control.</p>
+  annotation (
+    Documentation(info = "<html><head></head><body><p>Generator set containing Internal Combustion Engine (ICE), electric generator (with DC output), and the related control.</p>
 <p>This model models a generator set, as the one present in a series-hybrid vehicle: it contains an Internal Combustion engine (ICE), coupled through an ideal reduction gear (set its ratio to 1 in case it is absent) to an electric generator (with DC output). </p>
 <p>It contains also the control logic of this set, that asks the ICE deliver, using the optimal generator speed, the requested input power. Actual DC power will be lower, due to the generator efficiency.</p>
-<p>The model needs several ICE-related matrices to be loaded from the input txt file:</p>
-<p>1. maxIceTau, containing the maximum torque the ICE can deliver at the various torques</p>
-<p>2. specificCons containing the specific consumption of ICE (g/kWh)</p>
-<p>3. optiSpeed containing the optimal speed for the maximum efficiency at any ICE mechanical power </p>
-<p>It also needs the following generator-related matrix:</p>
-<p>1. gensetDriveEffTable containing the efficiency of the electric generator connected to the ICE output </p>
-<p>Actual delivered DC power depends, in addition to the generator efficiency, also on limits on  mechanical torque (maxTau) and generator power (maxGenPow).</p>
-<p>---------------------------------------------------------------------------------------------------------------------</p>
-<p>As a target, the library should allow all the matrices read from files to be expressed with inputs with their dimensions (Nm for torques, rad/s for speeds) or in per unit (0-1 values)</p>
-<p>At the current stage of development, however:</p>
-<ul>
-<li>in case useNormalisedFuelMaps=true, maxTauNorm, and maxSpeedNorm are used as max values for the fuel consumption map. This way, larger or smaller engines can be simulated just changing them: leaving the consumption map invaried will keep that maps&apos;s shape unchanged.</li>
-<li>In case useNormalisedfuelMaps=false, when maxTorque and/or maxPower and/or maxGenW are changed, the fuel consumption map must be changed accordingly.</li>
-</ul>
-<h4>Other matrices different from ICE fuel are not normalised (yet).</h4>
-</html>"));
-end Genset;
+<p>The model can work at two levels of complexity (and modeling detail).</p><p><b>Level 1: Fixed limits, fixed consumption</b></p><p>At this level, the model will limit the torque internally exchanged between ICE and generator to maxTau, its speed to maxGenW, its power to maxGenPow.</p><p>to operate at this level, parameter mapsOnFile must be unselected (i.e., false).</p><p><b>Level 2: limits and consumption from a txt&nbsp;</b></p><p>At this level, the model will limit the torque internally exchanged between ICE and generator to matrixes read from ta txt file. The file and matrixs names can be inputted, while it is easier to stick with the default matrix names.&nbsp;</p><p>Input and output values to all matrices are multiplied by factors that are under user control. This allows using matrices with different units of measures (e.g. rpm or rad/s), and/or re-use matrices for devices with different maximum values, but limits and/or consumption with the same shape. If we, for instance, multiply input torque and speed by two, we can use torque limits referring to a machine having twice the maximum torque and speed, and the same shape between 0 and maxima. If we multiply output consumption by 0.8, we will have an engine with the same consumption map shape, but lower consumptions values by 20%.</p><p>***************</p><p>This model uses GMS, IceT and OneFlange EHPTlib models.</p><p>All of them allow implementing limitation of torque between iceT and gen. In genset, both ICE and gen keep their limitations, while GMMS limitation is disabled through usage of very large limits.</p><p>IceT and gen torque limiations are different: gen has a near-symmetrical torque limitation, while ICE, as it is implemented has zero minimum torque. This does not create issues, since the power request to ICE is always positive, and therefore gen will nerver (or nearly never) apply accelerating torques to the ICE.</p>
+</body></html>"));end Genset;
