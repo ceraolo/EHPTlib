@@ -1,7 +1,7 @@
 #1
 
 # maxIceTau
-#   First column: speed, 2nd column: torque
+#   First column: speed (rad/s), 2nd column: torque (Nm)
 double maxIceTau (7,2)
 80	380
 100	620
@@ -10,6 +10,19 @@ double maxIceTau (7,2)
 220	670
 230	650
 240	570
+
+# minMaxIceTau
+#   First column: speed (rad/s), 2nd column: torque (Nm)
+double minMaxIceTau (9,2)
+0	-10.	0
+70	-10.	0
+80	-10.	380
+100	-10.	620
+120	-10.	800
+170	-10.	800
+220	-10.	670
+230	-10.	650
+240	-10.	570
 
 # motEffTable
 #   efficiency - rows:speeds pu, columns:torques pu
