@@ -648,7 +648,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
 </html>"));
   end TestTwoFlange1;
 
-  model TestGenset "Ice, Generator, DriveTrain, all map-based"
+  model TestGenset1 "Ice, Generator, DriveTrain, all map-based"
     Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
       Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -26})));
     MapBased.Genset genset(gsRatio = 1, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"), maxGenW = 300,  maxGenPow = 55e3, maxTau = 500, wIceStart = 114) annotation(
@@ -678,14 +678,50 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
       Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1)),
       Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
       experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
-      Documentation(info = "<html>
-<p>This is model tests some of the genset features.</p>
-<p>The power request will not be entirely delivered by the DC terminals because of two reasons:</p>
-<p>1. the requested power is the power delivered by the internal ICE, larger than the electrical power delivered by the internal generator, because the latter has, in general, a lower than one efficiency.</p>
-<p>2. maximum DC power is also limited by parameter maxGenPow: in this simulation this limit is set to 55 kW and occurs 0.73 and 2.2 s.</p>
-<p>To see this you can simultaneously plot  trapezoid.y, genset.icePow.power, gsPow.power, </p>
-</html>"));
-  end TestGenset;
+      Documentation(info = "<html><head></head><body><p>This is model tests some of the genset features.</p>
+<p>Int its provided version, gensetPowref and genset.icePos.power are identical, since non torque limitation occurs. The produced power gsPow.power is lower because of internal generator efficiencies.</p><p>To see the effect of limitations, without having to change the input maps, we can use factors. If, for instance, we change tlGenTorqueFactor from 1 to 0.5, mechanical power genset.icePow.power is not able to follow the refrence signal in the central region, by effect of the gen torque limitation.</p><p><br></p>
+</body></html>"));
+  end TestGenset1;
+
+  model TestGenset2WIP "Ice, Generator, DriveTrain, all map-based"
+    Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
+      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -26})));
+    MapBased.Genset genset(gsRatio = 1, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"), maxGenW = 300,  maxGenPow = 55e3, maxTau = 500, wIceStart = 114, mapsOnFile = false) annotation(
+      Placement(transformation(origin = {44, -24}, extent = {{-80, 8}, {-50, 38}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
+      Placement(transformation(origin = {44, -24}, extent = {{-32, 24}, {-12, 44}})));
+    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
+      Placement(transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    Modelica.Blocks.Sources.Trapezoid trapezoid(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
+      Placement(transformation(origin = {-60, 24}, extent = {{-10, -10}, {10, 10}})));
+  equation
+    connect(gsPow.nv, genset.pin_n) annotation(
+      Line(points = {{22, 0}, {22, 0}, {22, -10}, {-5.7, -10}, {-5.7, -10}}, color = {0, 0, 255}));
+    connect(gsPow.pv, gsPow.pc) annotation(
+      Line(points = {{22, 20}, {12, 20}, {12, 10}}, color = {0, 0, 255}));
+    connect(gsPow.pc, genset.pin_p) annotation(
+      Line(points = {{12, 10}, {3, 10}, {3, 8}, {-6, 8}}, color = {0, 0, 255}));
+    connect(genset.pin_n, ground1.p) annotation(
+      Line(points = {{-5.7, -10}, {2, -10}, {2, -18}}, color = {0, 0, 255}));
+    connect(gsPow.nc, uDC.p) annotation(
+      Line(points = {{32, 10}, {48, 10}}, color = {0, 0, 255}));
+    connect(uDC.n, genset.pin_n) annotation(
+      Line(points = {{48, -10}, {-5.7, -10}}, color = {0, 0, 255}));
+    connect(trapezoid.y, genset.powRef) annotation(
+      Line(points = {{-49, 24}, {-12.45, 24}, {-12.45, 16.25}}, color = {0, 0, 127}));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1), graphics = {Text(origin = {-46, -26}, textColor = {238, 46, 47}, extent = {{-32, 16}, {32, -16}}, textString = "Deve implementare il Level1 dell'info, va ancora finalizzato.
+In particolare 
+- va propagato constGeEfficiency a gen
+- gen deve funzionare su limiti fisici, senza file
+Tutto deve funzionare senza file", horizontalAlignment = TextAlignment.Left)}),
+      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
+      experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
+      Documentation(info = "<html><head></head><body><p>This is model tests some of the genset features.</p>
+<p>Int its provided version, gensetPowref and genset.icePos.power are identical, since non torque limitation occurs. The produced power gsPow.power is lower because of internal generator efficiencies.</p><p>To see the effect of limitations, without having to change the input maps, we can use factors. If, for instance, we change tlGenTorqueFactor from 1 to 0.5, mechanical power genset.icePow.power is not able to follow the refrence signal in the central region, by effect of the gen torque limitation.</p><p><br></p>
+</body></html>"));
+  end TestGenset2WIP;
+
 
   model TestGensetOO "Ice, Generator, DriveTrain, all map-based"
     Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
