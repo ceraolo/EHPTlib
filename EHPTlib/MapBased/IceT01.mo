@@ -1,7 +1,7 @@
 within EHPTlib.MapBased;
 model IceT01 "Simple  map-based ice model with connector"
   import Modelica.Constants.*;
-  extends Partial.PartialIceT01;
+  extends Partial.PartialIceT01(limTauMap(tableOnFile, tableName = torqueLimitName));
   Modelica.Blocks.Sources.BooleanConstant onSignal
     annotation (Placement(transformation(extent={{-46,-60},{-30,-44}})));
   Modelica.Blocks.Interfaces.RealOutput fuelCons "Fuel consumption (g/h)" annotation (
