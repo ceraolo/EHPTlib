@@ -43,7 +43,7 @@ package Partial
       Dialog(group = "Efficiency related parameters", enable=effMapOnFile));
     parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation(
       Dialog(enable = effMapOnFile and efficiencyFromTable, group = "Efficiency related parameters"));
-    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both PU of wMax and tauMax" annotation(
+    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques," annotation(
       Dialog(enable = not effMapOnFile and efficiencyFromTable, group = "Efficiency related parameters"));
     //Parameters related to the loss-formula:
     parameter Real A = 0.006 "fixed losses" annotation(
@@ -529,10 +529,14 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
   parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
     Dialog(group = "ICE parameters"));
   parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
-  parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"annotation(
+  parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
+        annotation(
     Dialog(enable = not mapsOnFile));
-  parameter Real constFuelConsumption=200 "Fuel consumption in g/kWh when mapsOnfile=false"annotation(
-    Dialog(enable = not mapsOnFile));
+  parameter Real constFuelConsumption=200 "Fuel consumption in g/kWh when mapsOnfile=false"
+       annotation(  Dialog(enable = not mapsOnFile));
+  parameter Modelica.Units.SI.AngularVelocity constOptimalSpeed=100 
+           "Optimal speed when mapsOnfile=false"
+       annotation(  Dialog(enable = not mapsOnFile));
 
   // general tab generator related parameters:
   parameter Modelica.Units.SI.MomentOfInertia jGen = 0.1 "Generator moment of inertia" annotation(

@@ -1,10 +1,10 @@
 within EHPTlib.MapBased;
 model Genset "GenSet GMS+GEN+SEngine"
-  extends Partial.PartialGenset(gen(effMapOnFile=mapsOnFile), iceT(scMapOnFile=
-          false, specificCons=constFuelConsumption*[0,100,200; 100,1,1; 200,1,1]));
+  extends Partial.PartialGenset(gen(effMapOnFile = mapsOnFile, effTable = constGenEfficiency*[0, 0, 1; 0, 1, 1; 1, 1, 1], limitsOnFile = mapsOnFile), iceT(scMapOnFile=
+          mapsOnFile, specificCons=constFuelConsumption*[0,100,200; 100,1,1; 200,1,1], tlMapOnFile = mapsOnFile, maxIceTau = maxTau*[0, 1.1; 100, 1.1]));
   ECUs.GMS gms(
     throttlePerWerr=throttlePerWerr,
-    mapsFileName=mapsFileName, optiSpeedOnFile = mapsOnFile, tauLimitsOnFile = false, mtTable = [0, 1e9; 100, 1e9])
+    mapsFileName=mapsFileName, optiSpeedOnFile = mapsOnFile, tauLimitsOnFile = mapsOnFile, mtTable = [0, 1e9; 100, 1e9], osTable = constOptimalSpeed*[0, 1; 1, 1])
     annotation (Placement(transformation(extent={{-70,12},{-50,32}})));
 equation
   connect(gms.Wmecc, gain1.y) annotation (Line(points={{-60.1,10.5},{-60,10.5},
