@@ -28,10 +28,10 @@ package Partial
       Dialog(enable = limitsOnFile, group = "Torque limitation related parameters"));
     //Parameters related to efficiency combi table:
     parameter Boolean efficiencyFromTable = true "=true if efficiency if from a table (either online or from a file); otherwise use a the built-in loss formula" annotation(
-  //    choices(checkBox = true),
+      choices(checkBox = true),
       Dialog(group = "Efficiency related parameters"));
     parameter Boolean effMapOnFile = false "= true, if tables are taken from a txt file" annotation(
-  //    choices(checkBox = true),
+      choices(checkBox = true),
       Dialog(enable = efficiencyFromTable, group = "Efficiency related parameters"));
     parameter String effMapFileName = "noName" "File where efficiency table matrix is stored" annotation(
       Dialog(group = "Efficiency related parameters", enable = effMapOnFile and efficiencyFromTable, loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
@@ -43,7 +43,7 @@ package Partial
       Dialog(group = "Efficiency related parameters", enable=effMapOnFile));
     parameter String effTableName = "noName" "Name of the on-file efficiency matrix" annotation(
       Dialog(enable = effMapOnFile and efficiencyFromTable, group = "Efficiency related parameters"));
-    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques," annotation(
+    parameter Real effTable[:, :] = [0, 0, 1; 0, 1, 1; 1, 1, 1] "rows: speeds; columns: torques; both PU of wMax and tauMax" annotation(
       Dialog(enable = not effMapOnFile and efficiencyFromTable, group = "Efficiency related parameters"));
     //Parameters related to the loss-formula:
     parameter Real A = 0.006 "fixed losses" annotation(
@@ -260,7 +260,7 @@ false")}),
     parameter Modelica.Units.SI.MomentOfInertia iceJ = 0.5 "ICE moment of Inertia" annotation(
       Dialog(group = "General parameters"));
     parameter Boolean scMapOnFile = false "= true, if tables are taken from a txt file" annotation(
-  //    choices(checkBox = true),
+      choices(checkBox = true),
       Dialog(group = "Consumption map related parameters"));
     parameter String mapsFileName = "NoName" "File where specific consumption matrix is stored" annotation(
       Dialog(group = "General parameters", loadSelector(filter = "Text files (*.txt)", caption = "Open file in which required tables are")));
@@ -273,7 +273,7 @@ false")}),
     parameter Real scConsFactor = 1 "Output multiplier for specific consumption map" annotation(
       Dialog(enable = scMapOnFile, group = "Consumption map related parameters"));
     parameter Boolean tlMapOnFile = false "= true, if tables are taken from a txt file" annotation(
-  //    choices(checkBox = true),
+      choices(checkBox = true),
       Dialog(group = "Torque limit map related parameters"));
     parameter String torqueLimitName = "NoName" "Name of the on-file torque-limit matrix" annotation(
       Dialog(enable = tlMapOnFile, group = "Torque limit map related parameters"));
@@ -528,16 +528,18 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
     Dialog(group = "ICE parameters"));
   parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
     Dialog(group = "ICE parameters"));
+  // general tab generator related parameters:
+
   parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
-  parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
+    parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
         annotation(
     Dialog(enable = not mapsOnFile));
   parameter Real constFuelConsumption=200 "Fuel consumption in g/kWh when mapsOnfile=false"
        annotation(  Dialog(enable = not mapsOnFile));
-  parameter Modelica.Units.SI.AngularVelocity constOptimalSpeed=100 
+  parameter Modelica.Units.SI.AngularVelocity constOptimalSpeed=100
            "Optimal speed when mapsOnfile=false"
        annotation(  Dialog(enable = not mapsOnFile));
-
+  
   // general tab generator related parameters:
   parameter Modelica.Units.SI.MomentOfInertia jGen = 0.1 "Generator moment of inertia" annotation(
     Dialog(group = "Generator parameters"));
@@ -549,7 +551,8 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
     Dialog(tab="Map related parameters"));
   parameter Modelica.Units.SI.Torque maxTau = 200 "Max torque between internal ICE and generator when not mapsOnFile" annotation(Dialog(group = "Generator parameters", enable= not mapsOnFile));
 
-
+  
+  
   // Parameters related to input maps (maps Tab):
   // GMS
   parameter String optiSpeedName = "optiSpeed"  "Name of the on-file specific consumption variable" annotation(
@@ -596,9 +599,30 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
       Placement(transformation(extent = {{90, 50}, {110, 70}}), iconTransformation(extent = {{90, 50}, {110, 70}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMax = inf, uMin = 0) annotation(
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 48})));
-    EHPTlib.MapBased.OneFlange gen(wMax = maxGenW, J = jGen, limitsFileName = mapsFileName, effMapOnFile = true, powMax = maxGenPow, tauMax = maxTau, effMapFileName = mapsFileName, effTableName = "gensetDriveEffTable", uDcNom = uDcNom, limitsOnFile = true, tlTorqueFactor = tlGenTorqueFactor, tlSpeedFactor = tlGenSpeedFactor, tauLimitsMapName = genTauLimitName) annotation(
+    EHPTlib.MapBased.OneFlange gen(
+      wMax = maxGenW,
+      J = jGen,
+      limitsFileName = mapsFileName,
+      effMapOnFile = mapsOnFile,
+      powMax = maxGenPow,
+      tauMax = maxTau,
+      effMapFileName = mapsFileName,
+      effTableName = "gensetDriveEffTable",
+      uDcNom = uDcNom,
+      limitsOnFile = mapsOnFile,
+      tlTorqueFactor = tlGenTorqueFactor,
+      tlSpeedFactor = tlGenSpeedFactor,
+      tauLimitsMapName = genTauLimitName) annotation(
       Placement(visible = true, transformation(extent = {{74, 2}, {54, -18}}, rotation = 0)));
-    IceT01 iceT(iceJ = jIce, scMapOnFile = true, tlMapOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = specConsName, torqueLimitName = iceTauLimitName) annotation(
+    IceT01 iceT(
+      iceJ = jIce,
+      scMapOnFile = true,
+      tlMapOnFile = true,
+      mapsFileName = mapsFileName,
+      wIceStart = wIceStart,
+      specConsName = specConsName,
+      torqueLimitName = iceTauLimitName)
+     annotation(
       Placement(transformation(extent = {{-28, -18}, {-8, 4}})));
     Modelica.Blocks.Math.Gain gain(k = -gsRatio) annotation(
       Placement(transformation(extent = {{14, 24}, {34, 44}})));
