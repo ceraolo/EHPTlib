@@ -528,6 +528,128 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
     end TestIceTmultipliers;
   end TestICE;
 
+  package TestGensets
+  
+  
+    model TestGenset1 "Ice, Generator, DriveTrain, all map-based"
+  Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
+      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -26})));
+    MapBased.Genset genset(gsRatio = 1, maxGenW = 300, maxGenPow = 55e3, maxTau = 550, wIceStart = 95, mapsOnFile = false) annotation(
+      Placement(transformation(origin = {44, -24}, extent = {{-80, 8}, {-50, 38}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
+      Placement(transformation(origin = {44, -24}, extent = {{-32, 24}, {-12, 44}})));
+    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
+      Placement(transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    Modelica.Blocks.Sources.Trapezoid powerRef(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
+      Placement(transformation(origin = {-60, 24}, extent = {{-10, -10}, {10, 10}})));
+  equation
+    connect(gsPow.nv, genset.pin_n) annotation(
+      Line(points = {{22, 0}, {22, 0}, {22, -10}, {-5.7, -10}, {-5.7, -10}}, color = {0, 0, 255}));
+    connect(gsPow.pv, gsPow.pc) annotation(
+      Line(points = {{22, 20}, {12, 20}, {12, 10}}, color = {0, 0, 255}));
+    connect(gsPow.pc, genset.pin_p) annotation(
+      Line(points = {{12, 10}, {3, 10}, {3, 8}, {-6, 8}}, color = {0, 0, 255}));
+    connect(genset.pin_n, ground1.p) annotation(
+      Line(points = {{-5.7, -10}, {2, -10}, {2, -18}}, color = {0, 0, 255}));
+    connect(gsPow.nc, uDC.p) annotation(
+      Line(points = {{32, 10}, {48, 10}}, color = {0, 0, 255}));
+    connect(uDC.n, genset.pin_n) annotation(
+      Line(points = {{48, -10}, {-5.7, -10}}, color = {0, 0, 255}));
+    connect(powerRef.y, genset.powRef) annotation(
+      Line(points = {{-49, 24}, {-12.45, 24}, {-12.45, 16.25}}, color = {0, 0, 127}));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1)),
+      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
+      experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
+      Documentation(info = "<html><head></head><body><p>This is a first model testing the behaviour of Genset when nothing is taken from file.</p><p>Therefore it has:</p><p>- fixed torque limits</p><p>- fixed reference ICE speed</p><p>- fixed fuel consumption</p><p>- fixed generator efficiency.</p><p>It is highly unrealistic. The user can, however, use variable values of the above fixed limtits, taking advantage of the possibilities offered by their internal definition as matrices. However, the maximum flexibilithy is obtained when maps are on file, a behaviour which is checked with TestGenset2 model.</p>
+  </body></html>"));
+  end TestGenset1;
+
+  model TestGenset2 "Ice, Generator, DriveTrain, all map-based"
+    Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
+      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -26})));
+    MapBased.Genset genset(
+      gsRatio = 1,
+      mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"),
+      maxGenW = 300,
+      maxGenPow = 55e3,
+      maxTau = 500,
+      wIceStart = 114, efficiencyName = "gensetDriveEffTable", eTorqueFactor = 1/500, eSpeedFactor = 1/300) annotation(
+      Placement(transformation(origin = {44, -24}, extent = {{-80, 8}, {-50, 38}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
+      Placement(transformation(origin = {44, -24}, extent = {{-32, 24}, {-12, 44}})));
+    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
+      Placement(transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    Modelica.Blocks.Sources.Trapezoid trapezoid(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
+      Placement(transformation(origin = {-60, 24}, extent = {{-10, -10}, {10, 10}})));
+  equation
+    connect(gsPow.nv, genset.pin_n) annotation(
+      Line(points = {{22, 0}, {22, 0}, {22, -10}, {-5.7, -10}, {-5.7, -10}}, color = {0, 0, 255}));
+    connect(gsPow.pv, gsPow.pc) annotation(
+      Line(points = {{22, 20}, {12, 20}, {12, 10}}, color = {0, 0, 255}));
+    connect(gsPow.pc, genset.pin_p) annotation(
+      Line(points = {{12, 10}, {3, 10}, {3, 8}, {-6, 8}}, color = {0, 0, 255}));
+    connect(genset.pin_n, ground1.p) annotation(
+      Line(points = {{-5.7, -10}, {2, -10}, {2, -18}}, color = {0, 0, 255}));
+    connect(gsPow.nc, uDC.p) annotation(
+      Line(points = {{32, 10}, {48, 10}}, color = {0, 0, 255}));
+    connect(uDC.n, genset.pin_n) annotation(
+      Line(points = {{48, -10}, {-5.7, -10}}, color = {0, 0, 255}));
+    connect(trapezoid.y, genset.powRef) annotation(
+      Line(points = {{-49, 24}, {-12.45, 24}, {-12.45, 16.25}}, color = {0, 0, 127}));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1)),
+      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
+      experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
+      Documentation(info = "<html><head></head><body><p>This is model tests some of the genset features; it makes useage of maps on file.</p>
+<p>The power request will not be entirely delivered by the DC terminals because of two reasons:</p>
+<p>1. the requested power is the one delivered by the internal ICE, larger than the electrical power delivered by the internal generator, because the latter has, in general, a lower than one efficiency.</p>
+<p>2. maximum DC power is also limited by parameter maxGenPow: in this simulation this limit is set to 55 kW and occurs 0.73 and 2.2 s.</p>
+<p>To see this you can simultaneously plot  trapezoid.y, genset.icePow.power, gsPow.power.</p>
+</body></html>"));
+  end TestGenset2;
+
+  model TestGensetOO "Ice, Generator, DriveTrain, all map-based"
+    Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
+      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -30})));
+    MapBased.GensetOO genset(gsRatio = 1, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"), maxGenW = 300, maxGenPow = 55e3, maxTau = 500, wIceStart = 114) annotation(
+      Placement(transformation(origin = {44, -30}, extent = {{-80, 8}, {-50, 38}})));
+    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
+      Placement(transformation(origin = {44, -30}, extent = {{-32, 24}, {-12, 44}})));
+    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
+      Placement(transformation(origin = {48, -6}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+    Modelica.Blocks.Sources.Trapezoid trapezoid(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
+      Placement(transformation(origin = {12, 38}, extent = {{10, -10}, {-10, 10}})));
+    Modelica.Blocks.Sources.BooleanStep booleanStep(startTime = 4, startValue = true) annotation(
+      Placement(transformation(extent = {{-72, 28}, {-52, 48}})));
+  equation
+    connect(gsPow.nv, genset.pin_n) annotation(
+      Line(points = {{22, -6}, {22, -16}, {-5.7, -16}}, color = {0, 0, 255}));
+    connect(gsPow.pv, gsPow.pc) annotation(
+      Line(points = {{22, 14}, {12, 14}, {12, 4}}, color = {0, 0, 255}));
+    connect(gsPow.pc, genset.pin_p) annotation(
+      Line(points = {{12, 4}, {3, 4}, {3, 2}, {-6, 2}}, color = {0, 0, 255}));
+    connect(genset.pin_n, ground1.p) annotation(
+      Line(points = {{-5.7, -16}, {2, -16}, {2, -22}}, color = {0, 0, 255}));
+    connect(gsPow.nc, uDC.p) annotation(
+      Line(points = {{32, 4}, {48, 4}}, color = {0, 0, 255}));
+    connect(uDC.n, genset.pin_n) annotation(
+      Line(points = {{48, -16}, {-5.7, -16}}, color = {0, 0, 255}));
+    connect(trapezoid.y, genset.powRef) annotation(
+      Line(points = {{1, 38}, {-12.45, 38}, {-12.45, 10.25}}, color = {0, 0, 127}));
+    connect(booleanStep.y, genset.ON) annotation(
+      Line(points = {{-51, 38}, {-30, 38}, {-30, 10.4}}, color = {255, 0, 255}));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-80, 60}, {60, -40}})),
+      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-80, 60}, {60, -40}}), graphics),
+      experiment(StopTime = 8, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"),
+      Documentation(info = "<html>
+<p>This is like TestGenset, but at t=4s genset is put Off by use of its logical input.</p>
+<p>Output power and torque at the internal machines (ICE and gen) go to zero.</p>
+</html>"));
+  end TestGensetOO;
+  end TestGensets;
+
   model TestLimTorque
     import Modelica.Constants.pi;
     SupportModels.MapBasedRelated.LimTorque fixedLimits(tauMax = 700, powMax(displayUnit = "kW") = 7e4) annotation(
@@ -693,121 +815,5 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
   </html>"));
   end TestTwoFlange2;
 
-  model TestGenset1 "Ice, Generator, DriveTrain, all map-based"
-  Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
-      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -26})));
-    MapBased.Genset genset(gsRatio = 1, maxGenW = 300, maxGenPow = 55e3, maxTau = 550, wIceStart = 95, mapsOnFile = false) annotation(
-      Placement(transformation(origin = {44, -24}, extent = {{-80, 8}, {-50, 38}})));
-    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
-      Placement(transformation(origin = {44, -24}, extent = {{-32, 24}, {-12, 44}})));
-    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
-      Placement(transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    Modelica.Blocks.Sources.Trapezoid powerRef(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
-      Placement(transformation(origin = {-60, 24}, extent = {{-10, -10}, {10, 10}})));
-  equation
-    connect(gsPow.nv, genset.pin_n) annotation(
-      Line(points = {{22, 0}, {22, 0}, {22, -10}, {-5.7, -10}, {-5.7, -10}}, color = {0, 0, 255}));
-    connect(gsPow.pv, gsPow.pc) annotation(
-      Line(points = {{22, 20}, {12, 20}, {12, 10}}, color = {0, 0, 255}));
-    connect(gsPow.pc, genset.pin_p) annotation(
-      Line(points = {{12, 10}, {3, 10}, {3, 8}, {-6, 8}}, color = {0, 0, 255}));
-    connect(genset.pin_n, ground1.p) annotation(
-      Line(points = {{-5.7, -10}, {2, -10}, {2, -18}}, color = {0, 0, 255}));
-    connect(gsPow.nc, uDC.p) annotation(
-      Line(points = {{32, 10}, {48, 10}}, color = {0, 0, 255}));
-    connect(uDC.n, genset.pin_n) annotation(
-      Line(points = {{48, -10}, {-5.7, -10}}, color = {0, 0, 255}));
-    connect(powerRef.y, genset.powRef) annotation(
-      Line(points = {{-49, 24}, {-12.45, 24}, {-12.45, 16.25}}, color = {0, 0, 127}));
-    annotation(
-      Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1)),
-      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
-      experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
-      Documentation(info = "<html><head></head><body><p>This is a first model testing the behaviour of Genset when nothing is taken from file.</p><p>Therefore it has:</p><p>- fixed torque limits</p><p>- fixed reference ICE speed</p><p>- fixed fuel consumption</p><p>- fixed generator efficiency.</p><p>It is highly unrealistic. The user can, however, use variable values of the above fixed limtits, taking advantage of the possibilities offered by their internal definition as matrices. However, the maximum flexibilithy is obtained when maps are on file, a behaviour which is checked with TestGenset2 model.</p>
-  </body></html>"));
-  end TestGenset1;
 
-  model TestGenset2 "Ice, Generator, DriveTrain, all map-based"
-    Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
-      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -26})));
-    MapBased.Genset genset(
-      gsRatio = 1,
-      mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"),
-      maxGenW = 300,
-      maxGenPow = 55e3,
-      maxTau = 500,
-      wIceStart = 114, efficiencyName = "gensetDriveEffTable", eTorqueFactor = 1/500, eSpeedFactor = 1/300) annotation(
-      Placement(transformation(origin = {44, -24}, extent = {{-80, 8}, {-50, 38}})));
-    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
-      Placement(transformation(origin = {44, -24}, extent = {{-32, 24}, {-12, 44}})));
-    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
-      Placement(transformation(origin = {48, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    Modelica.Blocks.Sources.Trapezoid trapezoid(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
-      Placement(transformation(origin = {-60, 24}, extent = {{-10, -10}, {10, 10}})));
-  equation
-    connect(gsPow.nv, genset.pin_n) annotation(
-      Line(points = {{22, 0}, {22, 0}, {22, -10}, {-5.7, -10}, {-5.7, -10}}, color = {0, 0, 255}));
-    connect(gsPow.pv, gsPow.pc) annotation(
-      Line(points = {{22, 20}, {12, 20}, {12, 10}}, color = {0, 0, 255}));
-    connect(gsPow.pc, genset.pin_p) annotation(
-      Line(points = {{12, 10}, {3, 10}, {3, 8}, {-6, 8}}, color = {0, 0, 255}));
-    connect(genset.pin_n, ground1.p) annotation(
-      Line(points = {{-5.7, -10}, {2, -10}, {2, -18}}, color = {0, 0, 255}));
-    connect(gsPow.nc, uDC.p) annotation(
-      Line(points = {{32, 10}, {48, 10}}, color = {0, 0, 255}));
-    connect(uDC.n, genset.pin_n) annotation(
-      Line(points = {{48, -10}, {-5.7, -10}}, color = {0, 0, 255}));
-    connect(trapezoid.y, genset.powRef) annotation(
-      Line(points = {{-49, 24}, {-12.45, 24}, {-12.45, 16.25}}, color = {0, 0, 127}));
-    annotation(
-      Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1)),
-      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
-      experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
-      Documentation(info = "<html><head></head><body><p>This is model tests some of the genset features; it makes useage of maps on file.</p>
-<p>The power request will not be entirely delivered by the DC terminals because of two reasons:</p>
-<p>1. the requested power is the one delivered by the internal ICE, larger than the electrical power delivered by the internal generator, because the latter has, in general, a lower than one efficiency.</p>
-<p>2. maximum DC power is also limited by parameter maxGenPow: in this simulation this limit is set to 55 kW and occurs 0.73 and 2.2 s.</p>
-<p>To see this you can simultaneously plot  trapezoid.y, genset.icePow.power, gsPow.power.</p>
-</body></html>"));
-  end TestGenset2;
-
-  model TestGensetOO "Ice, Generator, DriveTrain, all map-based"
-    Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
-      Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -30})));
-    MapBased.GensetOO genset(gsRatio = 1, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"), maxGenW = 300, maxGenPow = 55e3, maxTau = 500, wIceStart = 114) annotation(
-      Placement(transformation(origin = {44, -30}, extent = {{-80, 8}, {-50, 38}})));
-    Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
-      Placement(transformation(origin = {44, -30}, extent = {{-32, 24}, {-12, 44}})));
-    Modelica.Electrical.Analog.Sources.ConstantVoltage uDC(V = 100) annotation(
-      Placement(transformation(origin = {48, -6}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-    Modelica.Blocks.Sources.Trapezoid trapezoid(amplitude = 20e3, rising = 1, width = 1, falling = 1, offset = 40e3, period = 10, startTime = 1) annotation(
-      Placement(transformation(origin = {12, 38}, extent = {{10, -10}, {-10, 10}})));
-    Modelica.Blocks.Sources.BooleanStep booleanStep(startTime = 4, startValue = true) annotation(
-      Placement(transformation(extent = {{-72, 28}, {-52, 48}})));
-  equation
-    connect(gsPow.nv, genset.pin_n) annotation(
-      Line(points = {{22, -6}, {22, -16}, {-5.7, -16}}, color = {0, 0, 255}));
-    connect(gsPow.pv, gsPow.pc) annotation(
-      Line(points = {{22, 14}, {12, 14}, {12, 4}}, color = {0, 0, 255}));
-    connect(gsPow.pc, genset.pin_p) annotation(
-      Line(points = {{12, 4}, {3, 4}, {3, 2}, {-6, 2}}, color = {0, 0, 255}));
-    connect(genset.pin_n, ground1.p) annotation(
-      Line(points = {{-5.7, -16}, {2, -16}, {2, -22}}, color = {0, 0, 255}));
-    connect(gsPow.nc, uDC.p) annotation(
-      Line(points = {{32, 4}, {48, 4}}, color = {0, 0, 255}));
-    connect(uDC.n, genset.pin_n) annotation(
-      Line(points = {{48, -16}, {-5.7, -16}}, color = {0, 0, 255}));
-    connect(trapezoid.y, genset.powRef) annotation(
-      Line(points = {{1, 38}, {-12.45, 38}, {-12.45, 10.25}}, color = {0, 0, 127}));
-    connect(booleanStep.y, genset.ON) annotation(
-      Line(points = {{-51, 38}, {-30, 38}, {-30, 10.4}}, color = {255, 0, 255}));
-    annotation(
-      Diagram(coordinateSystem(extent = {{-80, 60}, {60, -40}})),
-      Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-80, 60}, {60, -40}}), graphics),
-      experiment(StopTime = 8, Interval = 0.005, Tolerance = 1e-06, __Dymola_Algorithm = "Dassl"),
-      Documentation(info = "<html>
-<p>This is like TestGenset, but at t=4s genset is put Off by use of its logical input.</p>
-<p>Output power and torque at the internal machines (ICE and gen) go to zero.</p>
-</html>"));
-  end TestGensetOO;
 end TestingModels;

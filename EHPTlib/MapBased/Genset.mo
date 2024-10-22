@@ -4,7 +4,7 @@ model Genset "GenSet GMS+GEN+SEngine"
   gen(
     effMapOnFile = mapsOnFile,
     effTable=constGenEfficiency*[0, 0, 1; 0, 1, 1; 1, 1, 1],
-    limitsOnFile = mapsOnFile, effTableName = efficiencyName),
+    limitsOnFile = mapsOnFile, effTableName = efficiencyName, eTorqueFactor = eTorqueFactor, eSpeedFactor = eSpeedFactor),
   iceT(
     scMapOnFile=mapsOnFile,
     specificCons=constFuelConsumption*[0, 100, 200; 100, 1, 1; 200, 1, 1],
