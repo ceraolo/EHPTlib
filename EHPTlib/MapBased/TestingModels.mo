@@ -736,7 +736,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
       maxGenW = 300,
       maxGenPow = 55e3,
       maxTau = 500,
-      wIceStart = 114, efficiencyName = "gensetDriveEffTable") annotation(
+      wIceStart = 114, efficiencyName = "gensetDriveEffTable", eTorqueFactor = 1/500, eSpeedFactor = 1/300) annotation(
       Placement(transformation(origin = {44, -24}, extent = {{-80, 8}, {-50, 38}})));
     Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
       Placement(transformation(origin = {44, -24}, extent = {{-32, 24}, {-12, 44}})));
