@@ -529,6 +529,18 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
   parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
     Dialog(group = "ICE parameters"));
   // general tab generator related parameters:
+
+  parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
+    parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
+        annotation(
+    Dialog(enable = not mapsOnFile));
+  parameter Real constFuelConsumption=200 "Fuel consumption in g/kWh when mapsOnfile=false"
+       annotation(  Dialog(enable = not mapsOnFile));
+  parameter Modelica.Units.SI.AngularVelocity constOptimalSpeed=100
+           "Optimal speed when mapsOnfile=false"
+       annotation(  Dialog(enable = not mapsOnFile));
+  
+  // general tab generator related parameters:
   parameter Modelica.Units.SI.MomentOfInertia jGen = 0.1 "Generator moment of inertia" annotation(
     Dialog(group = "Generator parameters"));
    parameter Modelica.Units.SI.AngularVelocity maxGenW = 1e6 "Max generator angular speed when not mapsOnFile" annotation(
@@ -539,8 +551,9 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
     Dialog(tab="Map related parameters"));
   parameter Modelica.Units.SI.Torque maxTau = 200 "Max torque between internal ICE and generator when not mapsOnFile" annotation(Dialog(group = "Generator parameters", enable= not mapsOnFile));
 
+  
+  
   // Parameters related to input maps (maps Tab):
-  parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
   // GMS
   parameter String optiSpeedName = "optiSpeed"  "Name of the on-file specific consumption variable" annotation(
     Dialog(tab="Map related parameters", group="GMS parameters"));
@@ -586,9 +599,30 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
       Placement(transformation(extent = {{90, 50}, {110, 70}}), iconTransformation(extent = {{90, 50}, {110, 70}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMax = inf, uMin = 0) annotation(
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {-80, 48})));
-    EHPTlib.MapBased.OneFlange gen(wMax = maxGenW, J = jGen, limitsFileName = mapsFileName, effMapOnFile = true, powMax = maxGenPow, tauMax = maxTau, effMapFileName = mapsFileName, effTableName = "gensetDriveEffTable", uDcNom = uDcNom, limitsOnFile = true, tlTorqueFactor = tlGenTorqueFactor, tlSpeedFactor = tlGenSpeedFactor, tauLimitsMapName = genTauLimitName) annotation(
+    EHPTlib.MapBased.OneFlange gen(
+      wMax = maxGenW,
+      J = jGen,
+      limitsFileName = mapsFileName,
+      effMapOnFile = mapsOnFile,
+      powMax = maxGenPow,
+      tauMax = maxTau,
+      effMapFileName = mapsFileName,
+      effTableName = "gensetDriveEffTable",
+      uDcNom = uDcNom,
+      limitsOnFile = mapsOnFile,
+      tlTorqueFactor = tlGenTorqueFactor,
+      tlSpeedFactor = tlGenSpeedFactor,
+      tauLimitsMapName = genTauLimitName) annotation(
       Placement(visible = true, transformation(extent = {{74, 2}, {54, -18}}, rotation = 0)));
-    IceT01 iceT(iceJ = jIce, scMapOnFile = true, tlMapOnFile = true, mapsFileName = mapsFileName, wIceStart = wIceStart, specConsName = specConsName, torqueLimitName = iceTauLimitName) annotation(
+    IceT01 iceT(
+      iceJ = jIce,
+      scMapOnFile = true,
+      tlMapOnFile = true,
+      mapsFileName = mapsFileName,
+      wIceStart = wIceStart,
+      specConsName = specConsName,
+      torqueLimitName = iceTauLimitName)
+     annotation(
       Placement(transformation(extent = {{-28, -18}, {-8, 4}})));
     Modelica.Blocks.Math.Gain gain(k = -gsRatio) annotation(
       Placement(transformation(extent = {{14, 24}, {34, 44}})));
