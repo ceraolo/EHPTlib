@@ -319,20 +319,16 @@ false")}),
       Placement(transformation(origin = {59, 37}, extent = {{-5, -5}, {5, 5}}, rotation = -90)));
     Modelica.Blocks.Math.Gain toG_perkWh(k=scConsFactor_)  annotation(
       Placement(transformation(origin = {44, -14}, extent = {{-6, -6}, {6, 6}}, rotation = -90)));
-    Modelica.Blocks.Tables.CombiTable1Dv limTauMap(fileName = mapsFileName, table = maxIceTau, tableName = "maxIceTau", tableOnFile = tlMapOnFile) annotation(
-      Placement(transformation(origin = {-72, 84}, extent = {{10, -10}, {-10, 10}}, rotation = 180)));
     Modelica.Blocks.Sources.RealExpression rotorW(y = wSensor.w) annotation(
-      Placement(transformation(origin={-88,4},     extent = {{-10, -10}, {10, 10}}, rotation = 90)));
-    EHPTlib.SupportModels.Miscellaneous.Gain fromLimTauMap(k=tlTorqueFactor_)  annotation(
-      Placement(transformation(origin = {-48, 84}, extent = {{6, -6}, {-6, 6}}, rotation = 180)));
-    EHPTlib.SupportModels.Miscellaneous.Gain toLimTauMap(k=tlSpeedFactor_)  annotation(
-      Placement(transformation(origin={-88,34},    extent = {{6, -6}, {-6, 6}}, rotation = -90)));
+      Placement(transformation(origin={-94,4},     extent = {{-10, -10}, {10, 10}}, rotation = 90)));
 
     final parameter Real scTorqueFactor_( fixed=false);
     final parameter Real scSpeedFactor_(fixed=false);
     final parameter Real scConsFactor_(fixed=false);
     final parameter Real tlTorqueFactor_(fixed=false);
     final parameter Real tlSpeedFactor_(fixed=false);
+  SupportModels.MapBasedRelated.CombiTable1Factor limTauMap(uFactor = tlSpeedFactor, yFactor = tlTorqueFactor, tableOnFile = tlMapOnFile, tableName = torqueLimitName, fileName = mapsFileName, table = maxIceTau)  annotation(
+      Placement(transformation(origin = {-76, 80}, extent = {{-10, -10}, {10, 10}})));
   initial equation
     if scMapOnFile then
       scTorqueFactor_=scTorqueFactor;
@@ -383,15 +379,11 @@ false")}),
     connect(toConsMapTorque.y, toGramsPerkWh.u1) annotation(
       Line(points = {{27, 31.5}, {27, 26}, {38, 26}, {38, 22}}, color = {0, 0, 127}));
     connect(toGramsPerkWh.y, toG_perkWh.u) annotation(
-      Line(points={{44,-1},{44,-6.8}},   color = {0, 0, 127}));
+      Line(points = {{44, -1}, {44, -6.8}}, color = {0, 0, 127}));
     connect(toG_perkWh.y, toG_perHour.u1) annotation(
-      Line(points={{44,-20.6},{44,-28}},    color = {0, 0, 127}));
-    connect(toLimTauMap.u, rotorW.y) annotation(
-      Line(points={{-88,26.8},{-88,15}},    color = {0, 0, 127}));
-    connect(toLimTauMap.y, limTauMap.u[1]) annotation(
-      Line(points={{-88,40.6},{-88,84},{-84,84}},      color = {0, 0, 127}));
-    connect(fromLimTauMap.u, limTauMap.y[1]) annotation(
-      Line(points={{-55.2,84},{-61,84}},      color = {0, 0, 127}));
+      Line(points = {{44, -20.6}, {44, -28}}, color = {0, 0, 127}));
+  connect(rotorW.y, limTauMap.u) annotation(
+      Line(points = {{-94, 15}, {-94, 79}, {-88, 79}}, color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
@@ -434,8 +426,8 @@ double iceSpecificCons(10 6)<br>
   equation
     connect(min1.y, iceTau.tau) annotation(
       Line(points = {{-11, 78}, {2, 78}}, color = {0, 0, 127}));
-    connect(min1.u1, fromLimTauMap.y)
-      annotation (Line(points={{-34,84},{-41.4,84}}, color={0,0,127}));
+  connect(min1.u1, limTauMap.y[1]) annotation(
+      Line(points = {{-34, 84}, {-48, 84}, {-48, 80}, {-58, 80}}, color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
   <p><span style=\"font-family: MS Shell Dlg 2;\">Models that inherit from this:</span></p>
@@ -460,20 +452,20 @@ double iceSpecificCons(10 6)<br>
     parameter String specConsName = "NoName" "name of the on-file specific consumption variable" annotation(
       Dialog(enable = mapsOnFile));
     Modelica.Blocks.Math.Product product annotation(
-      Placement(transformation(origin = {2, 0}, extent = {{-34, 68}, {-14, 88}})));
+      Placement(transformation(origin = {-2, 0}, extent = {{-34, 68}, {-14, 88}})));
     Modelica.Blocks.Nonlinear.Limiter limiter(uMin = 0, uMax = 1) annotation(
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 90, origin = {-60, -24})));
     Modelica.Blocks.Interfaces.RealInput nTauRef "normalized torque request" annotation(
       Placement(transformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {-60, -98}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 90, origin = {-60, -120})));
   equation
-    connect(product.y, iceTau.tau) annotation(
-      Line(points = {{-11, 78}, {2, 78}}, color = {0, 0, 127}));
     connect(product.u2, limiter.y) annotation(
-      Line(points = {{-34, 72}, {-58, 72}, {-60, -13}}, color = {0, 0, 127}));
+      Line(points = {{-38, 72}, {-60, 72}, {-60, -13}}, color = {0, 0, 127}));
+    connect(product.u1, limTauMap.y[1]) annotation(
+      Line(points = {{-38, 84}, {-54, 84}, {-54, 80}, {-64, 80}}, color = {0, 0, 127}));
+    connect(product.y, iceTau.tau) annotation(
+      Line(points = {{-15, 78}, {2, 78}}, color = {0, 0, 127}));
     connect(limiter.u, nTauRef) annotation(
       Line(points = {{-60, -36}, {-60, -98}}, color = {0, 0, 127}));
-    connect(fromLimTauMap.y, product.u1) annotation(
-      Line(points={{-41.4,84},{-34,84}},    color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html>
 <p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in per unit of the maximum torque. Models that inherit from this:</span></p>
@@ -523,13 +515,12 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
   parameter Real throttlePerWerr = 100/maxGenW "internal throttle controller proportional gain";
   parameter Real uDcNom=100"nominal DC voltage (only order of magnitude needs to be right";
 
-  // general tab ICE related parameters :
+// general tab ICE related parameters :
   parameter Modelica.Units.SI.MomentOfInertia jIce = 0.1 "ICE moment of inertia" annotation(
     Dialog(group = "ICE parameters"));
   parameter Modelica.Units.SI.AngularVelocity wIceStart = 167 annotation(
     Dialog(group = "ICE parameters"));
   // general tab generator related parameters:
-
   parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
     parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
         annotation(
@@ -539,7 +530,6 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
   parameter Modelica.Units.SI.AngularVelocity constOptimalSpeed=100
            "Optimal speed when mapsOnfile=false"
        annotation(  Dialog(enable = not mapsOnFile));
-  
   // general tab generator related parameters:
   parameter Modelica.Units.SI.MomentOfInertia jGen = 0.1 "Generator moment of inertia" annotation(
     Dialog(group = "Generator parameters"));
@@ -551,10 +541,8 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
     Dialog(tab="Map related parameters"));
   parameter Modelica.Units.SI.Torque maxTau = 200 "Max torque between internal ICE and generator when not mapsOnFile" annotation(Dialog(group = "Generator parameters", enable= not mapsOnFile));
 
-  
-  
-  // Parameters related to input maps (maps Tab):
-  // GMS
+// Parameters related to input maps (maps Tab):
+    // GMS
   parameter String optiSpeedName = "optiSpeed"  "Name of the on-file specific consumption variable" annotation(
     Dialog(tab="Map related parameters", group="GMS parameters"));
   parameter Real osInFactor = 1 "Factor before inputting pRef into map from txt file" annotation(
@@ -589,8 +577,7 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
   parameter Real tlGenSpeedFactor  = 1 "Speed multiplier for torque limit map" annotation(
     Dialog(tab="Map related parameters", group="Gen parameters", enable = mapsOnFile));
 
- 
-    //actual Max speed value for consumption map (which in file is between 0 and 1)
+//actual Max speed value for consumption map (which in file is between 0 and 1)
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor annotation(
       Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin = {-20, -40})));
     Modelica.Mechanics.Rotational.Sensors.PowerSensor icePow annotation(

@@ -308,22 +308,22 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
   package TestICE
     model TestIceT "Test IceT"
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 0.5, phi(start = 0, fixed = true)) annotation(
-        Placement(transformation(extent = {{14, -2}, {34, 18}})));
+        Placement(transformation(origin = {0, -4}, extent = {{14, -2}, {34, 18}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation(
-        Placement(transformation(extent = {{68, -2}, {48, 18}})));
+        Placement(transformation(origin = {0, -4}, extent = {{68, -2}, {48, 18}})));
       Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 50.0, amplitude = 35.0) annotation(
         Placement(transformation(extent = {{-46, -32}, {-26, -12}})));
-      IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1) annotation(
-        Placement(transformation(extent = {{-16, -2}, {4, 18}})));
+      IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1, torqueLimitName = "maxIceTau") annotation(
+        Placement(transformation(origin = {0, -4}, extent = {{-16, -2}, {4, 18}})));
     equation
       connect(iceT.flange_a, inertia.flange_a) annotation(
-        Line(points = {{4, 8}, {14, 8}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points = {{4, 4}, {14, 4}}));
       connect(inertia.flange_b, loadTorque.flange) annotation(
-        Line(points = {{34, 8}, {48, 8}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points = {{34, 4}, {48, 4}}));
       connect(iceT.tauRef, trapezoid.y) annotation(
-        Line(points = {{-12, -3.8}, {-12, -22}, {-25, -22}}, color = {0, 0, 127}, smooth = Smooth.None));
+        Line(points = {{-12, -8}, {-12, -22}, {-25, -22}}, color = {0, 0, 127}));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 40}})),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 20}})),
         __Dymola_experimentSetupOutput,
         Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
         Documentation(info = "<html><head></head><body><p>This is a simple test of model IceT.</p>
@@ -337,22 +337,22 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
 
     model TestIceT01 "Test IceT01"
       IceT01 iceT(wIceStart = 70.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons") annotation(
-        Placement(transformation(extent = {{-16, -2}, {4, 18}})));
+        Placement(transformation(origin = {0, -4}, extent = {{-16, -2}, {4, 18}})));
       Modelica.Mechanics.Rotational.Components.Inertia inertia(J = 5.0, phi(start = 0, fixed = true)) annotation(
-        Placement(transformation(extent = {{14, -2}, {34, 18}})));
+        Placement(transformation(origin = {0, -4}, extent = {{14, -2}, {34, 18}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque(w_nominal = 100, tau_nominal = -80) annotation(
-        Placement(transformation(extent = {{68, -2}, {48, 18}})));
+        Placement(transformation(origin = {0, -4}, extent = {{68, -2}, {48, 18}})));
       Modelica.Blocks.Sources.Trapezoid trapezoid(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 0.5, amplitude = 0.3) annotation(
         Placement(transformation(extent = {{-46, -32}, {-26, -12}})));
     equation
       connect(iceT.flange_a, inertia.flange_a) annotation(
-        Line(points = {{4, 8}, {14, 8}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points = {{4, 4}, {14, 4}}));
       connect(inertia.flange_b, loadTorque.flange) annotation(
-        Line(points = {{34, 8}, {48, 8}}, color = {0, 0, 0}, smooth = Smooth.None));
+        Line(points = {{34, 4}, {48, 4}}));
       connect(iceT.nTauRef, trapezoid.y) annotation(
-        Line(points = {{-12, -2.2}, {-12, -22}, {-25, -22}}, color = {0, 0, 127}));
+        Line(points = {{-12, -8}, {-12, -22}, {-25, -22}}, color = {0, 0, 127}));
       annotation(
-        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 40}})),
+        Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-60, -40}, {80, 20}})),
         __Dymola_experimentSetupOutput,
         Icon(coordinateSystem(extent = {{-60, -60}, {80, 40}})),
         Documentation(info = "<html>
