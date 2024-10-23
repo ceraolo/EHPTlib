@@ -18,7 +18,7 @@ block CombiTable2Factor "CombiTable 2Ds, with input and output factors"
     Placement(transformation(origin = {4, 20}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Math.Gain toIn2(k = u2Factor_) annotation(
     Placement(transformation(origin = {2, -20}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Math.Gain toOut(k = yFactor) annotation(
+  Modelica.Blocks.Math.Gain toOut(k = yFactor_) annotation(
     Placement(transformation(origin = {92, 0}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Interfaces.RealInput u1 annotation(
     Placement(transformation(origin = {-60, 40}, extent = {{-20, -20}, {20, 20}}), iconTransformation(origin = {-120, 58}, extent = {{-20, -20}, {20, 20}})));
@@ -28,13 +28,16 @@ block CombiTable2Factor "CombiTable 2Ds, with input and output factors"
     Placement(transformation(origin = {122, 0}, extent = {{-10, -10}, {10, 10}}), iconTransformation(origin = {110, 0}, extent = {{-10, -10}, {10, 10}})));
   final parameter Real u1Factor_(fixed=false);
   final parameter Real u2Factor_(fixed=false);
+  final parameter Real yFactor_(fixed=false);
 initial equation
   if tableOnFile then
     u1Factor_=u1Factor;
     u2Factor_=u2Factor;
+    yFactor_ =yFactor;
   else
     u1Factor_=1;
     u2Factor_=1;
+    yFactor_ =1;
 end if;
 
 equation
