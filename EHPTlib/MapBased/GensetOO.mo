@@ -6,7 +6,16 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
             {-10,10}},                                                                             rotation = 90), iconTransformation(origin = {-60, 116}, extent = {{15, -15}, {-15, 15}}, rotation = 90)));
   ECUs.GMS gms(
     throttlePerWerr=throttlePerWerr,
-    mapsFileName=mapsFileName, os_uFactor = osInFactor, os_yFactor = osOutFactor)
+    mapsFileName=mapsFileName, 
+    os_uFactor = osInFactor, 
+    os_yFactor = osOutFactor
+    // The following two rows should be activated. For unknown reasons, however, they 
+    //give rise to unpredictable results: in particular gsPow of SHEV_OO, have an 
+    //unreasonable behaviour. Therefore, for the time being, they are de-activated.
+//    ,tauLimitsOnFile=false,
+//    mtTable = [0, 1e9; 100, 1e9]
+    
+    )
     annotation (Placement(transformation(extent={{-90,6},{-70,26}})));
   Modelica.Blocks.Logical.Switch switch1
     annotation (Placement(transformation(extent={{-22,40},{-10,28}})));
