@@ -301,8 +301,6 @@ false")}),
       Placement(visible = true, transformation(origin = {-18, 36}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Mechanics.Rotational.Interfaces.Flange_a flange_a annotation(
       Placement(transformation(extent = {{90, -10}, {110, 10}}), iconTransformation(extent = {{90, -10}, {110, 10}})));
-    Modelica.Blocks.Tables.CombiTable2Ds toGramsPerkWh(table = specificCons, tableOnFile = scMapOnFile, tableName = specConsName, fileName = mapsFileName) annotation(
-      Placement(transformation(origin = {44, 10}, extent = {{-10, 10}, {10, -10}}, rotation = -90)));
     Modelica.Blocks.Math.Gain tokW(k = 0.001) annotation(
       Placement(visible = true, transformation(origin = {-18, 8}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Modelica.Blocks.Math.Product toG_perHour annotation(
@@ -313,39 +311,13 @@ false")}),
       Placement(visible = true, transformation(origin = {8, -52}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
     Modelica.Blocks.Sources.Constant zero(k = 0) annotation(
       Placement(visible = true, transformation(extent = {{-34, -82}, {-14, -62}}, rotation = 0)));
-    Modelica.Blocks.Math.Gain toConsMapTorque(k=scTorqueFactor_)  annotation(
-      Placement(transformation(origin = {27, 37}, extent = {{-5, -5}, {5, 5}}, rotation = -90)));
-    Modelica.Blocks.Math.Gain toConsMapSpeed(k=scSpeedFactor_)  annotation(
-      Placement(transformation(origin = {59, 37}, extent = {{-5, -5}, {5, 5}}, rotation = -90)));
-    Modelica.Blocks.Math.Gain toG_perkWh(k=scConsFactor_)  annotation(
-      Placement(transformation(origin = {44, -14}, extent = {{-6, -6}, {6, 6}}, rotation = -90)));
     Modelica.Blocks.Sources.RealExpression rotorW(y = wSensor.w) annotation(
       Placement(transformation(origin={-94,4},     extent = {{-10, -10}, {10, 10}}, rotation = 90)));
 
-    final parameter Real scTorqueFactor_( fixed=false);
-    final parameter Real scSpeedFactor_(fixed=false);
-    final parameter Real scConsFactor_(fixed=false);
-    final parameter Real tlTorqueFactor_(fixed=false);
-    final parameter Real tlSpeedFactor_(fixed=false);
   SupportModels.MapBasedRelated.CombiTable1Factor limTauMap(uFactor = tlSpeedFactor, yFactor = tlTorqueFactor, tableOnFile = tlMapOnFile, tableName = torqueLimitName, fileName = mapsFileName, table = maxIceTau)  annotation(
       Placement(transformation(origin = {-76, 80}, extent = {{-10, -10}, {10, 10}})));
-  initial equation
-    if scMapOnFile then
-      scTorqueFactor_=scTorqueFactor;
-      scSpeedFactor_=scSpeedFactor;
-      scConsFactor_=scConsFactor;
-    else
-      scTorqueFactor_=1;
-      scSpeedFactor_=1;
-      scConsFactor_=1;
-    end if;
-    if tlMapOnFile then
-      tlTorqueFactor_=tlTorqueFactor;
-      tlSpeedFactor_=tlTorqueFactor;
-    else
-      tlTorqueFactor_=1;
-      tlSpeedFactor_=1;
-    end if;
+  SupportModels.MapBasedRelated.CombiTable2Factor toGramsPerkWh(yFactor = scConsFactor, u1Factor = scSpeedFactor, u2Factor = scTorqueFactor, tableOnFile = scMapOnFile, tableName = specConsName, fileName = mapsFileName, table = specificCons)  annotation(
+      Placement(transformation(origin = {44, 16}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
 
   equation
     connect(toPowW.y, tokW.u) annotation(
@@ -370,20 +342,14 @@ false")}),
       Line(points = {{32, -28}, {32, -20}, {22, -20}, {22, -52}, {19, -52}}, color = {0, 0, 127}));
     connect(switch1.u1, tokW.y) annotation(
       Line(points = {{-4, -44}, {-18, -44}, {-18, -3}}, color = {0, 0, 127}));
-    connect(toConsMapTorque.u, iceTau.tau) annotation(
-      Line(points = {{27, 43}, {27, 58}, {-6, 58}, {-6, 78}, {2, 78}}, color = {0, 0, 127}));
-    connect(wSensor.w, toConsMapSpeed.u) annotation(
-      Line(points = {{58, 51}, {58, 46}, {59, 46}, {59, 43}}, color = {0, 0, 127}));
-    connect(toConsMapSpeed.y, toGramsPerkWh.u2) annotation(
-      Line(points = {{59, 31.5}, {59, 26}, {50, 26}, {50, 22}}, color = {0, 0, 127}));
-    connect(toConsMapTorque.y, toGramsPerkWh.u1) annotation(
-      Line(points = {{27, 31.5}, {27, 26}, {38, 26}, {38, 22}}, color = {0, 0, 127}));
-    connect(toGramsPerkWh.y, toG_perkWh.u) annotation(
-      Line(points = {{44, -1}, {44, -6.8}}, color = {0, 0, 127}));
-    connect(toG_perkWh.y, toG_perHour.u1) annotation(
-      Line(points = {{44, -20.6}, {44, -28}}, color = {0, 0, 127}));
-  connect(rotorW.y, limTauMap.u) annotation(
+    connect(rotorW.y, limTauMap.u) annotation(
       Line(points = {{-94, 15}, {-94, 79}, {-88, 79}}, color = {0, 0, 127}));
+  connect(wSensor.w, toGramsPerkWh.u1) annotation(
+      Line(points = {{58, 52}, {58, 40}, {50, 40}, {50, 28}}, color = {0, 0, 127}));
+  connect(toGramsPerkWh.u2, toPowW.u2) annotation(
+      Line(points = {{38, 28}, {38, 58}, {-24, 58}, {-24, 48}}, color = {0, 0, 127}));
+  connect(toGramsPerkWh.y, toG_perHour.u1) annotation(
+      Line(points = {{44, 5}, {44, -28}}, color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
