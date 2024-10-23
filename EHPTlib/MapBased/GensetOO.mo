@@ -6,7 +6,7 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
             {-10,10}},                                                                             rotation = 90), iconTransformation(origin = {-60, 116}, extent = {{15, -15}, {-15, 15}}, rotation = 90)));
   ECUs.GMS gms(
     throttlePerWerr=throttlePerWerr,
-    mapsFileName=mapsFileName)
+    mapsFileName=mapsFileName, os_uFactor = osInFactor, os_yFactor = osOutFactor)
     annotation (Placement(transformation(extent={{-90,6},{-70,26}})));
   Modelica.Blocks.Logical.Switch switch1
     annotation (Placement(transformation(extent={{-22,40},{-10,28}})));

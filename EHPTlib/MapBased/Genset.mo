@@ -7,7 +7,7 @@ model Genset "GenSet GMS+GEN+SEngine"
     mapsFileName=mapsFileName,
     optiSpeedOnFile = mapsOnFile,
     tauLimitsOnFile = false,
-    mtTable = [0, 1e9; 100, 1e9], osTableName = optiSpeedName)
+    mtTable = [0, 1e9; 100, 1e9], osTableName = optiSpeedName, os_uFactor = osInFactor, os_yFactor = osOutFactor)
     annotation (Placement(transformation(extent={{-70,12},{-50,32}})));
 equation
   connect(gms.Wmecc, gain1.y) annotation (Line(points={{-60.1,10.5},{-60,10.5},
