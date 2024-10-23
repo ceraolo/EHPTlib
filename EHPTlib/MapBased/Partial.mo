@@ -555,13 +555,18 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
     EHPTlib.MapBased.OneFlange gen(
       wMax = maxGenW,
       J = jGen,
-      limitsFileName = mapsFileName,
-      effMapOnFile = mapsOnFile,
       powMax = maxGenPow,
       tauMax = maxTau,
-      effMapFileName = mapsFileName,
-      effTableName = "gensetDriveEffTable",
       uDcNom = uDcNom,
+            
+      effMapFileName = mapsFileName,
+      effMapOnFile = mapsOnFile,
+      effTable=constGenEfficiency*[0, 0, 1; 0, 1, 1; 1, 1, 1],
+      effTableName = efficiencyName, 
+      eTorqueFactor = eTorqueFactor, 
+      eSpeedFactor = eSpeedFactor,
+
+      limitsFileName = mapsFileName,
       limitsOnFile = mapsOnFile,
       tlTorqueFactor = tlGenTorqueFactor,
       tlSpeedFactor = tlGenSpeedFactor,
@@ -569,12 +574,19 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
       Placement(visible = true, transformation(extent = {{74, 2}, {54, -18}}, rotation = 0)));
     IceT01 iceT(
       iceJ = jIce,
-      scMapOnFile = true,
-      tlMapOnFile = true,
+      scMapOnFile=mapsOnFile,
+      tlMapOnFile=mapsOnFile,
       mapsFileName = mapsFileName,
       wIceStart = wIceStart,
-      specConsName = specConsName,
-      torqueLimitName = iceTauLimitName)
+      specConsName = specConsName,   
+       specificCons=constFuelConsumption*[0, 100, 200; 100, 1, 1; 200, 1, 1],
+      maxIceTau=maxTau*[0, 1.1; 100, 1.1],          
+      torqueLimitName = iceTauLimitName,
+      scTorqueFactor = scTorqueFactor, 
+      scSpeedFactor = scSpeedFactor, 
+      scConsFactor = scConsFactor, 
+      tlTorqueFactor = tlIceTorqueFactor, 
+      tlSpeedFactor = tlIceSpeedFactor)
      annotation(
       Placement(transformation(extent = {{-28, -18}, {-8, 4}})));
     Modelica.Blocks.Math.Gain gain(k = -gsRatio) annotation(

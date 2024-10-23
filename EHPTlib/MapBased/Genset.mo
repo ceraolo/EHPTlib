@@ -1,15 +1,6 @@
 within EHPTlib.MapBased;
 model Genset "GenSet GMS+GEN+SEngine"
-  extends Partial.PartialGenset(
-  gen(
-    effMapOnFile = mapsOnFile,
-    effTable=constGenEfficiency*[0, 0, 1; 0, 1, 1; 1, 1, 1],
-    limitsOnFile = mapsOnFile, effTableName = efficiencyName, eTorqueFactor = eTorqueFactor, eSpeedFactor = eSpeedFactor),
-  iceT(
-    scMapOnFile=mapsOnFile,
-    specificCons=constFuelConsumption*[0, 100, 200; 100, 1, 1; 200, 1, 1],
-    tlMapOnFile=mapsOnFile,
-    maxIceTau=maxTau*[0, 1.1; 100, 1.1]));
+  extends Partial.PartialGenset;
     
   ECUs.GMS gms(
     throttlePerWerr=throttlePerWerr,
