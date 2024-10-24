@@ -9,11 +9,15 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
     mapsFileName=mapsFileName, 
     os_uFactor = osInFactor, 
     os_yFactor = osOutFactor
-    // The following two rows should be activated. For unknown reasons, however, they 
-    //give rise to unpredictable results: in particular gsPow of SHEV_OO, have an 
-    //unreasonable behaviour. Therefore, for the time being, they are de-activated.
-//    ,tauLimitsOnFile=false,
-//    mtTable = [0, 1e9; 100, 1e9]
+    // Torque limitation in principlle should be done by the HW, so ICE and Gen. 
+    // Further limitation in the GMS is in principle un-needed.
+    // However it has been seen that giving charge of this limitation only to HW 
+    // produces unacceptable results when genset power in involved in model SHEV_OO.
+    // It in not totally clear why this happens. Since, however, leaving in place 
+    // also the GM limtation does nor harm, it is left in place, and therefore the 
+    // following two rows are commented out.
+ //   ,tauLimitsOnFile=false,
+ //   mtTable = [0, 1e9; 100, 1e9]
     
     )
     annotation (Placement(transformation(extent={{-90,6},{-70,26}})));
