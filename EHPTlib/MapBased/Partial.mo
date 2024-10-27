@@ -313,12 +313,23 @@ false")}),
       Placement(visible = true, transformation(extent = {{-34, -82}, {-14, -62}}, rotation = 0)));
     Modelica.Blocks.Sources.RealExpression rotorW(y = wSensor.w) annotation(
       Placement(transformation(origin={-94,4},     extent = {{-10, -10}, {10, 10}}, rotation = 90)));
-
-  SupportModels.MapBasedRelated.CombiTable1Factor limTauMap(uFactor = tlSpeedFactor, yFactor = tlTorqueFactor, tableOnFile = tlMapOnFile, tableName = torqueLimitName, fileName = mapsFileName, table = maxIceTau)  annotation(
+    SupportModels.MapBasedRelated.CombiTable1Factor limTauMap(
+       uFactor = tlSpeedFactor, 
+       yFactor = tlTorqueFactor, 
+       tableOnFile = tlMapOnFile, 
+       tableName = torqueLimitName, 
+       fileName = mapsFileName, 
+       table = maxIceTau)  annotation(
       Placement(transformation(origin = {-76, 80}, extent = {{-10, -10}, {10, 10}})));
-  SupportModels.MapBasedRelated.CombiTable2Factor toGramsPerkWh(yFactor = scConsFactor, u1Factor = scSpeedFactor, u2Factor = scTorqueFactor, tableOnFile = scMapOnFile, tableName = specConsName, fileName = mapsFileName, table = specificCons)  annotation(
+    SupportModels.MapBasedRelated.CombiTable2Factor toGramsPerkWh(
+       yFactor = scConsFactor, 
+       u1Factor = scSpeedFactor, 
+       u2Factor = scTorqueFactor, 
+       tableOnFile = scMapOnFile, 
+       tableName = specConsName, 
+       fileName = mapsFileName, 
+       table = specificCons)  annotation(
       Placement(transformation(origin = {44, 16}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-
   equation
     connect(toPowW.y, tokW.u) annotation(
       Line(points = {{-18, 25}, {-18, 20}}, color = {0, 0, 127}));
@@ -488,11 +499,8 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
     Dialog(group = "ICE parameters"));
   // general tab generator related parameters:
   parameter Boolean mapsOnFile=true  annotation(choices(checkBox = true));
-    parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
-        annotation(
-    Dialog(enable = not mapsOnFile));
   parameter Real constFuelConsumption=200 "Fuel consumption in g/kWh when mapsOnfile=false"
-       annotation(  Dialog(enable = not mapsOnFile));
+       annotation(  Dialog(enable = not mapsOnFile,group = "ICE parameters"));
   parameter Modelica.Units.SI.AngularVelocity constOptimalSpeed=100
            "Optimal speed when mapsOnfile=false"
        annotation(  Dialog(enable = not mapsOnFile));
@@ -506,6 +514,9 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
   parameter String mapsFileName = "maps.txt" "File containing data maps" annotation(
     Dialog(tab="Map related parameters"));
   parameter Modelica.Units.SI.Torque maxTau = 200 "Max torque between internal ICE and generator when not mapsOnFile" annotation(Dialog(group = "Generator parameters", enable= not mapsOnFile));
+  parameter Real constGenEfficiency=0.85 "Gen efficiency when mapsOnfile=false"
+        annotation(
+    Dialog(enable = not mapsOnFile,group = "Generator parameters"));
 
 // Parameters related to input maps (maps Tab):
     // GMS
@@ -601,6 +612,23 @@ partial model PartialGenset "GenSet= GMS+ICE+GEN"
       Placement(transformation(extent = {{90, -46}, {110, -26}}), iconTransformation(extent = {{92, -70}, {112, -50}})));
     Modelica.Blocks.Interfaces.RealInput powRef(unit = "W") "Reference genset power" annotation(
       Placement(transformation(extent = {{10, -10}, {-10, 10}}, rotation = 90, origin = {60, 82}), iconTransformation(extent = {{15, -15}, {-15, 15}}, rotation = 90, origin = {57, 115})));
+initial equation
+  if not mapsOnFile then
+     assert(wIceStart>0,"Initial rotational speed must be positive");
+     /* RATIONALE OF THE FOLLOWING ASSERT
+        We assume that optiSpeed<maxGenW
+        If it is also wIceStart<maxGenW, the logic will impose null ICE torque and
+        negative gen torque, to reach optiSpeed. But because we a re starting beyond
+        maxgenW, gen torque will be zero. 
+        SO, genset generated power will be constantly equal to zero, which is highly
+        unrealistic. Moreover, given that the current ICE and Gen models do not have
+        friction (at least to ICE they must be added soon) genset speed will stay 
+        constantly equal to wIceStart, which is highly unrealistic as well. 
+        it this condition 
+       */
+     assert(wIceStart<maxGenW,"initial rotational speed must be lower than the maximum allowable gen max speed, otherwise power will stay null all the time");
+  end if;
+
   equation
     connect(gain.y, gen.tauRef) annotation(
       Line(points = {{35, 34}, {80, 34}, {80, -8}, {75.4, -8}}, color = {0, 0, 127}));

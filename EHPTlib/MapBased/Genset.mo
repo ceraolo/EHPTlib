@@ -2,7 +2,14 @@ within EHPTlib.MapBased;
 
 model Genset "GenSet GMS+GEN+SEngine"
   extends Partial.PartialGenset;
-  ECUs.GMS gms(throttlePerWerr = throttlePerWerr, mapsFileName = mapsFileName, optiSpeedOnFile = mapsOnFile, tauLimitsOnFile = false, mtTable = [0, 1e9; 100, 1e9], osTableName = optiSpeedName, os_uFactor = osInFactor, os_yFactor = osOutFactor) annotation(
+  ECUs.GMS gms(throttlePerWerr = throttlePerWerr, 
+    mapsFileName = mapsFileName, 
+    optiSpeedOnFile = mapsOnFile, 
+    tauLimitsOnFile = false, 
+    mtTable = [0, 1e9; 100, 1e9], 
+    osTableName = optiSpeedName, 
+    os_uFactor = osInFactor, 
+    os_yFactor = osOutFactor) annotation(
     Placement(transformation(extent = {{-70, 12}, {-50, 32}})));
 equation
   connect(gms.Wmecc, gain1.y) annotation(

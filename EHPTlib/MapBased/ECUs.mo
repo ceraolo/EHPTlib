@@ -207,9 +207,9 @@ package ECUs
     Modelica.Blocks.Interfaces.RealOutput tRef "Torque request (positive when ICE delivers power)" annotation(
       Placement(transformation(origin = {0, -14}, extent = {{100, 50}, {120, 70}}), iconTransformation(extent = {{100, 50}, {120, 70}})));
     Modelica.Blocks.Math.Feedback feedback annotation(
-      Placement(transformation(extent = {{24, -40}, {44, -20}})));
+      Placement(transformation(origin = {-22, 0}, extent = {{24, -40}, {44, -20}})));
     SupportModels.Miscellaneous.Gain gain(k = throttlePerWerr) annotation(
-      Placement(transformation(extent = {{66, -40}, {86, -20}})));
+      Placement(transformation(origin = {-30, 0}, extent = {{66, -40}, {86, -20}})));
     Modelica.Blocks.Nonlinear.VariableLimiter tauLimiter annotation(
       Placement(transformation(origin = {10, -14}, extent = {{62, 50}, {82, 70}})));
     Modelica.Blocks.Interfaces.RealOutput throttle annotation(
@@ -222,11 +222,11 @@ package ECUs
       Placement(transformation(origin = {12, 62}, extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Math.Gain gain1(k = -1) annotation(
       Placement(transformation(origin = {48, 32}, extent = {{-8, -8}, {8, 8}})));
+  Modelica.Blocks.Nonlinear.Limiter limiter(uMax = 1)  annotation(
+      Placement(transformation(origin = {80, -30}, extent = {{-10, -10}, {10, 10}})));
   equation
-    connect(throttle, gain.y) annotation(
-      Line(points = {{110, -30}, {87, -30}}, color = {0, 0, 127}));
     connect(feedback.y, gain.u) annotation(
-      Line(points = {{43, -30}, {64, -30}}, color = {0, 0, 127}));
+      Line(points = {{21, -30}, {34, -30}}, color = {0, 0, 127}));
     connect(tauLimiter.y, tRef) annotation(
       Line(points = {{93, 46}, {110, 46}}, color = {0, 0, 127}));
     connect(division.y, tauLimiter.u) annotation(
@@ -242,13 +242,17 @@ package ECUs
     connect(tauLimiter.limit2, gain1.y) annotation(
       Line(points = {{70, 38}, {64, 38}, {64, 32}, {56.8, 32}}, color = {0, 0, 127}));
     connect(feedback.u1, optiSpeed.y[1]) annotation(
-      Line(points = {{26, -30}, {20, -30}, {20, -28}, {-31, -28}, {-31, -30}}, color = {0, 0, 127}));
+      Line(points = {{4, -30}, {-31, -30}}, color = {0, 0, 127}));
     connect(tauLimiter.limit1, maxTau.y[1]) annotation(
       Line(points = {{70, 54}, {38, 54}, {38, 62}, {23, 62}}, color = {0, 0, 127}));
     connect(tauLimiter.limit1, gain1.u) annotation(
       Line(points = {{70, 54}, {38, 54}, {38, 62}, {32, 62}, {32, 34}, {36, 34}, {36, 32}, {38.4, 32}}, color = {0, 0, 127}));
   connect(feedback.u2, Wmecc) annotation(
-      Line(points = {{34, -38}, {34, -88}, {-8, -88}}, color = {0, 0, 127}));
+      Line(points = {{12, -38}, {12, -88}, {-8, -88}}, color = {0, 0, 127}));
+  connect(gain.y, limiter.u) annotation(
+      Line(points = {{58, -30}, {68, -30}}, color = {0, 0, 127}));
+  connect(limiter.y, throttle) annotation(
+      Line(points = {{92, -30}, {110, -30}}, color = {0, 0, 127}));
     annotation(
       Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -90}, {100, 80}})),
       experimentSetupOutput,

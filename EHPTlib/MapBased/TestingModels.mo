@@ -559,7 +559,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
         Diagram(coordinateSystem(extent = {{-80, 40}, {60, -40}}, initialScale = 0.1)),
         Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics),
         experiment(StopTime = 5, StartTime = 0, Tolerance = 1e-06, Interval = 0.005),
-        Documentation(info = "<html><head></head><body><p>This is a first model testing the behaviour of Genset when nothing is taken from file.</p><p>Therefore it has:</p><p>- fixed torque limits</p><p>- fixed reference ICE speed</p><p>- fixed fuel consumption</p><p>- fixed generator efficiency.</p><p>It is highly unrealistic. The user can, however, use variable values of the above fixed limtits, taking advantage of the possibilities offered by their internal definition as matrices. However, the maximum flexibilithy is obtained when maps are on file, a behaviour which is checked with TestGenset2 model.</p>
+        Documentation(info = "<html><head></head><body><p>This is a first model testing the behaviour of Genset when nothing is taken from file.</p><p>Therefore it has:</p><p>- fixed torque limits</p><p>- fixed reference ICE speed</p><p>- fixed fuel consumption</p><p>- fixed generator efficiency.</p><p>It is highly unrealistic. The user can, however, use variable values of the above fixed limtits, taking advantage of the possibilities offered by their internal definition as matrices.&nbsp;</p><p>The maximum flexibility is obtained when maps are on file, a behaviour which is checked with TestGenset2 model.</p>
   </body></html>"));
     end TestGenset1;
 
