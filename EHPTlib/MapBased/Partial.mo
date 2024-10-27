@@ -404,7 +404,7 @@ double iceSpecificCons(10 6)<br>
     connect(min1.y, iceTau.tau) annotation(
       Line(points = {{-11, 78}, {2, 78}}, color = {0, 0, 127}));
   connect(min1.u1, limTauMap.y[1]) annotation(
-      Line(points = {{-34, 84}, {-48, 84}, {-48, 80}, {-58, 80}}, color = {0, 0, 127}));
+      Line(points = {{-34, 84}, {-52, 84}, {-52, 80}, {-64, 80}}, color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Partial ICE model with torque input in Newton-metres. </span></p>
   <p><span style=\"font-family: MS Shell Dlg 2;\">Models that inherit from this:</span></p>
