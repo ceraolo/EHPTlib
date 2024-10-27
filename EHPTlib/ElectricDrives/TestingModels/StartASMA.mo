@@ -119,8 +119,7 @@ equation
     Line(points = {{-36, 54}, {-22, 54}}, color = {0, 0, 255}));
   annotation (
     experimentSetupOutput,
-    Documentation(info = "<html>
-<p>This system simulates variable-frequency start-up of an asyncronous motor.</p>
+    Documentation(info = "<html><head></head><body><p>This system simulates variable-frequency start-up of an asynchronous motor.</p>
 <p>Two different sources for the machine are compared.</p>
 <p>The motor supply is constituted by a three-phase system of quasi-sinusoidal shapes, created according to the following equations:</p>
 <p>WEl=WMecc*PolePairs+DeltaWEl</p>
@@ -133,7 +132,7 @@ equation
 <li>delta WEl is a fixed parameter during the simulation, except when the final speed is reached</li>
 </ul>
 <p>When the final speed is reached, the feeding frequenccy and voltage are kept constant (no flux weaking simulated)</p>
-</html>"),
+</body></html>"),
     experimentSetupOutput,
     Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}})),
     Diagram(coordinateSystem(extent = {{-120, -80}, {120, 80}}, preserveAspectRatio = false, initialScale = 0.1)),

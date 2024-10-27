@@ -10,7 +10,8 @@ package ECUs
       Line(points = {{26, 39}, {26, 20}, {42, 20}, {42, 72}, {0, 72}, {0, 80}}, color = {0, 0, 127}),
       Text(string = "%second", index = 1, extent = {{-3, -6}, {-3, -6}}, horizontalAlignment = TextAlignment.Right));
     annotation(
-      Icon(graphics = {Text(extent = {{-100, 86}, {100, 56}}, textString = "PSD-ecu1")}));
+      Icon(graphics = {Text(extent = {{-100, 86}, {100, 56}}, textString = "PSD-ecu1")}),
+  Documentation(info = "<html><head></head><body>First Electronic Control Unit of a Power Split Device (PSD) hybrid power train. Details on EHPTexamples tutorial.</body></html>"));
   end PsdEcu1;
 
   model PsdEcu2 "Power Split hybrid power train controller, with SOC control, without ON/OFF"
@@ -43,7 +44,8 @@ package ECUs
       Line(points = {{-48, 32}, {-48, 80}, {0, 80}}, color = {0, 0, 127}),
       Text(string = "%second", index = 1, extent = {{-3, 6}, {-3, 6}}, horizontalAlignment = TextAlignment.Right));
     annotation(
-      Icon(graphics = {Text(extent = {{-100, 88}, {100, 58}}, textString = "PSD-ecu2", textColor = {0, 0, 0})}));
+      Icon(graphics = {Text(extent = {{-100, 88}, {100, 58}}, textString = "PSD-ecu2", textColor = {0, 0, 0})}),
+  Documentation(info = "<html><head></head><body>Second Electronic Control Unit of a Power Split Device (PSD) hybrid power train. Details on EHPTexamples tutorial.</body></html>"));
   end PsdEcu2;
 
   model PsdEcu3 "Power Split hybrid power train controller, using ON/OFF strategy"
@@ -101,7 +103,8 @@ package ECUs
     connect(hysteresis.u, switch.u1) annotation(
       Line(points = {{-34, 42}, {-34, 30}, {-6, 30}}, color = {0, 0, 127}));
     annotation(
-      Icon(graphics = {Text(extent = {{-100, 86}, {100, 56}}, textString = "PSD-ecu3", textColor = {0, 0, 0})}));
+      Icon(graphics = {Text(extent = {{-100, 86}, {100, 56}}, textString = "PSD-ecu3", textColor = {0, 0, 0})}),
+  Documentation(info = "<html><head></head><body>third Electronic Control Unit of a Power Split Device (PSD) hybrid power train. Details on EHPTexamples tutorial.</body></html>"));
   end PsdEcu3;
 
   model ShevEMS "Ice, Generator, DriveTrain, all map-based"

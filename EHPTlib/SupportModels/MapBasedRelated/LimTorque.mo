@@ -66,8 +66,8 @@ connections"), Line(origin = {38.07, 0.65}, points = {{0, 37}, {0, 9}}, color = 
     Documentation(info = "<html><head></head><body><p>Gives the maximum output torque as a function of the input speed. </p>
 <p>There are two possibilities dependig on the value of limitsOnFile.</p>
 <p><b>If limitsOnFile=false</b></p>
-<p>When w&lt;wMax the output is Tmax if Tmax*w&lt;Pnom, otherwise it is Pnom/w </p>
-<p>But if w is over wMax Tmax is rapidly falling to zero (reaches zero when speed overcomes wMax by 10%). </p>
+<p>When w&lt;wMax the output is tauMax if tauMax*w&lt;powMax, otherwise it is&nbsp;powMax/w </p>
+<p>But if w is larger than powMax tauMax is rapidly falling to zero (reaches zero when speed overcomes wMax by 10%). </p>
 <p><b>If limitsOnFile=true</b></p>
 <p>maximum and minimum torques are taken from a txt file. Default interpaltion is with ontinuous derivative. No maxmimum speed is considered.</p>
 <p><br>Torques and powers are in SI units </p><p><br></p><p>The simulation shows that up to 12 s and above 40s we are below baseSpeed and actual torque limit is maxTau; between 12 and 40s, we are under power limitation.&nbsp;</p><p>Suggested plots:</p><p>- OneFlange.variableLimter.limit1 with oneFlange.torque.tau, oneFlange.limTau.baseSpeed</p><p>- oneFlange.limTau.state</p><p>- oneflange.wMax and inertia.w.</p><p><br></p>

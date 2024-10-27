@@ -21,5 +21,6 @@ equation
               147},{100,107}},                                                                                                                                                                                                        textString = "%name"), Text(fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent={{-98,14},
               {102,-14}},
           textString="eta=f(T,W)",
-          textColor={0,0,0})}));
+          textColor={0,0,0})}),
+  Documentation(info = "<html><head></head><body>Utility used by EfficiencyLF</body></html>"));
 end ComputeEffFromPu;

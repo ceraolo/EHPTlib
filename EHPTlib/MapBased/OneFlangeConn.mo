@@ -25,4 +25,6 @@ equation
       index=1,
       extent={{-3,-6},{-3,-6}},
       horizontalAlignment=TextAlignment.Right));
+annotation(
+    Documentation(info = "<html><head></head><body>This is a simple variation of OneFlange, which receives the reference torque from the outside through a connector instead of a Real input. It outputs through the same connector the internally computed&nbsp;generated mechanical power.</body></html>"));
 end OneFlangeConn;

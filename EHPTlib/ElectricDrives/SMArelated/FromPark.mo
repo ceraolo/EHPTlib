@@ -39,19 +39,7 @@ equation
     Line(points = {{58, 2}, {50, 2}, {50, -19}}, color = {0, 0, 127}, smooth = Smooth.None));
   annotation (
     Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}})),
-    Documentation(info = "<html>
- <p><br/><b>Test example: Permanent magnet synchronous induction machine fed by a current source</b></p>
-
-
- <p><i><span style='color:red'>NOTA: la macchina ha Lmd=Lmq=0.3(2*pi*f) come definito internamente.</p>
- <i><span style='color:red'>E&apos; pertanto una macchina isotropa. la miglior maniera di controllarla, quindi, dovrebbe essere di mettere la corrente tutta sull&apos;asse q e mantenere a 0 la componente sull&apos;asse d.</p></i>
-
-
- <p><br/><br/>A synchronous induction machine with permanent magnets accelerates a quadratic speed dependent load from standstill. 
- The rms values of d- and q-current in rotor fixed coordinate system are converted to three phase currents, and fed to the machine. 
- The result shows that the torque is influenced by the q-current, whereas the stator voltage is influenced by 
- the d-current.</p><p><br/><br/>Default machine parameters of model <i>SM_PermanentMagnet</i> are used. </p>
- </html>"),
+    Documentation(info = "<html><head></head><body><p>Converts from Park' direct-quadruature components to phase values.</p><p>It assumes null zero component, and can be used to convert any quantity, e.g. currents. voltages, etc.</p></body></html>"),
     __Dymola_experimentSetupOutput,
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = false, initialScale = 0.1, grid = {2, 2}),
         graphics={Rectangle(

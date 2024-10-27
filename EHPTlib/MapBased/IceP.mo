@@ -18,14 +18,13 @@ equation
     annotation (Line(points={{-35.2,-52},{-20,-52},{-20,-52},{-4,-52}},
                                                     color={255,0,255}));
   annotation (
-    Documentation(info="<html>
-<p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
+    Documentation(info= "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- IceT used when ICE must follow a Torque request </span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- IceP used when ICE must follow a Power request </span></p>
 <p><span style=\"font-family: MS Shell Dlg 2;\">- IceConnP used when ICE must follow a Power request through an expandable connector</span></p>
-<p>Data for tables (here called &quot;maps&quot;) can be set manually or loaded from a file.</p>
-<h4>Inherited models connect torque request to the free input of min() block.</h4>
-</html>"),
+<p>Data for tables (here called \"maps\") can be set manually or loaded from a file.</p>
+<h4>Inherited models connect the torque request to the free input of min() block.</h4>
+</body></html>"),
     Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics={  Rectangle(fillColor = {192, 192, 192},
       fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192},
       fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}),                                                                                                                                 Text(origin = {0, 10}, lineColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95},
