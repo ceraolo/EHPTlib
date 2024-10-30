@@ -12,7 +12,7 @@ model Genset "GenSet GMS+GEN+SEngine"
     os_yFactor = osOutFactor) annotation(
     Placement(transformation(extent = {{-70, 12}, {-50, 32}})));
 equation
-  connect(gms.Wmecc, gain1.y) annotation(
+  connect(gms.wMecc, gain1.y) annotation(
     Line(points = {{-60.1, 10.5}, {-60, 10.5}, {-60, 0}, {-80, 0}, {-80, -17.4}}, color = {0, 0, 127}));
   connect(gms.tRef, gain.u) annotation(
     Line(points = {{-49, 28}, {-38, 28}, {-38, 34}, {12, 34}}, color = {0, 0, 127}));

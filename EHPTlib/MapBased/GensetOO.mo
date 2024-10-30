@@ -25,7 +25,7 @@ model GensetOO "GenSet GMS+GEN+SEngine with On/Off"
 equation
   connect(gms.pRef, limiter.y) annotation(
     Line(points = {{-92, 16}, {-96, 16}, {-96, 32}, {-80, 32}, {-80, 37}}, color = {0, 0, 127}));
-  connect(gms.Wmecc, gain1.y) annotation(
+  connect(gms.wMecc, gain1.y) annotation(
     Line(points = {{-80.1, 4.5}, {-80, 4.5}, {-80, -17.4}}, color = {0, 0, 127}));
   connect(gain.u, switch1.y) annotation(
     Line(points = {{12, 34}, {-9.4, 34}}, color = {0, 0, 127}));

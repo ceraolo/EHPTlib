@@ -217,7 +217,7 @@ package ECUs
       Placement(transformation(origin = {10, -14}, extent = {{62, 50}, {82, 70}})));
     Modelica.Blocks.Interfaces.RealOutput throttle annotation(
       Placement(transformation(extent = {{100, -40}, {120, -20}}), iconTransformation(extent = {{100, -70}, {120, -50}})));
-    Modelica.Blocks.Interfaces.RealInput Wmecc annotation(
+    Modelica.Blocks.Interfaces.RealInput wMecc annotation(
       Placement(transformation(origin = {-8, -88}, extent = {{-14, -14}, {14, 14}}, rotation = 90), iconTransformation(origin = {-1, -115}, extent = {{-15, -15}, {15, 15}}, rotation = 90)));
     SupportModels.MapBasedRelated.CombiTable1Factor optiSpeed(uFactor = os_uFactor, yFactor = os_yFactor, tableOnFile = optiSpeedOnFile, table = osTable, tableName = osTableName, fileName = mapsFileName) annotation(
       Placement(transformation(origin = {-42, -30}, extent = {{-10, -10}, {10, 10}})));
@@ -234,13 +234,13 @@ package ECUs
       Line(points = {{93, 46}, {110, 46}}, color = {0, 0, 127}));
     connect(division.y, tauLimiter.u) annotation(
       Line(points = {{-62, 41}, {-62, 46}, {70, 46}}, color = {0, 0, 127}));
-    connect(division.u2, Wmecc) annotation(
+    connect(division.u2, wMecc) annotation(
       Line(points = {{-56, 18}, {-56, 0}, {-8, 0}, {-8, -88}}, color = {0, 0, 127}));
     connect(division.u1, optiSpeed.u) annotation(
       Line(points = {{-68, 18}, {-68, -30}, {-54, -30}}, color = {0, 0, 127}));
     connect(pRef, division.u1) annotation(
       Line(points = {{-114, 0}, {-68, 0}, {-68, 18}}, color = {0, 0, 127}));
-    connect(maxTau.u, Wmecc) annotation(
+    connect(maxTau.u, wMecc) annotation(
       Line(points = {{0, 62}, {-8, 62}, {-8, -88}}, color = {0, 0, 127}));
     connect(tauLimiter.limit2, gain1.y) annotation(
       Line(points = {{70, 38}, {64, 38}, {64, 32}, {56.8, 32}}, color = {0, 0, 127}));
@@ -250,7 +250,7 @@ package ECUs
       Line(points = {{70, 54}, {38, 54}, {38, 62}, {23, 62}}, color = {0, 0, 127}));
     connect(tauLimiter.limit1, gain1.u) annotation(
       Line(points = {{70, 54}, {38, 54}, {38, 62}, {32, 62}, {32, 34}, {36, 34}, {36, 32}, {38.4, 32}}, color = {0, 0, 127}));
-  connect(feedback.u2, Wmecc) annotation(
+  connect(feedback.u2, wMecc) annotation(
       Line(points = {{12, -38}, {12, -88}, {-8, -88}}, color = {0, 0, 127}));
   connect(gain.y, limiter.u) annotation(
       Line(points = {{58, -30}, {68, -30}}, color = {0, 0, 127}));
