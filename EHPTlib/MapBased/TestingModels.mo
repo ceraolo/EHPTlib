@@ -497,11 +497,11 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
         Placement(transformation(origin = {0, 16}, extent = {{68, -2}, {48, 18}})));
       Modelica.Blocks.Sources.Trapezoid tauRef(rising = 10, width = 10, falling = 10, period = 1e6, startTime = 10, offset = 50.0, amplitude = 35.0) annotation(
         Placement(transformation(origin = {-8, 22}, extent = {{-46, -32}, {-26, -12}})));
-      IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1) annotation(
+      IceT iceT(wIceStart = 78.0, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), specConsName = "iceSpecificCons", tlSpeedFactor = 1, scMapOnFile = true, tlMapOnFile = true, scSpeedFactor = 1, torqueLimitName = "maxIceTau") annotation(
         Placement(transformation(origin = {-2, 16}, extent = {{-16, -2}, {4, 18}})));
       Modelica.Mechanics.Rotational.Components.Inertia inertia1(J = 0.5, phi(fixed = true, start = 0)) annotation(
         Placement(transformation(origin = {0, -28}, extent = {{14, -2}, {34, 18}})));
-      IceT iceT1(mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), scMapOnFile = true, scSpeedFactor = 1, specConsName = "iceSpecificCons", tlMapOnFile = true, tlSpeedFactor = 1, wIceStart = 78.0, scTorqueFactor = 1, tlTorqueFactor = 0.8, scConsFactor = 1.5) annotation(
+      IceT iceT1(mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/PSDmaps.txt"), scMapOnFile = true, scSpeedFactor = 1, specConsName = "iceSpecificCons", tlMapOnFile = true, tlSpeedFactor = 1, wIceStart = 78.0, scTorqueFactor = 1, tlTorqueFactor = 0.8, torqueLimitName = "maxIceTau", scConsFactor = 1.5) annotation(
         Placement(transformation(origin = {2, -28}, extent = {{-16, -2}, {4, 18}})));
       Modelica.Mechanics.Rotational.Sources.QuadraticSpeedDependentTorque loadTorque1(tau_nominal = -80, w_nominal = 100) annotation(
         Placement(transformation(origin = {0, -28}, extent = {{68, -2}, {48, 18}})));
@@ -604,7 +604,7 @@ ordinate.<o:p></o:p></span></p><p class=\"MsoNormal\" style=\"margin-left: 21.3p
     model TestGensetOO "Ice, Generator, DriveTrain, all map-based"
       Modelica.Electrical.Analog.Basic.Ground ground1 annotation(
         Placement(transformation(extent = {{-8, -8}, {8, 8}}, origin = {2, -30})));
-      MapBased.GensetOO genset(gsRatio = 1, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"), maxGenW = 300, maxGenPow = 55e3, maxTau = 500, wIceStart = 114) annotation(
+      MapBased.GensetOO genset(gsRatio = 1, mapsFileName = Modelica.Utilities.Files.loadResource("modelica://EHPTlib/Resources/SHEVmaps.txt"), maxGenW = 300, maxGenPow = 55e3, maxTau = 500, wIceStart = 114, efficiencyName = "gensetDriveEffTable") annotation(
         Placement(transformation(origin = {44, -30}, extent = {{-80, 8}, {-50, 38}})));
       Modelica.Electrical.Analog.Sensors.PowerSensor gsPow annotation(
         Placement(transformation(origin = {44, -30}, extent = {{-32, 24}, {-12, 44}})));
