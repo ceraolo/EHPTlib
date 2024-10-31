@@ -283,12 +283,18 @@ false")}),
       Dialog(enable = tlMapOnFile, group = "Torque limit map related parameters"));
     parameter Real maxIceTau[:, 2](each unit = "N.m") = [100, 80; 200, 85; 300, 92; 350, 98; 400, 98] "Maximum ICE generated torque" annotation(
       Dialog(enable = not tlMapOnFile, group = "Torque limit map related parameters"));
+    /*
     parameter Real specificCons[:, :](each unit = "g/(kW.h)") = [0.0, 100, 200, 300, 400, 500; 10, 630, 580, 550, 580, 630; 20, 430, 420, 400, 400, 450; 30, 320, 325, 330, 340, 350; 40, 285, 285, 288, 290, 300; 50, 270, 265, 265, 270, 275; 60, 255, 248, 250, 255, 258; 70, 245, 237, 238, 243, 246; 80, 245, 230, 233, 237, 240; 90, 235, 230, 228, 233, 235] "ICE specific consumption map. First column torque, first row speed" annotation(
       Dialog(enable = not scMapOnFile, group = "Consumption map related parameters"));
+  */
+    parameter Real specificCons[:, :](each unit = "g/(kW.h)") = [0.0,100,300,500; 0,999,999,
+      999; 100,400,400,400; 300,350,245,270; 400,400,270,270] "ICE specific consumption map. First column torque, first row speed" annotation(
+      Dialog(enable = not scMapOnFile, group = "Consumption map related parameters"));
+  
     Modelica.Units.SI.Torque tauGenerated = iceTau.tau;
     Modelica.Units.SI.Torque tauMechanical = -flange_a.tau;
     Modelica.Units.SI.AngularVelocity wMechanical = wSensor.w;
-
+  
     Modelica.Mechanics.Rotational.Components.Inertia inertia(w(fixed = true, start = wIceStart, displayUnit = "rpm"), J = iceJ) annotation(
       Placement(visible = true, transformation(extent = {{30, 68}, {50, 88}}, rotation = 0)));
     Modelica.Mechanics.Rotational.Sources.Torque iceTau annotation(
@@ -363,28 +369,28 @@ false")}),
       Line(points = {{44, 5}, {44, -28}}, color = {0, 0, 127}));
     annotation(
       Documentation(info = "<html><head></head><body><p><span style=\"font-family: MS Shell Dlg 2;\">Basic partial ICE model. Models that inherit from this:</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceT01 used when ICE must follow a Torque request in per unit of the maximum allowed</span></p>
-<p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p><p><span style=\"font-family: MS Shell Dlg 2;\">------------------------------------------------------------------</span></p><p>When consumption is taken from a file, multipliers are useful to reuse a map for a different vehicle: scSpeedFactor and scTorqueFactor multiply the computed speed and torque before entering the table, &nbsp;scConsFactor multiplies the table output before further processing.</p><div>Consider for instance the following map:</div><p><span style=\"font-family: 'Courier New';\"># First row: (from column 2) speed (rpm)&nbsp;</span></p><div><span style=\"font-family: 'Courier New';\"><span style=\"font-family: 'Courier New';\">
-# First column (from row 2): torque (Nm)<br>
-# body: spec. consumption (g/kWh).<br>
-double iceSpecificCons(10 6)<br>
- 0.   100  200  300  400  500<br>
- 10   630  580  550  580  630<br>
- 20   430  420  400  400  450<br>
- 30   320  325  330  340  350<br>
- 40   285  285  288  290  300<br>
- 50   270  265  265  270  275<br>
- 60   255  248  250  255  258<br>
- 70   245  237  238  243  246<br>
- 80   245  230  233  237  240<br>
- 90   235  230  228  233  235<br>
-
-
-
-
-</span></span></div><div><p>If I want to use a map from a file with the same shape as this for a vehicle having max speed=1000 rpm, max torque=200 Nm, max consumption 500g/kWh, I will use:&nbsp;</p><p>scSpeedFactor=60/(2*pi)*500/1000,</p><p>scTorqueFactor=90/200,&nbsp;</p><p>scConsFactor=500/630.</p><p>Note that internally speeds are computed in rad/s; since here in the table here they are in rpm, I must include rad/s to rpm conversion.</p><p>If, instead, I want to use exactly this map, I will use:</p><p>scConsFactor=scTorqueFactor=1, scSpeedFactor=60/(2*pi)</p><p>These three factors are not used when data is not taken from a txt file.</p><p><br></p><p><b>Inherited models</b></p><p>Inherited models PartialIceTNm and PartilIceT01 can also use tables to input torque limits. These tables allow using the same torque and speed multipliers used for fuel consumption: torqueMultiplier and speedMultiplier.</p><div><br></div><p><br></p></div><div><pre style=\"margin-top: 0px; margin-bottom: 0px;\"><!--EndFragment--></pre></div>
-</body></html>"),
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceTNm used when ICE must follow a Torque request in Nm</span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">- PartialIceT01 used when ICE must follow a Torque request in per unit of the maximum allowed</span></p>
+  <p><span style=\"font-family: MS Shell Dlg 2;\">See their documentation for further details or Appendix 3 in EHPTexamples tutorial for the general taxonomy of ICE based models.</span></p><p><span style=\"font-family: MS Shell Dlg 2;\">------------------------------------------------------------------</span></p><p>When consumption is taken from a file, multipliers are useful to reuse a map for a different vehicle: scSpeedFactor and scTorqueFactor multiply the computed speed and torque before entering the table, &nbsp;scConsFactor multiplies the table output before further processing.</p><div>Consider for instance the following map:</div><p><span style=\"font-family: 'Courier New';\"># First row: (from column 2) speed (rpm)&nbsp;</span></p><div><span style=\"font-family: 'Courier New';\"><span style=\"font-family: 'Courier New';\">
+  # First column (from row 2): torque (Nm)<br>
+  # body: spec. consumption (g/kWh).<br>
+  double iceSpecificCons(10 6)<br>
+  0.   100  200  300  400  500<br>
+  10   630  580  550  580  630<br>
+  20   430  420  400  400  450<br>
+  30   320  325  330  340  350<br>
+  40   285  285  288  290  300<br>
+  50   270  265  265  270  275<br>
+  60   255  248  250  255  258<br>
+  70   245  237  238  243  246<br>
+  80   245  230  233  237  240<br>
+  90   235  230  228  233  235<br>
+  
+  
+  
+  
+  </span></span></div><div><p>If I want to use a map from a file with the same shape as this for a vehicle having max speed=1000 rpm, max torque=200 Nm, max consumption 500g/kWh, I will use:&nbsp;</p><p>scSpeedFactor=60/(2*pi)*500/1000,</p><p>scTorqueFactor=90/200,&nbsp;</p><p>scConsFactor=500/630.</p><p>Note that internally speeds are computed in rad/s; since here in the table here they are in rpm, I must include rad/s to rpm conversion.</p><p>If, instead, I want to use exactly this map, I will use:</p><p>scConsFactor=scTorqueFactor=1, scSpeedFactor=60/(2*pi)</p><p>These three factors are not used when data is not taken from a txt file.</p><p><br></p><p><b>Inherited models</b></p><p>Inherited models PartialIceTNm and PartilIceT01 can also use tables to input torque limits. These tables allow using the same torque and speed multipliers used for fuel consumption: torqueMultiplier and speedMultiplier.</p><div><br></div><p><br></p></div><div><pre style=\"margin-top: 0px; margin-bottom: 0px;\"><!--EndFragment--></pre></div>
+  </body></html>"),
       Icon(coordinateSystem(preserveAspectRatio = false, initialScale = 0.1), graphics = {Rectangle(fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 62}, {100, -100}}), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{-24, 48}, {76, -44}}), Rectangle(fillColor = {192, 192, 192}, fillPattern = FillPattern.HorizontalCylinder, extent = {{76, 10}, {100, -10}}), Text(extent = {{-42, -56}, {112, -80}}, textString = "J=%iceJ"), Text(origin = {0, 10}, textColor = {0, 0, 255}, extent = {{-140, 100}, {140, 60}}, textString = "%name"), Rectangle(extent = {{-90, 48}, {-32, -46}}), Rectangle(fillColor = {95, 95, 95}, fillPattern = FillPattern.Solid, extent = {{-90, 2}, {-32, -20}}), Line(points = {{-60, 36}, {-60, 14}}), Polygon(points = {{-60, 46}, {-66, 36}, {-54, 36}, {-60, 46}}), Polygon(points = {{-60, 4}, {-66, 14}, {-54, 14}, {-60, 4}}), Rectangle(fillColor = {135, 135, 135}, fillPattern = FillPattern.Solid, extent = {{-64, -20}, {-54, -40}})}),
       Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,-100},{
               100,100}}),                                    graphics = {Line(points = {{-20, 78}, {-4, 78}}, color = {238, 46, 47})}));
