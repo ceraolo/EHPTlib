@@ -3,6 +3,11 @@ package Partial
   partial model PartialOneFlange "Partial map-based one-Flange electric drive model"
     import Modelica.Constants.*;
     Boolean limitingTorque;
+    
+    //Alias variables:
+    Modelica.Units.SI.Torque tauElectrical=torque.tau;
+    Modelica.Units.SI.AngularVelocity wMechanical=wSensor.w;
+    
     parameter Modelica.Units.SI.MomentOfInertia J = 0.25 "Rotor's moment of inertia" annotation(
       Dialog(group = "General parameters"));
     parameter Modelica.Units.SI.Voltage uDcNom = 100 "Nominal DC voltage" annotation(
@@ -160,6 +165,11 @@ false")}),
 
   partial model PartialTwoFlange "Simple map-based two-flange electric drive model"
     import Modelica.Constants.pi;
+  
+    //Alias variables:
+    Modelica.Units.SI.Torque tauElectrical=inertia.tau;
+    Modelica.Units.SI.AngularVelocity wMechanical=wSensor.w;
+  
     parameter Modelica.Units.SI.Power powMax = 50000 "Maximum Mechanical drive power";
     parameter Modelica.Units.SI.Torque tauMax = 400 "Maximum drive Torque";
     parameter Modelica.Units.SI.AngularVelocity wMax = 650 "Maximum drive speed";
@@ -180,7 +190,7 @@ false")}),
       Placement(transformation(extent = {{-58, -8}, {-36, 14}})));
     SupportModels.MapBasedRelated.InertiaTq inertia(w(displayUnit = "rad/s", start = 0), J = J) annotation(
       Placement(transformation(extent = {{8, 40}, {28, 60}})));
-    Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedRing annotation(
+    Modelica.Mechanics.Rotational.Sensors.SpeedSensor wSensor annotation(
       Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-80, 40})));
     SupportModels.MapBasedRelated.EfficiencyCT effMap(mapOnFile = mapsOnFile, mapFileName = mapsFileName, effTableName = effTableName, effTable = effTable) annotation(
       Placement(transformation(extent = {{20, -46}, {40, -26}})));
@@ -213,9 +223,9 @@ false")}),
       eSpeedFactor_  = 1;
     end if;
   equation
-    connect(flange_a, speedRing.flange) annotation(
+    connect(flange_a, wSensor.flange) annotation(
       Line(points = {{-100, 50}, {-80, 50}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(effMap.w, speedRing.w) annotation(
+    connect(effMap.w, wSensor.w) annotation(
       Line(points = {{18, -40}, {-80, -40}, {-80, 29}}, color = {0, 0, 127}, smooth = Smooth.None));
     connect(pin_p, constPDC.pin_p) annotation(
       Line(points = {{-60, 100}, {-10, 100}}, color = {0, 0, 255}, smooth = Smooth.None));
@@ -227,7 +237,7 @@ false")}),
       Line(points = {{28, 50}, {62, 50}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(inertia.flange_a, outAPow_.flange_a) annotation(
       Line(points = {{8, 50}, {-18, 50}}, color = {0, 0, 0}, smooth = Smooth.None));
-    connect(outAPow_.flange_b, speedRing.flange) annotation(
+    connect(outAPow_.flange_b, wSensor.flange) annotation(
       Line(points = {{-38, 50}, {-80, 50}}, color = {0, 0, 0}, smooth = Smooth.None));
     connect(add.u1, outBPow_.power) annotation(
       Line(points = {{38, 22}, {38, 28}, {64, 28}, {64, 39}}, color = {0, 0, 127}, smooth = Smooth.None));
@@ -241,7 +251,7 @@ false")}),
       Line(points = {{5, 2}, {12.55, 2}, {12.55, 40}}, color = {0, 0, 127}));
     connect(effMap.tau, torqueLimiter.y) annotation(
       Line(points = {{18, -32}, {12, -32}, {12, 2}, {5, 2}}, color = {0, 0, 127}));
-    connect(limTau.w, speedRing.w) annotation(
+    connect(limTau.w, wSensor.w) annotation(
       Line(points = {{-60.2, 3}, {-80, 3}, {-80, 29}}, color = {0, 0, 127}));
     connect(constPDC.pin_n, pin_n) annotation(
       Line(points = {{9.8, 100}, {18, 100}, {18, 100}, {52, 100}}, color = {0, 0, 255}));

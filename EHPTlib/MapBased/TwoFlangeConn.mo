@@ -8,7 +8,7 @@ equation
   connect(outBPow_.power, conn1.motPowDelB) annotation (
     Line(points={{64,39},{64,-78},{-88,-78},{-88,-78}},          color = {0, 0, 127}, smooth = Smooth.None),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-  connect(speedRing.w, conn1.motW) annotation (
+  connect(wSensor.w, conn1.motW) annotation (
     Line(points={{-80,29},{-86,29},{-86,28},{-88,28},{-88,-78}},            color = {0, 0, 127}, smooth = Smooth.None),
     Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
   connect(add.y, conn1.motPowDelAB) annotation (
